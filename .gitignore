@@ -1,0 +1,29 @@
+# Godot 4 : cache et fichiers générés (les fichiers *.import, eux, doivent être versionnés)
+.godot/
+/android/
+
+# Blender : sauvegardes automatiques
+*.blend1
+*.blend2
+
+# Exports et vidéos de secours (trop lourds, gardés hors dépôt)
+/export/
+/recordings/
+
+# Système
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Python
+__pycache__/
+
+# Kit Quaternius : seuls les .gltf, la licence et les textures sont utiles (lus par build_atrium_kit.py)
+/Cyberpunk Game Kit - Quaternius/Blends/
+/Cyberpunk Game Kit - Quaternius/**/*.fbx
+/Cyberpunk Game Kit - Quaternius/**/*.obj
+/Cyberpunk Game Kit - Quaternius/**/*.mtl
+
+# IDE
+.idea/
+.vscode/
