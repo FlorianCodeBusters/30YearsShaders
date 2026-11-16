@@ -1,4 +1,4 @@
-"""Génère de zéro la scène alternative : assets/scene/atrium.blend.
+"""Génère de zéro la scène alternative (en réserve) : assets/scene/archived/atrium.blend.
 
 Atrium de mégabâtiment cyberpunk, low poly : 14 x 24 m, quatre niveaux de
 coursives autour d'un vide ouvert sur le ciel, grande baie au fond qui donne
@@ -30,7 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_alley as lib  # noqa: E402
 from build_alley import MeshBuilder, rot_matrix  # noqa: E402
 
-DEFAULT_OUT = lib.ROOT / "assets" / "scene" / "atrium.blend"
+DEFAULT_OUT = lib.ARCHIVED / "atrium.blend"
 
 # --------------------------------------------------------------------------
 # Dimensions (mètres)

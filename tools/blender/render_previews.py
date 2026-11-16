@@ -4,9 +4,9 @@ Le soleil, le ciel et la caméra de vue d'ensemble sont ajoutés en mémoire,
 uniquement pour le rendu : le .blend n'est jamais enregistré par ce script.
 
 Usage, depuis la racine du projet :
-    blender -b assets/scene/alley.blend -P tools/blender/render_previews.py
-    blender -b assets/scene/alley.blend -P tools/blender/render_previews.py -- --samples 128 --width 1920
-    blender -b assets/scene/atrium.blend -P tools/blender/render_previews.py
+    blender -b assets/scene/atrium_kit.blend -P tools/blender/render_previews.py
+    blender -b assets/scene/atrium_kit.blend -P tools/blender/render_previews.py -- --samples 128 --width 1920
+    blender -b assets/scene/archived/atrium.blend -P tools/blender/render_previews.py
 
 Les images sont écrites dans export/previews/<nom du .blend>/ (ignoré par Git).
 """

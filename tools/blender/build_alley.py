@@ -1,4 +1,4 @@
-"""Génère de zéro la scène de démo : assets/scene/alley.blend.
+"""Génère de zéro la scène de test (en réserve) : assets/scene/archived/alley.blend.
 
 Ruelle cyberpunk low poly (3,5 m x 18 m) qui débouche sur un atrium à arcades
 façon Sponza (10 x 10 m, deux niveaux, toit ouvert). Noms d'objets, matériaux
@@ -35,7 +35,9 @@ from mathutils import Euler, Matrix, Vector
 
 ROOT = Path(__file__).resolve().parents[2]
 TEXTURES = ROOT / "assets" / "textures"
-DEFAULT_OUT = ROOT / "assets" / "scene" / "alley.blend"
+SCENES = ROOT / "assets" / "scene"
+ARCHIVED = SCENES / "archived"   # scènes en réserve
+DEFAULT_OUT = ARCHIVED / "alley.blend"
 STAMP = Path(__file__).resolve().parent / "alley.blend.sha256"
 
 
@@ -650,9 +652,10 @@ def sha256(path):
 
 def stamp_path(out):
     # empreinte versionnée à côté des scripts pour les scènes du projet
-    # (assets/scene/<nom>.blend -> tools/blender/<nom>.blend.sha256),
+    # (assets/scene/<nom>.blend ou assets/scene/archived/<nom>.blend
+    # -> tools/blender/<nom>.blend.sha256),
     # à côté du fichier pour une sortie personnalisée (--out)
-    if out.parent == DEFAULT_OUT.parent.resolve():
+    if out.parent in (SCENES.resolve(), ARCHIVED.resolve()):
         return STAMP.with_name(out.name + ".sha256")
     return out.with_name(out.name + ".sha256")
 

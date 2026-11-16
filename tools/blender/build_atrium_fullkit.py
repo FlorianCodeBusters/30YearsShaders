@@ -1,4 +1,4 @@
-"""Génère de zéro la 4e scène candidate : assets/scene/atrium_fullkit.blend.
+"""Génère de zéro la 4e scène candidate (en réserve) : assets/scene/archived/atrium_fullkit.blend.
 
 Un atrium de mégabâtiment construit quasiment exclusivement avec le
 « Cyberpunk Game Kit » de Quaternius (CC0) :
@@ -34,7 +34,7 @@ import build_atrium_kit as ak  # noqa: E402
 from build_alley import MeshBuilder  # noqa: E402
 from build_atrium_kit import K, ROW, Kit, KitBuilder, asset  # noqa: E402
 
-DEFAULT_OUT = lib.ROOT / "assets" / "scene" / "atrium_fullkit.blend"
+DEFAULT_OUT = lib.ARCHIVED / "atrium_fullkit.blend"
 
 # --------------------------------------------------------------------------
 # Trame : tout se cale sur la dalle Platform_4x4_Empty mise à l'échelle K

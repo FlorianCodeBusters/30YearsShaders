@@ -33,7 +33,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_alley as lib  # noqa: E402
 import build_atrium as at  # noqa: E402
 
-DEFAULT_OUT = lib.ROOT / "assets" / "scene" / "atrium_kit.blend"
+DEFAULT_OUT = lib.SCENES / "atrium_kit.blend"
 KIT = lib.ROOT / "Cyberpunk Game Kit - Quaternius"
 SIGN_TEXTURE = lib.ROOT / "assets" / "textures" / "Quaternius" / "Texture_Sign.png"
 

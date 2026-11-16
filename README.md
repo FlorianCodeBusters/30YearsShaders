@@ -6,7 +6,7 @@ Scène Godot qui traverse 30 ans de rendu 3D temps réel, de 1996 à 2026, pour 
 
 | Outil | Version | Remarque |
 |---|---|---|
-| Godot | **4.5.1 stable** | Renderer **Forward+** obligatoire (SDFGI, SSR, SSIL, brouillard volumétrique) |
+| Godot | **4.7** (version exacte à aligner : même build pour tout le monde) | Renderer **Forward+** obligatoire (SDFGI, SSR, SSIL, brouillard volumétrique) |
 | Blender | **4.5.4** | La même chez tout le monde : Godot appelle Blender pour importer les `.blend` |
 | Git LFS | requis | Pour les `.blend`, textures et vidéos |
 
@@ -14,7 +14,7 @@ Scène Godot qui traverse 30 ans de rendu 3D temps réel, de 1996 à 2026, pour 
 
 ## Mise en place
 1. Installer Git LFS, puis `git lfs install` (une fois par machine).
-2. Ouvrir le dossier dans Godot 4.5.1.
+2. Ouvrir le dossier dans Godot 4.7.
 3. Dans Godot : *Editor → Editor Settings → FileSystem → Import → Blender*, indiquer le chemin de `blender.exe`. C'est un réglage **par machine**.
 
 ## Organisation des dossiers
@@ -79,14 +79,14 @@ Textures : version **GL** des normal maps (pas DX), en 1K ou 2K maximum. Sources
 
 ## Générer les scènes (`tools/blender/`)
 
-Quatre scènes candidates, **générées par script** de zéro à chaque lancement, avec les mêmes conventions (mêmes noms d'objets, de matériaux et de caméras) : les fonctionnalités Godot marchent sur chacune. Pour changer une scène, modifier son script plutôt que le `.blend`.
+Quatre scènes candidates, **générées par script** de zéro à chaque lancement, avec les mêmes conventions (mêmes noms d'objets, de matériaux et de caméras) : les fonctionnalités Godot marchent sur chacune. Les scènes en réserve sont rangées dans `assets/scene/archived/` : leurs scripts y écrivent directement. Pour changer une scène, modifier son script plutôt que le `.blend`.
 
 | Scène | Script | Ambiance |
 |---|---|---|
-| `assets/scene/alley.blend` | `build_alley.py` | Ruelle de briques 3,5 × 18 m qui débouche sur un atrium à arcades façon Sponza. ~7 500 triangles. En réserve. |
-| `assets/scene/atrium.blend` | `build_atrium.py` | Atrium de mégabâtiment cyberpunk 14 × 24 m, quatre niveaux de coursives, ouvert sur le ciel, baie au fond sur une skyline. ~28 000 triangles. En réserve. |
+| `assets/scene/archived/alley.blend` | `build_alley.py` | Ruelle de briques 3,5 × 18 m qui débouche sur un atrium à arcades façon Sponza. ~7 500 triangles. En réserve. |
+| `assets/scene/archived/atrium.blend` | `build_atrium.py` | Atrium de mégabâtiment cyberpunk 14 × 24 m, quatre niveaux de coursives, ouvert sur le ciel, baie au fond sur une skyline. ~28 000 triangles. En réserve. |
 | `assets/scene/atrium_kit.blend` | `build_atrium_kit.py` | Le même atrium (coque, néons, rez-de-chaussée, skyline), mais coursives, passerelle et habillage tirés du *Cyberpunk Game Kit* de Quaternius (CC0), remappés sur nos matériaux. Trois niveaux de coursives. ~168 000 triangles. **Scène retenue pour la démo.** |
-| `assets/scene/atrium_fullkit.blend` | `build_atrium_fullkit.py` | Atrium construit quasiment exclusivement avec le kit Quaternius : sol en dalles du kit, murs en dalles dressées (brique au rez-de-chaussée), coursives, gargote, portail, enseignes et lanternes du kit. Seule la flaque est procédurale. ~178 000 triangles. En réserve. |
+| `assets/scene/archived/atrium_fullkit.blend` | `build_atrium_fullkit.py` | Atrium construit quasiment exclusivement avec le kit Quaternius : sol en dalles du kit, murs en dalles dressées (brique au rez-de-chaussée), coursives, gargote, portail, enseignes et lanternes du kit. Seule la flaque est procédurale. ~178 000 triangles. En réserve. |
 
 Commandes à lancer depuis la racine du projet (remplacer `blender` par le chemin de `blender.exe` 4.5.4) :
 
@@ -107,7 +107,7 @@ blender -b --factory-startup -P tools/blender/build_atrium_fullkit.py
 ```
 
 ```bash
-blender -b assets/scene/atrium.blend -P tools/blender/render_previews.py
+blender -b assets/scene/atrium_kit.blend -P tools/blender/render_previews.py
 ```
 
 | Fichier | Rôle |
