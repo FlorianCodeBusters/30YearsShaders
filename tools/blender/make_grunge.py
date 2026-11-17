@@ -6,7 +6,7 @@ le métal a l'air neuf. Ce script leur ajoute du bruit à plusieurs échelles
 (traces de doigts, zones d'usure, grain, coulures verticales) et écrit, à côté
 de l'original :
 
-    assets/textures/<Dossier>/<Dossier>_1K-JPG_RoughnessGrunge.jpg
+    tools/assets/textures/<Dossier>/<Dossier>_1K-JPG_RoughnessGrunge.jpg
 
 build_alley.make_pbr_material prend cette carte si elle existe. Le bruit est
 périodique (fabriqué en filtrant du bruit blanc dans le domaine de Fourier) :
@@ -22,7 +22,7 @@ from pathlib import Path
 import bpy
 import numpy as np
 
-TEXTURES = Path(__file__).resolve().parents[2] / "assets" / "textures"
+TEXTURES = Path(__file__).resolve().parents[1] / "assets" / "textures"
 
 # dossier : (décalage de la rugosité d'origine, force du bruit, graine)
 METALS = {

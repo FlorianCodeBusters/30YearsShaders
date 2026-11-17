@@ -1,4 +1,4 @@
-"""Génère de zéro la scène de test (en réserve) : assets/scene/archived/alley.blend.
+"""Génère de zéro la scène de test (en réserve) : tools/assets/scene/archived/alley.blend.
 
 Ruelle cyberpunk low poly (3,5 m x 18 m) qui débouche sur un atrium à arcades
 façon Sponza (10 x 10 m, deux niveaux, toit ouvert). Noms d'objets, matériaux
@@ -34,8 +34,9 @@ import bpy
 from mathutils import Euler, Matrix, Vector
 
 ROOT = Path(__file__).resolve().parents[2]
-TEXTURES = ROOT / "assets" / "textures"
-SCENES = ROOT / "assets" / "scene"
+TOOLS = ROOT / "tools"
+TEXTURES = TOOLS / "assets" / "textures"
+SCENES = TOOLS / "assets" / "scene"
 ARCHIVED = SCENES / "archived"   # scènes en réserve
 DEFAULT_OUT = ARCHIVED / "alley.blend"
 STAMP = Path(__file__).resolve().parent / "alley.blend.sha256"
@@ -661,7 +662,7 @@ def sha256(path):
 
 def stamp_path(out):
     # empreinte versionnée à côté des scripts pour les scènes du projet
-    # (assets/scene/<nom>.blend ou assets/scene/archived/<nom>.blend
+    # (tools/assets/scene/<nom>.blend ou tools/assets/scene/archived/<nom>.blend
     # -> tools/blender/<nom>.blend.sha256),
     # à côté du fichier pour une sortie personnalisée (--out)
     if out.parent in (SCENES.resolve(), ARCHIVED.resolve()):

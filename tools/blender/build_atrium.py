@@ -1,4 +1,4 @@
-"""Génère de zéro la scène alternative (en réserve) : assets/scene/archived/atrium.blend.
+"""Génère de zéro la scène alternative (en réserve) : tools/assets/scene/archived/atrium.blend.
 
 Atrium de mégabâtiment cyberpunk, low poly : 14 x 24 m, quatre niveaux de
 coursives autour d'un vide ouvert sur le ciel, grande baie au fond qui donne

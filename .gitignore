@@ -7,7 +7,7 @@
 *.blend2
 
 # Exports et vidéos de secours (trop lourds, gardés hors dépôt)
-/export/
+/tools/export/
 /recordings/
 
 # Système
@@ -19,10 +19,10 @@ desktop.ini
 __pycache__/
 
 # Kit Quaternius : seuls les .gltf, la licence et les textures sont utiles (lus par build_atrium_kit.py)
-/Cyberpunk Game Kit - Quaternius/Blends/
-/Cyberpunk Game Kit - Quaternius/**/*.fbx
-/Cyberpunk Game Kit - Quaternius/**/*.obj
-/Cyberpunk Game Kit - Quaternius/**/*.mtl
+/tools/Cyberpunk Game Kit - Quaternius/Blends/
+/tools/Cyberpunk Game Kit - Quaternius/**/*.fbx
+/tools/Cyberpunk Game Kit - Quaternius/**/*.obj
+/tools/Cyberpunk Game Kit - Quaternius/**/*.mtl
 
 # IDE
 .idea/

@@ -235,7 +235,7 @@ Sans les fichiers de `bakes/`, la démo tourne quand même : les étapes concern
 
 ## Mettre à jour la scène
 
-La scène vient de `../assets/scene/atrium_kit.blend` (le dépôt qui contient ce dossier). Après une régénération du `.blend` :
+La scène vient de `../tools/assets/scene/atrium_kit.blend` (le dépôt qui contient ce dossier). Après une régénération du `.blend` :
 
 ```bash
 blender -b --factory-startup -P tools/blender/export_glb.py

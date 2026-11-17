@@ -9,7 +9,7 @@ et l'import est identique partout.
     blender -b --factory-startup -P tools/blender/export_glb.py
 
 Options (après `--`) :
-    --blend <chemin>   .blend source (défaut : ../assets/scene/atrium_kit.blend,
+    --blend <chemin>   .blend source (défaut : ../tools/assets/scene/atrium_kit.blend,
                        c'est-à-dire celui du dépôt qui contient ce projet)
     --out <chemin>     .glb produit (défaut : assets/scene/atrium_kit.glb)
 """
@@ -20,7 +20,7 @@ from pathlib import Path
 import bpy
 
 PROJECT = Path(__file__).resolve().parents[2]          # Demo-Godot/
-DEFAULT_BLEND = PROJECT.parent / "assets" / "scene" / "atrium_kit.blend"
+DEFAULT_BLEND = PROJECT.parent / "tools" / "assets" / "scene" / "atrium_kit.blend"
 DEFAULT_OUT = PROJECT / "assets" / "scene" / "atrium_kit.glb"
 
 

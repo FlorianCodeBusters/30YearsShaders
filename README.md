@@ -14,23 +14,23 @@ Scène Godot qui traverse 30 ans de rendu 3D temps réel, de 1996 à 2026, pour 
 
 ## Mise en place
 1. Installer Git LFS, puis `git lfs install` (une fois par machine).
-2. Ouvrir le dossier dans Godot 4.7.
-3. Dans Godot : *Editor → Editor Settings → FileSystem → Import → Blender*, indiquer le chemin de `blender.exe`. C'est un réglage **par machine**.
+2. Ouvrir le dossier **`Demo-Godot/`** dans Godot 4.7 (c'est lui le projet Godot, voir son `README.md`). Il importe la scène en `.glb` : Blender n'est pas nécessaire pour lancer la démo.
+3. Blender 4.5.4 ne sert qu'à **régénérer la scène** avec les scripts de `tools/blender/`.
 
 ## Organisation des dossiers
 
 ```
-assets/scene/        La scène Blender (.blend)
-assets/textures/     Textures image (CC0, version GL)
-core/                Gestionnaire d'époques, interface des fonctionnalités, overlay, caméras
-features/1996/       Fonctionnalités, rangées par époque où elles apparaissent
-features/2001/
-features/2006/
-features/2016/
-scenes/              Scène principale (main.tscn) et scène héritée de la ruelle
-tools/blender/       Scripts Python qui génèrent la scène Blender et ses rendus de contrôle
-export/              Sorties locales (rendus de contrôle, vidéos), ignorées par Git
+Demo-Godot/                              Le projet Godot de la démo (scène, frise, Lab de shaders) : voir son README.md
+Presentation/                            Les slides (page web interactive et version PDF)
+tools/                                   Tout ce qui sert à fabriquer la scène
+  blender/                               Scripts Python qui génèrent les .blend et leurs rendus de contrôle
+  assets/scene/                          La scène Blender source (atrium_kit.blend) ; scènes de réserve dans archived/
+  assets/textures/                       Textures image (CC0, version GL)
+  Cyberpunk Game Kit - Quaternius/       Modèles glTF du kit, lus par build_atrium_kit.py et build_atrium_fullkit.py
+  export/                                Rendus de contrôle des .blend (sorties locales, ignorées par Git)
 ```
+
+Chaîne de fabrication : `tools/blender/build_atrium_kit.py` → `tools/assets/scene/atrium_kit.blend` → `Demo-Godot/tools/blender/export_glb.py` → `Demo-Godot/assets/scene/atrium_kit.glb`.
 
 ## Conventions de la scène Blender
 
@@ -71,22 +71,22 @@ export/              Sorties locales (rendus de contrôle, vidéos), ignorées p
 **Avant chaque commit du `.blend`** :
 - *Ctrl+A → All Transforms* sur tous les objets (sauf la position de `Prop_Hologram`) ;
 - normales cohérentes (*Mesh → Normals → Recalculate Outside*) ;
-- *File → External Data → Make Paths Relative* (textures dans `assets/textures/`, pas empaquetées) ;
+- *File → External Data → Make Paths Relative* (textures dans `tools/assets/textures/`, pas empaquetées) ;
 - **aucune lumière ni HDRI** : tout l'éclairage se fait dans Godot ;
 - pas besoin de deuxième UV : Godot la génère à l'import.
 
-Textures : version **GL** des normal maps (pas DX), en 1K ou 2K maximum. Sources et licences : `assets/textures/CREDITS.md`.
+Textures : version **GL** des normal maps (pas DX), en 1K ou 2K maximum. Sources et licences : `tools/assets/textures/CREDITS.md`.
 
 ## Générer les scènes (`tools/blender/`)
 
-Quatre scènes candidates, **générées par script** de zéro à chaque lancement, avec les mêmes conventions (mêmes noms d'objets, de matériaux et de caméras) : les fonctionnalités Godot marchent sur chacune. Les scènes en réserve sont rangées dans `assets/scene/archived/` : leurs scripts y écrivent directement. Pour changer une scène, modifier son script plutôt que le `.blend`.
+Quatre scènes candidates, **générées par script** de zéro à chaque lancement, avec les mêmes conventions (mêmes noms d'objets, de matériaux et de caméras) : les fonctionnalités Godot marchent sur chacune. Les scènes en réserve sont rangées dans `tools/assets/scene/archived/` : leurs scripts y écrivent directement. Pour changer une scène, modifier son script plutôt que le `.blend`.
 
 | Scène | Script | Ambiance |
 |---|---|---|
-| `assets/scene/archived/alley.blend` | `build_alley.py` | Ruelle de briques 3,5 × 18 m qui débouche sur un atrium à arcades façon Sponza. ~7 500 triangles. En réserve. |
-| `assets/scene/archived/atrium.blend` | `build_atrium.py` | Atrium de mégabâtiment cyberpunk 14 × 24 m, quatre niveaux de coursives, ouvert sur le ciel, baie au fond sur une skyline. ~28 000 triangles. En réserve. |
-| `assets/scene/atrium_kit.blend` | `build_atrium_kit.py` | Le même atrium (coque, néons, rez-de-chaussée, skyline), mais coursives, passerelle et habillage tirés du *Cyberpunk Game Kit* de Quaternius (CC0), remappés sur nos matériaux. Trois niveaux de coursives. Depuis le 16/11, l'atrium est fermé par un toit à verrière (il n'est plus ouvert sur le ciel) et un terrain orange reçoit la lumière : c'est ce qui rend l'illumination globale visible. ~169 000 triangles. **Scène retenue pour la démo.** |
-| `assets/scene/archived/atrium_fullkit.blend` | `build_atrium_fullkit.py` | Atrium construit quasiment exclusivement avec le kit Quaternius : sol en dalles du kit, murs en dalles dressées (brique au rez-de-chaussée), coursives, gargote, portail, enseignes et lanternes du kit. Seule la flaque est procédurale. ~178 000 triangles. En réserve. |
+| `tools/assets/scene/archived/alley.blend` | `build_alley.py` | Ruelle de briques 3,5 × 18 m qui débouche sur un atrium à arcades façon Sponza. ~7 500 triangles. En réserve. |
+| `tools/assets/scene/archived/atrium.blend` | `build_atrium.py` | Atrium de mégabâtiment cyberpunk 14 × 24 m, quatre niveaux de coursives, ouvert sur le ciel, baie au fond sur une skyline. ~28 000 triangles. En réserve. |
+| `tools/assets/scene/atrium_kit.blend` | `build_atrium_kit.py` | Le même atrium (coque, néons, rez-de-chaussée, skyline), mais coursives, passerelle et habillage tirés du *Cyberpunk Game Kit* de Quaternius (CC0), remappés sur nos matériaux. Trois niveaux de coursives. Depuis le 16/11, l'atrium est fermé par un toit à verrière (il n'est plus ouvert sur le ciel) et un terrain orange reçoit la lumière : c'est ce qui rend l'illumination globale visible. ~169 000 triangles. **Scène retenue pour la démo.** |
+| `tools/assets/scene/archived/atrium_fullkit.blend` | `build_atrium_fullkit.py` | Atrium construit quasiment exclusivement avec le kit Quaternius : sol en dalles du kit, murs en dalles dressées (brique au rez-de-chaussée), coursives, gargote, portail, enseignes et lanternes du kit. Seule la flaque est procédurale. ~178 000 triangles. En réserve. |
 
 Commandes à lancer depuis la racine du projet (remplacer `blender` par le chemin de `blender.exe` 4.5.4) :
 
@@ -107,7 +107,7 @@ blender -b --factory-startup -P tools/blender/build_atrium_fullkit.py
 ```
 
 ```bash
-blender -b assets/scene/atrium_kit.blend -P tools/blender/render_previews.py
+blender -b tools/assets/scene/atrium_kit.blend -P tools/blender/render_previews.py
 ```
 
 ```bash
@@ -118,10 +118,10 @@ blender -b --factory-startup -P tools/blender/make_grunge.py
 |---|---|
 | `build_alley.py` | Construit la ruelle et contient les briques communes (constructeur de meshes avec UV à l'échelle du monde, matériaux, textes, garde-fou, validation). Les conventions ci-dessus sont appliquées et vérifiées par le script (noms, transformations, normales, chemins relatifs, aucune lumière ni World). |
 | `build_atrium.py` | Construit l'atrium cyberpunk en réutilisant les briques de `build_alley.py`. Textes japonais avec une police système (Yu Gothic sous Windows, Hiragino sous macOS, Noto CJK sous Linux), convertis en meshes : le `.blend` ne dépend d'aucune police. Sans police japonaise, repli en latin (`SHADER`, `RAMEN`, `MARKET`). |
-| `render_previews.py` | Rendus Cycles de contrôle depuis toutes les caméras `Cam_*` de la scène et une vue d'ensemble, dans `export/previews/<nom du .blend>/`. Soleil et ciel **temporaires**, ajoutés en mémoire : le `.blend` n'est jamais enregistré. Options : `--cams` (liste de caméras), `--samples`, `--width`, `--sun-elevation`, `--sun-azimuth`, `--exposure`. |
-| `build_atrium_kit.py` | Réutilise la coque et la signalétique de `build_atrium.py` (dimensions surchargées), lit les modèles glTF du kit dans `Cyberpunk Game Kit - Quaternius/` (racine du projet) et les pose à l'échelle ×1,2. Matériaux du kit remappés : `LightGrey` → `M_Concrete`, `Grey` → `M_Metal`, `DarkGrey`/`Black` → `M_Paint_Black`, `Orange` → `M_Paint_Yellow`. L'atlas d'enseignes devient `M_Sign` (émissif, dans `Neon_10`/`Neon_13`), sa bande « danger » `M_Hazard` ; lampes → `Neon_14`, écrans → `Neon_15`. Le `.blend` produit ne dépend plus du kit (seule l'atlas est copiée dans `assets/textures/Quaternius/`). Le dossier du kit contient un `.gdignore` pour que Godot n'importe pas ses fichiers source. |
+| `render_previews.py` | Rendus Cycles de contrôle depuis toutes les caméras `Cam_*` de la scène et une vue d'ensemble, dans `tools/export/previews/<nom du .blend>/`. Soleil et ciel **temporaires**, ajoutés en mémoire : le `.blend` n'est jamais enregistré. Options : `--cams` (liste de caméras), `--samples`, `--width`, `--sun-elevation`, `--sun-azimuth`, `--exposure`. |
+| `build_atrium_kit.py` | Réutilise la coque et la signalétique de `build_atrium.py` (dimensions surchargées), lit les modèles glTF du kit dans `tools/Cyberpunk Game Kit - Quaternius/` et les pose à l'échelle ×1,2. Matériaux du kit remappés : `LightGrey` → `M_Concrete`, `Grey` → `M_Metal`, `DarkGrey`/`Black` → `M_Paint_Black`, `Orange` → `M_Paint_Yellow`. L'atlas d'enseignes devient `M_Sign` (émissif, dans `Neon_10`/`Neon_13`), sa bande « danger » `M_Hazard` ; lampes → `Neon_14`, écrans → `Neon_15`. Le `.blend` produit ne dépend plus du kit (seule l'atlas est copiée dans `tools/assets/textures/Quaternius/`). Le dossier du kit contient un `.gdignore` pour que Godot n'importe pas ses fichiers source. |
 | `build_atrium_fullkit.py` | Réutilise le lecteur de kit de `build_atrium_kit.py` (`Kit.place` accepte une rotation complète et un remapping de matériaux par pose : plateau des dalles → `M_Ground` au sol, `M_Concrete` ou `M_Brick` aux murs, cadre → `M_Metal`). Trame calée sur la dalle `Platform_4x4_Empty` (4,63 m) : 3 × 5 dalles au sol, murs de 4 rangées, coursives tous les 4,63 m. |
-| `make_grunge.py` | Fabrique les rugosités « usées » des métaux : `assets/textures/<Dossier>/<Dossier>_1K-JPG_RoughnessGrunge.jpg` pour `Metal032` et `CorrugatedSteel005` (traces, zones dépolies, grain, coulures ; bruit périodique, donc sans couture ; résultat identique à chaque lancement). `make_pbr_material` prend cette carte si elle existe : relancer ensuite les scripts de scène. |
+| `make_grunge.py` | Fabrique les rugosités « usées » des métaux : `tools/assets/textures/<Dossier>/<Dossier>_1K-JPG_RoughnessGrunge.jpg` pour `Metal032` et `CorrugatedSteel005` (traces, zones dépolies, grain, coulures ; bruit périodique, donc sans couture ; résultat identique à chaque lancement). `make_pbr_material` prend cette carte si elle existe : relancer ensuite les scripts de scène. |
 | `alley.blend.sha256`, `atrium.blend.sha256`, `atrium_kit.blend.sha256`, `atrium_fullkit.blend.sha256` | Empreinte du dernier `.blend` généré. Si le `.blend` a été modifié à la main depuis, le script **refuse de l'écraser** ; ajouter `-- --force` pour passer outre. |
 
 **Ruelle** : `Ground`, `Puddle` (trois flaques dans un seul objet), `Wall_Left`, `Wall_Right`, `Wall_Back`, `Atrium_Floor`, `Atrium_Walls`, `Atrium_Columns`, `Atrium_Arches`, `Atrium_Gallery`, `Neon_01` (« PERLIN », rose), `Neon_02` (« GPU », cyan), `Neon_03` (flèche orange), `Prop_Sign`, `Prop_Dumpster`, `Prop_TrashCan`, `Prop_Crates`, `Prop_AC`, `Prop_Pipes`, `Prop_FireEscape`, `Prop_Cables`, `Prop_Door`, `Prop_Shutters`. Matériau en plus : `M_Neon_Orange`.
@@ -140,11 +140,7 @@ blender -b --factory-startup -P tools/blender/make_grunge.py
 
 ## Système d'époques
 
-*À définir par Florian. Proposition :*
-- **Interface commune** : chaque fonctionnalité a un nom affiché, une époque, une touche, et une fonction pour l'activer ou la désactiver. Elle vit dans son propre fichier sous `features/<époque>/`.
-- **Gestionnaire d'époques** (`core/`) : un preset par jalon (1996, 2001, 2006, 2016, 2026) et les touches clavier. Seul Florian le modifie.
-- **Overlay** : l'année et le nom de la dernière fonctionnalité activée, par exemple *« 2004 — Normal maps »*.
-- Chacun ne touche qu'à ses propres fichiers. La scène principale ne fait que les instancier.
+Implémenté dans `Demo-Godot/` : gestionnaire d'époques et overlay dans `Demo-Godot/core/`, une fonctionnalité par fichier dans `Demo-Godot/features/<époque>/`. Touches, frise et presets : voir `Demo-Godot/README.md`.
 
 ## Répartition des fonctionnalités
 

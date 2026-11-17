@@ -1,4 +1,4 @@
-"""Génère de zéro la 3e scène candidate : assets/scene/atrium_kit.blend.
+"""Génère de zéro la 3e scène candidate : tools/assets/scene/atrium_kit.blend.
 
 Le même atrium de mégabâtiment que build_atrium.py (coque béton et brique, sol
 mouillé, flaques, baie sur la skyline, signalétique néon), mais les coursives,
@@ -17,9 +17,9 @@ Direction artistique conservée : les matériaux gris du kit sont remappés sur
 les matériaux de la scène (béton sombre, métal, jaune de signalisation, noir),
 et tout ce qui éclaire (enseignes, écrans, lampes) part dans des objets Neon_*.
 
-Le kit est lu en glTF dans « Cyberpunk Game Kit - Quaternius/ » (à la racine du
-projet) au moment de la génération ; le .blend produit n'en dépend plus, seule
-la texture atlas est copiée dans assets/textures/Quaternius/.
+Le kit est lu en glTF dans « tools/Cyberpunk Game Kit - Quaternius/ » au
+moment de la génération ; le .blend produit n'en dépend plus, seule
+la texture atlas est copiée dans tools/assets/textures/Quaternius/.
 
 Usage, depuis la racine du projet :
     blender -b --factory-startup -P tools/blender/build_atrium_kit.py
@@ -40,8 +40,8 @@ import build_alley as lib  # noqa: E402
 import build_atrium as at  # noqa: E402
 
 DEFAULT_OUT = lib.SCENES / "atrium_kit.blend"
-KIT = lib.ROOT / "Cyberpunk Game Kit - Quaternius"
-SIGN_TEXTURE = lib.ROOT / "assets" / "textures" / "Quaternius" / "Texture_Sign.png"
+KIT = lib.TOOLS / "Cyberpunk Game Kit - Quaternius"
+SIGN_TEXTURE = lib.TEXTURES / "Quaternius" / "Texture_Sign.png"
 
 # --------------------------------------------------------------------------
 # Dimensions : la coque de build_atrium, des coursives au module du kit

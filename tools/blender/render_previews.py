@@ -4,11 +4,11 @@ Le soleil, le ciel et la caméra de vue d'ensemble sont ajoutés en mémoire,
 uniquement pour le rendu : le .blend n'est jamais enregistré par ce script.
 
 Usage, depuis la racine du projet :
-    blender -b assets/scene/atrium_kit.blend -P tools/blender/render_previews.py
-    blender -b assets/scene/atrium_kit.blend -P tools/blender/render_previews.py -- --samples 128 --width 1920
-    blender -b assets/scene/archived/atrium.blend -P tools/blender/render_previews.py
+    blender -b tools/assets/scene/atrium_kit.blend -P tools/blender/render_previews.py
+    blender -b tools/assets/scene/atrium_kit.blend -P tools/blender/render_previews.py -- --samples 128 --width 1920
+    blender -b tools/assets/scene/archived/atrium.blend -P tools/blender/render_previews.py
 
-Les images sont écrites dans export/previews/<nom du .blend>/ (ignoré par Git).
+Les images sont écrites dans tools/export/previews/<nom du .blend>/ (ignoré par Git).
 """
 
 import argparse
@@ -73,7 +73,7 @@ def main():
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser(prog="render_previews.py")
     ap.add_argument("--out", type=Path, default=None,
-                    help="défaut : export/previews/<nom du .blend>/")
+                    help="défaut : tools/export/previews/<nom du .blend>/")
     ap.add_argument("--cams", default=None,
                     help="défaut : toutes les caméras Cam_* de la scène + TMP_Overview")
     ap.add_argument("--samples", type=int, default=48)
@@ -102,7 +102,7 @@ def main():
     scene.view_settings.exposure = args.exposure
 
     if args.out is None:
-        args.out = ROOT / "export" / "previews" / Path(bpy.data.filepath).stem
+        args.out = ROOT / "tools" / "export" / "previews" / Path(bpy.data.filepath).stem
     args.out = args.out.resolve()
     args.out.mkdir(parents=True, exist_ok=True)
     cams = (args.cams.split(",") if args.cams else

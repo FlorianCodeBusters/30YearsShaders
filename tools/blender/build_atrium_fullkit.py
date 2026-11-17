@@ -1,4 +1,4 @@
-"""Génère de zéro la 4e scène candidate (en réserve) : assets/scene/archived/atrium_fullkit.blend.
+"""Génère de zéro la 4e scène candidate (en réserve) : tools/assets/scene/archived/atrium_fullkit.blend.
 
 Un atrium de mégabâtiment construit quasiment exclusivement avec le
 « Cyberpunk Game Kit » de Quaternius (CC0) :
