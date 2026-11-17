@@ -15,6 +15,10 @@ Version **1K JPG**, normal maps en **GL**. Seules les cartes utilisées par la s
 
 Téléchargées le 2026-11-12. La ruelle utilise les quatre premières ; l'atrium cyberpunk réutilise `Asphalt026C` et `Metal032`, plus les trois dernières. L'échelle est appliquée dans les UV par les scripts de `tools/blender/`, pas par un nœud Mapping.
 
+## Rugosités « usées » (dérivées)
+
+`Metal032/Metal032_1K-JPG_RoughnessGrunge.jpg` et `CorrugatedSteel005/CorrugatedSteel005_1K-JPG_RoughnessGrunge.jpg` : la rugosité ambientCG d'origine, à laquelle `tools/blender/make_grunge.py` ajoute du bruit généré (aucune source externe). Les originaux sont conservés à côté.
+
 ## Quaternius — Cyberpunk Game Kit
 
 `Quaternius/Texture_Sign.png` : atlas d'enseignes du *Cyberpunk Game Kit* de Quaternius ([quaternius.com](https://quaternius.com)), licence **CC0**. Utilisée par `atrium_kit.blend` (`M_Sign`, `M_Hazard`). Les modèles du kit sont lus depuis `Cyberpunk Game Kit - Quaternius/` à la racine du projet par `tools/blender/build_atrium_kit.py`, puis intégrés au `.blend`.

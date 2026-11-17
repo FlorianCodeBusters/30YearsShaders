@@ -77,8 +77,9 @@ var _body_material: StandardMaterial3D
 
 func _apply() -> void:
 	_lantern.visible = is_on()
-	# Les ombres de la lune deviennent dynamiques en même temps.
-	ctx.moon.shadow_enabled = is_on()
+	# Les ombres de la lune deviennent dynamiques en même temps : le toit arrête
+	# enfin la lumière, qui n'entre plus que par la verrière.
+	ctx.update_moon()
 	# En HDR, la lanterne elle-même devient éblouissante (et bave avec le glow).
 	_body_material.emission_energy_multiplier = ctx.neon_energy(8.0)
 

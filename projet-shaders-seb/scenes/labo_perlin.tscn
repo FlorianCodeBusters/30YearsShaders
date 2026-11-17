@@ -1,7 +1,10 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Shader" path="res://features/2001/perlin_flaque.gdshader" id="1_flaque"]
 [ext_resource type="Shader" path="res://features/2001/perlin_neon.gdshader" id="2_neon"]
+[ext_resource type="Texture2D" path="res://assets/scene/atrium_kit_Asphalt026C_1K-JPG_Color.jpg" id="3_couleur"]
+[ext_resource type="Texture2D" path="res://assets/scene/atrium_kit_Asphalt026C_1K-JPG_NormalGL.jpg" id="4_normales"]
+[ext_resource type="Texture2D" path="res://assets/scene/atrium_kit_Asphalt026C_1K-JPG_Roughness.png" id="5_rugosite"]
 
 [sub_resource type="Environment" id="environment"]
 background_mode = 1
@@ -17,10 +20,17 @@ glow_enabled = true
 [sub_resource type="ShaderMaterial" id="material_bruit"]
 shader = ExtResource("1_flaque")
 shader_parameter/bruit_seul = true
+shader_parameter/sol_couleur = ExtResource("3_couleur")
+shader_parameter/sol_normales = ExtResource("4_normales")
+shader_parameter/sol_rugosite = ExtResource("5_rugosite")
 
 [sub_resource type="ShaderMaterial" id="material_flaque"]
 shader = ExtResource("1_flaque")
 shader_parameter/bruit_seul = false
+shader_parameter/creux = Vector3(2.2, 0.2, 1.3)
+shader_parameter/sol_couleur = ExtResource("3_couleur")
+shader_parameter/sol_normales = ExtResource("4_normales")
+shader_parameter/sol_rugosite = ExtResource("5_rugosite")
 
 [sub_resource type="ShaderMaterial" id="material_neon"]
 shader = ExtResource("2_neon")

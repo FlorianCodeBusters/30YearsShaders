@@ -2,7 +2,7 @@ extends DemoFeature
 ## 2010 — Pluie en particules GPU : la position de chaque goutte est calculée
 ## par un shader, sur la carte graphique. Le processeur ne voit rien passer.
 
-const DROPS := 5000
+const DROPS := 2200
 const TOP := 19.0            # hauteur d'où tombe la pluie (sous les poutres du toit)
 const SPEED := 15.0          # m/s
 
@@ -21,8 +21,8 @@ func _init() -> void:
 func _setup() -> void:
 	var process := ParticleProcessMaterial.new()
 	process.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
-	# Le vide central de l'atrium, entre les coursives.
-	process.emission_box_extents = Vector3(4.6, 0.1, 11.5)
+	# La verrière du toit : c'est par là que la pluie entre.
+	process.emission_box_extents = Vector3(2.5, 0.1, 4.4)
 	process.direction = Vector3(0.06, -1.0, 0.0)
 	process.spread = 1.5
 	process.initial_velocity_min = SPEED * 0.9
@@ -45,7 +45,7 @@ func _setup() -> void:
 
 	_particles = GPUParticles3D.new()
 	_particles.name = "Rain"
-	_particles.position = Vector3(0.0, TOP, -12.0)
+	_particles.position = Vector3(0.0, TOP, -14.0)
 	_particles.amount = DROPS
 	_particles.lifetime = TOP / SPEED
 	_particles.preprocess = _particles.lifetime
@@ -53,7 +53,7 @@ func _setup() -> void:
 	_particles.draw_pass_1 = quad
 	# Les gouttes s'alignent sur leur vitesse et font face à la caméra.
 	_particles.transform_align = GPUParticles3D.TRANSFORM_ALIGN_Z_BILLBOARD_Y_TO_VELOCITY
-	_particles.visibility_aabb = AABB(Vector3(-6.0, -TOP - 1.0, -13.0), Vector3(12.0, TOP + 2.0, 26.0))
+	_particles.visibility_aabb = AABB(Vector3(-5.0, -TOP - 1.0, -6.5), Vector3(10.0, TOP + 2.0, 13.0))
 	_particles.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_particles.emitting = false
 	_particles.visible = false

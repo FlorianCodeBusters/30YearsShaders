@@ -7,7 +7,8 @@ extends RefCounted
 ##   year   : année affichée
 ##   title  : titre de la démo
 ##   note   : une phrase d'explication, sous le rendu
-##   source : le fichier affiché et modifiable (.gdshader ou .gdshaderinc)
+##   source : le fichier affiché et modifiable (.gdshader, .gdshaderinc, ou .glsl
+##            pour un compute shader)
 ##   stage  : le décor (une méthode `_stage_<nom>` de `lab.gd`)
 ##   shader : le shader appliqué au décor, s'il diffère de `source`
 ##   params : paramètres imposés au matériau
@@ -38,7 +39,7 @@ const LIST: Array[Dictionary] = [
 		source = F + "2001/perlin.gdshaderinc", stage = "flaque",
 		shader = F + "2001/perlin_flaque.gdshader", params = {bruit_seul = true}},
 	{decade = 2001, year = 2001, title = "Perlin branché sur l'eau",
-		note = "Le bruit sert de hauteur à l'eau ; sa pente dévie les reflets.",
+		note = "Le bruit sert deux fois : il creuse le sol, et il fait onduler l'eau. Changez niveau_eau.",
 		source = F + "2001/perlin_flaque.gdshader", stage = "flaque", params = {bruit_seul = false}},
 	{decade = 2001, year = 2001, title = "Perlin branché sur un néon",
 		note = "Le même bruit, lu dans le temps : l'enseigne grésille.",
@@ -54,6 +55,9 @@ const LIST: Array[Dictionary] = [
 	{decade = 2006, year = 2007, title = "SSAO : des échantillons tirés au hasard",
 		note = "8 échantillons par pixel : l'image est bruitée. C'est ce bruit que Godot floute ensuite.",
 		source = S + "2007_ssao.gdshader", stage = "piece"},
+	{decade = 2006, year = 2009, title = "Compute shader : le GPU sort du graphisme",
+		note = "4 096 boids, 16 millions de comparaisons par image, sur le GPU. Changez VISION ou COHESION.",
+		source = S + "2009_boids.glsl", stage = "boids"},
 	{decade = 2006, year = 2011, title = "SSR : un rayon lancé dans l'image",
 		note = "Le sol reflète ce qui est à l'écran, et seulement ce qui est à l'écran.",
 		source = S + "2011_ssr.gdshader", stage = "piece"},

@@ -8,6 +8,10 @@ extends CanvasLayer
 ## Ctrl + Entrée (ou S)   appliquer le code modifié
 ## Ctrl + R               revenir au code d'origine
 ##
+## Deux sortes de fichiers : les shaders de Godot (.gdshader, .gdshaderinc), qui
+## sont des ressources du moteur, et les compute shaders (.glsl), compilés ici
+## depuis leur texte, ce qui permet d'afficher leurs erreurs de compilation.
+##
 ## Les modifications restent en mémoire (rien n'est écrit sur le disque). Pour les
 ## shaders de la démo (Perlin, hologramme, tramage), elles se voient aussi dans
 ## la scène en revenant avec Tab.
@@ -16,6 +20,7 @@ extends CanvasLayer
 signal closed
 
 const ACCENT := Color(1.0, 0.25, 0.6)
+const PERLIN_FEATURE := preload("res://features/2001/perlin.gd")
 const BRICK_COLOR := "res://assets/scene/atrium_kit_Bricks097_1K-JPG_Color.jpg"
 const BRICK_NORMAL := "res://assets/scene/atrium_kit_Bricks097_1K-JPG_NormalGL.jpg"
 const DECADE_TITLES := {
@@ -40,10 +45,14 @@ var _file: Label
 var _status: Label
 var _editor: CodeEdit
 
-## Le shader (ou l'include) affiché dans l'éditeur.
+## Le shader (ou l'include) affiché dans l'éditeur. `null` pour un compute shader.
 var _resource: Resource
 ## Code d'origine de chaque fichier ouvert, pour Ctrl + R.
 var _original := {}
+## Texte courant des compute shaders (.glsl), par fichier.
+var _glsl := {}
+## La démo de compute shader en cours, s'il y en a une.
+var _boids: LabBoids
 
 
 func setup(ctx: DemoContext) -> void:
@@ -81,10 +90,18 @@ func show_demo(target: int) -> void:
 	index = posmod(target, LabDemos.LIST.size())
 	var demo := LabDemos.LIST[index]
 
-	_resource = load(demo.source)
-	if not _original.has(demo.source):
-		_original[demo.source] = _resource.get("code")
-	_editor.text = _resource.get("code")
+	_boids = null
+	if String(demo.source).ends_with(".glsl"):
+		_resource = null
+		if not _glsl.has(demo.source):
+			_original[demo.source] = FileAccess.get_file_as_string(demo.source)
+			_glsl[demo.source] = _original[demo.source]
+		_editor.text = _glsl[demo.source]
+	else:
+		_resource = load(demo.source)
+		if not _original.has(demo.source):
+			_original[demo.source] = _resource.get("code")
+		_editor.text = _resource.get("code")
 	_editor.clear_undo_history()
 	_editor.set_caret_line(0)
 	_editor.scroll_vertical = 0
@@ -99,6 +116,7 @@ func show_demo(target: int) -> void:
 	_decade.text = "%s    %d / %d" % [DECADE_TITLES[demo.decade], position_in_decade, count_in_decade]
 	_title.text = "%d — %s" % [demo.year, demo.title]
 	_note.text = demo.note
+	_note.add_theme_color_override("font_color", Color(1, 1, 1, 0.85))
 	_file.text = String(demo.source).trim_prefix("res://")
 	_set_status("")
 
@@ -126,15 +144,37 @@ func jump_decade(direction: int) -> void:
 
 
 func apply_code() -> void:
-	_resource.set("code", _editor.text)
-	_set_status("Appliqué")
+	if _resource != null:
+		_resource.set("code", _editor.text)
+		_set_status("Appliqué")
+	else:
+		_compile_glsl(_editor.text, "Appliqué")
 
 
 func reset_code() -> void:
 	var source: String = LabDemos.LIST[index].source
 	_editor.text = _original[source]
-	_resource.set("code", _original[source])
-	_set_status("Code d'origine rétabli")
+	if _resource != null:
+		_resource.set("code", _original[source])
+		_set_status("Code d'origine rétabli")
+	else:
+		_compile_glsl(_original[source], "Code d'origine rétabli")
+
+
+## Compile un compute shader. En cas d'erreur, l'ancien continue de tourner et le
+## message du compilateur s'affiche sous le rendu.
+func _compile_glsl(code: String, done: String) -> void:
+	var demo := LabDemos.LIST[index]
+	var error := _boids.set_code(code) if _boids != null else ""
+	if error == "":
+		_glsl[demo.source] = code
+		_note.text = demo.note
+		_note.add_theme_color_override("font_color", Color(1, 1, 1, 0.85))
+		_set_status(done)
+	else:
+		_note.text = error.strip_edges().left(260)
+		_note.add_theme_color_override("font_color", Color(1.0, 0.55, 0.3))
+		_set_status("Erreur de compilation")
 
 
 func _input(event: InputEvent) -> void:
@@ -273,7 +313,12 @@ func _stage_hologramme(demo: Dictionary) -> void:
 func _stage_flaque(demo: Dictionary) -> void:
 	var water := PlaneMesh.new()
 	water.size = Vector2(7.0, 5.0)
-	_add_mesh(water, Vector3.ZERO, _material(demo))
+	var material := _material(demo)
+	# Le bitume de la scène, et un creux au milieu du décor.
+	PERLIN_FEATURE.set_ground_textures(material, _ctx)
+	material.set_shader_parameter("creux", Vector3(0.0, 0.4, 1.8))
+	_add_mesh(water, Vector3.ZERO, material)
+	_add_light(Vector3(-1.0, 2.6, 2.0), Color(0.8, 0.85, 1.0), 1.6)
 	var panel := BoxMesh.new()
 	panel.size = Vector3(0.9, 2.0, 0.12)
 	_add_mesh(panel, Vector3(-1.5, 1.3, -2.7), _emissive(Color(1.0, 0.08, 0.5), 4.0))
@@ -284,6 +329,14 @@ func _stage_flaque(demo: Dictionary) -> void:
 		_place_camera(Vector3(0.0, 4.2, 3.4), Vector3(0.0, 0.0, -0.2))
 	else:
 		_place_camera(Vector3(0.0, 1.5, 4.6), Vector3(0.0, 0.5, 0.0))
+
+
+## Une nuée de boids simulée par un compute shader (voir `lab/boids.gd`).
+func _stage_boids(demo: Dictionary) -> void:
+	_viewport.disable_3d = true
+	_boids = LabBoids.new()
+	_screen.add_child(_boids)
+	_compile_glsl(_glsl[demo.source], "")
 
 
 ## L'enseigne PERLIN de la scène.
@@ -494,16 +547,18 @@ func _build_editor() -> CodeEdit:
 	colors.add_color_region("\"", "\"", Color(1.0, 0.85, 0.5))
 	for word: String in ["shader_type", "render_mode", "uniform", "varying", "const", "instance",
 			"void", "return", "if", "else", "for", "while", "break", "in", "out", "inout",
-			"true", "false", "#include"]:
+			"true", "false", "#include", "#version", "layout", "struct", "buffer", "continue",
+			"restrict", "readonly", "writeonly", "std430", "std140"]:
 		colors.add_keyword_color(word, ACCENT)
 	for word: String in ["float", "int", "bool", "vec2", "vec3", "vec4", "ivec2", "mat2", "mat3",
-			"mat4", "sampler2D"]:
+			"mat4", "sampler2D", "uint"]:
 		colors.add_keyword_color(word, Color(0.6, 0.75, 1.0))
 	for word: String in ["VERTEX", "NORMAL", "TANGENT", "BINORMAL", "UV", "ALBEDO", "EMISSION",
 			"ROUGHNESS", "SPECULAR", "COLOR", "TIME", "PI", "TAU", "POSITION", "SCREEN_UV",
 			"FRAGCOORD", "VIEW", "MODEL_MATRIX", "MODEL_NORMAL_MATRIX", "VIEW_MATRIX",
 			"INV_VIEW_MATRIX", "PROJECTION_MATRIX", "INV_PROJECTION_MATRIX",
-			"CAMERA_POSITION_WORLD", "SCREEN_PIXEL_SIZE"]:
+			"CAMERA_POSITION_WORLD", "SCREEN_PIXEL_SIZE", "METALLIC", "NORMAL_MAP",
+			"NORMAL_MAP_DEPTH", "gl_GlobalInvocationID"]:
 		colors.add_keyword_color(word, Color(1.0, 0.6, 0.35))
 	editor.syntax_highlighter = colors
 	return editor

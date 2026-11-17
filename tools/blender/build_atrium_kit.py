@@ -7,6 +7,12 @@ la passerelle et l'habillage viennent du « Cyberpunk Game Kit » de Quaternius
 poteaux en treillis, garde-corps, lampadaires, terminaux, climatiseurs,
 tuyaux, câbles, antennes, portes, caisses et enseignes japonaises de l'atlas.
 
+Pour l'illumination globale (16/11) : l'atrium n'est plus ouvert sur le ciel.
+Un toit le ferme, percé d'une verrière (Atrium_Roof), et un terrain peint en
+orange vif (Prop_Court) attend la lumière juste dessous, bordé de deux bancs
+blancs (Prop_Benches). Sans GI, seul le terrain est éclairé ; avec, sa lumière
+orange remonte sous les coursives et teinte les bancs.
+
 Direction artistique conservée : les matériaux gris du kit sont remappés sur
 les matériaux de la scène (béton sombre, métal, jaune de signalisation, noir),
 et tout ce qui éclaire (enseignes, écrans, lampes) part dans des objets Neon_*.
@@ -70,7 +76,22 @@ KIT_MATERIALS = {
 }
 HAZARD_V = (0.265, 0.325)       # bande « danger » de l'atlas (coordonnée v des UV)
 
-lib.TILE.update({"M_Paint_Black": 1.0})
+lib.TILE.update({"M_Paint_Black": 1.0, "M_Paint_Orange": 1.0, "M_Paint_White": 1.0})
+# Bricks097 est une image 2:1 de 16 rangs de briques : à sa taille réelle elle
+# couvre 2,4 m x 1,2 m (rangs de 7,5 cm). Plaquée sur 1 m x 1 m, elle donnait des
+# briques écrasées et se répétait 14 fois sur la largeur du mur du fond.
+lib.TILE["M_Brick"] = (2.4, 1.2)
+
+# Toit et verrière : l'atrium est fermé, la lumière du ciel n'entre que par là
+SKYLIGHT = (-2.6, 2.6, 9.5, 18.5)           # x0, x1, y0, y1
+# Dessous et dessus du toit. Épais exprès (1,5 m) : la verrière devient un puits
+# de lumière, et surtout l'illumination globale de Godot (SDFGI) travaille sur des
+# voxels de 40 à 80 cm à cette hauteur : une dalle fine laisserait passer la lune.
+ROOF_Z = (at.TOP + 0.02, at.TOP + 1.5)
+# Terrain peint, à l'aplomb de la verrière : la surface qui renvoie la lumière
+COURT = (-3.1, 3.1, 9.0, 19.0)              # x0, x1, y0, y1
+ORANGE = (0.95, 0.27, 0.05)
+WHITE = (0.82, 0.82, 0.78)
 
 
 def make_materials():
@@ -79,6 +100,12 @@ def make_materials():
     bsdf.inputs["Base Color"].default_value = (0.02, 0.02, 0.022, 1.0)
     bsdf.inputs["Roughness"].default_value = 0.45
     mats["M_Paint_Black"] = mat
+
+    for name, rgb, rough in (("M_Paint_Orange", ORANGE, 0.6), ("M_Paint_White", WHITE, 0.6)):
+        mat, _n, _l, bsdf = lib.new_material(name, rgb)
+        bsdf.inputs["Base Color"].default_value = (*rgb, 1.0)
+        bsdf.inputs["Roughness"].default_value = rough
+        mats[name] = mat
 
     img = bpy.data.images.load(str(SIGN_TEXTURE), check_existing=True)
     for name, emissive in (("M_Sign", True), ("M_Hazard", False)):
@@ -151,7 +178,8 @@ def box_uv(p, n, tile):
         u, v = p.x * (-1 if n.y > 0 else 1), p.z
     else:
         u, v = p.x, p.y
-    return (u / tile, v / tile)
+    tu, tv = tile if isinstance(tile, tuple) else (tile, tile)
+    return (u / tu, v / tv)
 
 
 class KitBuilder:
@@ -391,10 +419,10 @@ def build_dressing(kit, col, mats):
         kit.place("AC_Stacked", ac, (sx * (hx - 0.4), y, -asset("AC_Stacked").lo.z * K),
                   -90 * sx)
 
-    # Antennes sur le toit des coursives
+    # Antennes sur le toit (au-dessus de la dalle qui ferme l'atrium)
     for sx, y, nm in ((-1, 3.0, "Antenna_2"), (1, 8.5, "Antenna_1"), (-1, 13.0, "Antenna_1"),
                       (1, 20.5, "Antenna_2"), (-1, 22.8, "Antenna_1"), (1, 1.6, "Antenna_1")):
-        kit.place(nm, ant, (sx * (hx - 0.8), y, at.ROOF - asset(nm).lo.z * K), 0)
+        kit.place(nm, ant, (sx * (hx - 0.8), y, ROOF_Z[1] - asset(nm).lo.z * K), 0)
 
     for b in (doors, ac, pipes, cables, lamps, terms, crates, ant):
         b.finish(col, mats)
@@ -501,6 +529,64 @@ def build_hologram(kit, col, mats):
 
 
 # --------------------------------------------------------------------------
+# Toit fermé à verrière et terrain peint : la mise en scène de l'illumination globale
+# --------------------------------------------------------------------------
+def build_closed_roof(col, mats):
+    """Dalle qui ferme le haut de l'atrium, percée d'une verrière à barreaux."""
+    x0, x1, y0, y1 = SKYLIGHT
+    z0, z1 = ROOF_Z
+    hx = at.HX + at.WT
+    ya, yb = at.Y0 - at.WT, at.Y1 + at.WT
+    r = lib.MeshBuilder("Atrium_Roof", ["M_Concrete", "M_Metal"])
+    # La dalle, en quatre morceaux autour de la verrière
+    r.box((-hx, ya, z0), (hx, y0, z1), "M_Concrete")
+    r.box((-hx, y1, z0), (hx, yb, z1), "M_Concrete")
+    r.box((-hx, y0, z0), (x0, y1, z1), "M_Concrete")
+    r.box((x1, y0, z0), (hx, y1, z1), "M_Concrete")
+    # Cadre de la verrière (un rebord qui dépasse sous la dalle)
+    t = 0.14
+    for xa, xb in ((x0 - t, x0), (x1, x1 + t)):
+        r.box((xa, y0 - t, z0 - 0.25), (xb, y1 + t, z1 + 0.05), "M_Metal")
+    for ya_, yb_ in ((y0 - t, y0), (y1, y1 + t)):
+        r.box((x0, ya_, z0 - 0.25), (x1, yb_, z1 + 0.05), "M_Metal")
+    # Barreaux : leurs ombres dessinent la verrière sur le sol et dans la brume
+    for y in (11.0, 14.0, 15.5, 17.0):          # 12,5 m : la poutre du toit fait déjà barreau
+        r.box((x0, y - 0.1, z0), (x1, y + 0.1, z0 + 0.2), "M_Metal")
+    for x in (-1.3, 1.3):
+        r.box((x - 0.1, y0, z0), (x + 0.1, y1, z0 + 0.2), "M_Metal")
+    r.finish(col, mats)
+
+
+def build_court(col, mats):
+    """Terrain peint au sol, à l'aplomb de la verrière : un grand aplat orange vif
+    qui renvoie la lumière du ciel vers le dessous des coursives."""
+    x0, x1, y0, y1 = COURT
+    zp, zl = 0.002, 0.0035      # peinture, puis lignes ; les flaques sont à 0,005
+    w = 0.1                     # largeur des lignes
+    c = lib.MeshBuilder("Prop_Court", ["M_Paint_Orange", "M_Paint_White"])
+    c.box((x0, y0, 0.0), (x1, y1, zp), "M_Paint_Orange")
+    # Lignes blanches : pourtour, médiane, et deux « raquettes »
+    for xa, xb in ((x0, x0 + w), (x1 - w, x1)):
+        c.box((xa, y0, 0.0), (xb, y1, zl), "M_Paint_White")
+    ym = (y0 + y1) / 2
+    for ya, yb in ((y0, y0 + w), (y1 - w, y1), (ym - w / 2, ym + w / 2)):
+        c.box((x0, ya, 0.0), (x1, yb, zl), "M_Paint_White")
+    for ya, yb in ((y0, y0 + 2.4), (y1 - 2.4, y1)):
+        for xa, xb in ((-1.3, -1.3 + w), (1.3 - w, 1.3)):
+            c.box((xa, ya, 0.0), (xb, yb, zl), "M_Paint_White")
+        ye = yb if ya == y0 else ya
+        c.box((-1.3, ye - w / 2, 0.0), (1.3, ye + w / 2, zl), "M_Paint_White")
+    c.finish(col, mats)
+
+    # Deux bancs de béton peint en blanc le long du terrain. Ils ne reçoivent
+    # aucune lumière directe : leur flanc ne s'éclaire (en orange) que par rebond.
+    b = lib.MeshBuilder("Prop_Benches", ["M_Paint_White"])
+    for xa, xb, ya, yb in ((x0 - 0.7, x0 - 0.2, 10.8, 16.0), (x1 + 0.2, x1 + 0.7, 10.8, 15.0)):
+        b.box((xa, ya, 0.0), (xb, yb, 0.55), "M_Paint_White")
+    b.finish(col, mats)
+
+
+# --------------------------------------------------------------------------
 CAMERAS = dict(at.CAMERAS)
 # Démos de vertex shaders : face à l'hologramme, légèrement de biais, enseigne PERLIN en fond
 CAMERAS["Cam_Hologram"] = ((HOLO_CENTER.x + 0.6, HOLO_CENTER.y - 2.55, 1.3),
@@ -541,6 +627,8 @@ def main():
     kit = Kit()
     at.build_shell(cols["Structure"], mats)
     at.build_roof(cols["Structure"], mats)
+    build_closed_roof(cols["Structure"], mats)
+    build_court(cols["Props"], mats)
     build_galleries(kit, cols["Kit"], mats)
     build_dressing(kit, cols["Props"], mats)
     at.build_ground_floor(cols["GroundFloor"], cols["Neons"], mats, shop_signs=False)

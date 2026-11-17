@@ -136,6 +136,12 @@ func toggle(found: DemoFeature) -> void:
 	announced.emit(found.year, found.title(), blocked)
 
 
+## Force l'état d'une fonctionnalité, hors frise (captures comparatives, tests).
+func set_state(id: String, wanted: int) -> void:
+	_set_state(feature(id), wanted)
+	_after_change()
+
+
 func _set_state(found: DemoFeature, wanted: int) -> String:
 	var blocked := ""
 	if wanted > 0 and not found.available():

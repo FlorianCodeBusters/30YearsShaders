@@ -67,6 +67,11 @@ func _apply() -> void:
 	pass
 
 
+## Appelée à la fermeture : libérer ce qui n'est pas géré par la scène.
+func _exit() -> void:
+	pass
+
+
 ## Appelée à chaque image tant que la fonctionnalité est active.
 func _process(_delta: float) -> void:
 	pass

@@ -104,7 +104,9 @@ def make_pbr_material(name, folder, viewport_color, metallic=None):
     links.new(color.outputs["Color"], bsdf.inputs["Base Color"])
 
     rough = nodes.new("ShaderNodeTexImage")
-    rough.image = load_image(folder, "Roughness", True)
+    # Carte « usée » fabriquée par make_grunge.py, si elle existe (métaux)
+    grunge = TEXTURES / folder / f"{folder}_1K-JPG_RoughnessGrunge.jpg"
+    rough.image = load_image(folder, "RoughnessGrunge" if grunge.exists() else "Roughness", True)
     rough.location = (x, 0)
     links.new(rough.outputs["Color"], bsdf.inputs["Roughness"])
 
@@ -150,6 +152,13 @@ def make_materials():
 # --------------------------------------------------------------------------
 def rot_matrix(rot_deg):
     return Euler([math.radians(a) for a in rot_deg], "XYZ").to_matrix().to_4x4()
+
+
+def tile_size(material):
+    """Taille d'une tuile de texture en mètres : (largeur, hauteur).
+    TILE donne un nombre (tuile carrée) ou un couple, pour les images non carrées."""
+    tile = TILE.get(material, 1.0)
+    return tile if isinstance(tile, tuple) else (tile, tile)
 
 
 class MeshBuilder:
@@ -270,7 +279,7 @@ class MeshBuilder:
         bm.normal_update()
         uv = bm.loops.layers.uv.new("UVMap")
         for f in bm.faces:
-            tile = TILE.get(self.materials[f.material_index], 1.0)
+            tu, tv = tile_size(self.materials[f.material_index])
             n = f.normal
             ax = max(range(3), key=lambda i: abs(n[i]))
             for loop in f.loops:
@@ -281,7 +290,7 @@ class MeshBuilder:
                     u, v = p.x * (-1 if n.y > 0 else 1), p.z
                 else:
                     u, v = p.x, p.y
-                loop[uv].uv = (u / tile, v / tile)
+                loop[uv].uv = (u / tu, v / tv)
         me = bpy.data.meshes.new(self.name)
         bm.to_mesh(me)
         bm.free()

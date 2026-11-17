@@ -22,9 +22,9 @@ func _apply() -> void:
 	env.sdfgi_min_cell_size = 0.2
 	env.sdfgi_use_occlusion = true
 	env.sdfgi_read_sky_light = true
-	env.sdfgi_bounce_feedback = 0.3
-	env.sdfgi_energy = 0.3
-	env.sdfgi_y_scale = Environment.SDFGI_Y_SCALE_75_PERCENT
+	env.sdfgi_bounce_feedback = 0.25
+	env.sdfgi_energy = 0.8
+	env.sdfgi_y_scale = Environment.SDFGI_Y_SCALE_100_PERCENT   # atrium tout en hauteur
 	env.ssil_enabled = active
 	env.ssil_radius = 4.0
 	env.ssil_intensity = 0.8

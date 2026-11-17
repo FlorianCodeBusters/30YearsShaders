@@ -17,7 +17,9 @@ func _init() -> void:
 func _apply() -> void:
 	var env := ctx.env
 	env.ssr_enabled = is_on()
-	env.ssr_max_steps = 96
+	# Réglages généreux : la flaque doit refléter le mur du fond, à 15 m, et des
+	# objets dont on ne voit que la face avant (d'où la tolérance en profondeur).
+	env.ssr_max_steps = 256
 	env.ssr_fade_in = 0.1
-	env.ssr_fade_out = 3.0
-	env.ssr_depth_tolerance = 0.4
+	env.ssr_fade_out = 0.5
+	env.ssr_depth_tolerance = 1.0

@@ -23,6 +23,9 @@ ambient_light_energy = 0.45
 
 [node name="Atrium" instance=ExtResource("1_scene")]
 
+[node name="Puddle" parent="."]
+gi_mode = 0
+
 [node name="Prop_Hologram" parent="."]
 gi_mode = 0
 
@@ -35,17 +38,34 @@ gi_mode = 0
 [node name="Neon_12" parent="."]
 gi_mode = 0
 
+[node name="Neon_06" parent="."]
+gi_mode = 0
+
+[node name="Neon_10" parent="."]
+gi_mode = 0
+
+[node name="Neon_11" parent="."]
+gi_mode = 0
+
+[node name="Neon_13" parent="."]
+gi_mode = 0
+
+[node name="Neon_15" parent="."]
+gi_mode = 0
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("environment")
 
 [node name="Moon" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.8742, -0.4318, 0.2223, 0, 0.4578, 0.8891, -0.4857, -0.7773, 0.4001, 0, 22, 0)
+transform = Transform3D(0.9988, 0.0000, -0.0498, 0.0497, -0.0698, 0.9963, -0.0035, -0.9976, -0.0697, 0, 24, -14)
 light_color = Color(0.62, 0.72, 1, 1)
-light_energy = 1.6
-light_angular_distance = 1.0
+light_energy = 9.0
+light_angular_distance = 0.6
+sky_mode = 1
 light_bake_mode = 1
 directional_shadow_mode = 1
-directional_shadow_max_distance = 50.0
+directional_shadow_max_distance = 45.0
+light_volumetric_fog_energy = 1.6
 
 [node name="ReflectionProbe" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.75, -12)

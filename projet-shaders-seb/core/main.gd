@@ -10,6 +10,9 @@ extends Node3D
 ##   --cams=0,1,2,3             (capture) cadrages à capturer (0 = Cam_Hero)
 ##   --size=1280x720            (capture) taille de la fenêtre
 ##   --frames=45                (capture) images d'attente avant chaque capture
+##   --set=ssr:0,sdfgi:1        (capture) impose l'état de fonctionnalités par-dessus chaque étape
+##   --tag=sans_ssr             (capture) suffixe ajouté au nom des images
+##   --debug-draw=16            (capture) vue de débogage du moteur (16 = la scène vue par SDFGI)
 ##   --aide                     (capture) affiche le panneau d'aide et le compteur d'images
 ##   --lab-capture=<dossier>    enregistre une image de chaque démo du Lab, puis quitte
 ##   --only=12                  (lab-capture) une seule démo, par son numéro
@@ -36,6 +39,7 @@ func _ready() -> void:
 
 	ctx.materials = MaterialLibrary.new()
 	ctx.materials.scan(world)
+	ctx.materials.add_macro_variation("M_Brick")
 
 	ctx.neon_lights = NeonLights.new()
 	world.add_child(ctx.neon_lights)
@@ -65,6 +69,7 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(ctx.update_scaling)
 
 	if _args.has("capture"):
+		await _warm_up()
 		await _capture()
 		get_tree().quit()
 	elif _args.has("lab-capture"):
@@ -80,6 +85,7 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	# Fonctionnalités et contexte se référencent mutuellement : on défait le nœud à la sortie.
 	for feature in ctx.manager.features:
+		feature._exit()
 		feature.ctx = null
 	ctx.manager.features.clear()
 	ctx.manager = null
@@ -129,6 +135,10 @@ func _on_lab_closed() -> void:
 
 ## Passe une fois par les grandes étapes derrière un écran noir, pour que les
 ## shaders soient compilés avant la démo et pas au premier appui sur une touche.
+## L'ordre compte : on commence par la fin de la frise. Le TAA et FSR 2 font
+## compiler au moteur un second jeu de shaders (pour les vecteurs de mouvement) ;
+## si un matériau à textures écrit à la main (le sol mouillé) a déjà servi avant,
+## Godot 4.7 inonde la console d'erreurs « uniform_set is null ».
 func _warm_up() -> void:
 	var cover := ColorRect.new()
 	cover.color = Color.BLACK
@@ -177,6 +187,11 @@ func _capture() -> void:
 		RenderingServer.get_video_adapter_name(), ctx.quality.level_name(), get_window().size]]
 	for at in positions:
 		manager.go_to(at)
+		# --set=ssr:0,reflection_probe:0 : états imposés par-dessus l'étape, pour comparer.
+		for pair: String in _args.get("set", "").split(",", false):
+			manager.set_state(pair.get_slice(":", 0), pair.get_slice(":", 1).to_int())
+		if _args.has("debug-draw"):
+			get_viewport().debug_draw = _args["debug-draw"].to_int() as Viewport.DebugDraw
 		for cam: int in cams:
 			ctx.camera.go(cam, true)
 			for i in frames:
@@ -187,7 +202,8 @@ func _capture() -> void:
 				await get_tree().process_frame
 			var fps := 30.0 / ((Time.get_ticks_usec() - start) / 1e6)
 			await RenderingServer.frame_post_draw
-			var file := "%02d_%d_%s.png" % [at, manager.year_at(at), CameraRig.SHOTS[cam]]
+			var tag: String = "_" + _args["tag"] if _args.has("tag") else ""
+			var file := "%02d_%d_%s%s.png" % [at, manager.year_at(at), CameraRig.SHOTS[cam], tag]
 			get_viewport().get_texture().get_image().save_png(folder.path_join(file))
 			var line := "%s  %5.1f img/s  %s" % [file, fps, manager.title_at(at)]
 			report.append(line)
@@ -256,6 +272,12 @@ func _autotest() -> bool:
 	var first_demo := lab.index
 	for i in LabDemos.LIST.size():
 		lab.apply_code()
+		if lab._boids != null:
+			# Un compute shader faux : le Lab doit afficher l'erreur et garder l'ancien.
+			lab._editor.text = "#version 450\nvoid main() { oups }"
+			lab.apply_code()
+			if lab._status.text != "Erreur de compilation":
+				failures.append("lab : erreur de compute shader non signalée")
 		lab.reset_code()
 		await _press(KEY_PAGEDOWN)
 		for frame in 3:

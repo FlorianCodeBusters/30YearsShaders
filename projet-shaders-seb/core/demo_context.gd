@@ -11,6 +11,9 @@ const BAKE_CLEAN := "res://bakes/lm_2026_debruite.lmbake"
 const NEON_LDR := 1.0
 ## Part de l'énergie Blender gardée en HDR (le glow fait le reste).
 const NEON_HDR := 0.5
+## Énergie du clair de lune : avec ses ombres (le faisceau de la verrière), et sans.
+const MOON_ENERGY := 9.0
+const MOON_ENERGY_NO_SHADOW := 0.5
 
 var main: Node3D
 ## La scène de l'atrium (`scenes/atrium.tscn`).
@@ -113,13 +116,22 @@ func update_neons() -> void:
 	manager.refresh("perlin")
 	manager.refresh("hologram")
 	manager.refresh("mobile_light")
+	manager.refresh("boids")
 
 
-## Lumière ambiante : une couleur fixe tant qu'on n'a pas d'illumination globale.
+## Lumière ambiante : une couleur fixe, la même partout, tant qu'on n'a pas
+## d'illumination globale. C'est la triche que la GI remplace.
 func update_ambient() -> void:
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.32, 0.36, 0.55)
-	env.ambient_light_energy = 0.12 if env.sdfgi_enabled else 0.35
+	env.ambient_light_energy = 0.04 if env.sdfgi_enabled else 0.35
+
+
+## La lune éclaire l'atrium par la verrière du toit. Tant qu'il n'y a pas d'ombres
+## dynamiques, le toit ne l'arrête pas : on la baisse pour ne pas tout inonder.
+func update_moon() -> void:
+	moon.shadow_enabled = is_on("mobile_light")
+	moon.light_energy = MOON_ENERGY if moon.shadow_enabled else MOON_ENERGY_NO_SHADOW
 
 
 ## Le cubemap du `ReflectionProbe` est capturé une seule fois : on redemande une
