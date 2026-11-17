@@ -21,7 +21,13 @@ Scène Godot qui traverse 30 ans de rendu 3D temps réel, de 1996 à 2026, pour 
 
 ```
 Demo-Godot/                              Le projet Godot de la démo (scène, frise, Lab de shaders) : voir son README.md
-Presentation/                            Les slides (page web interactive et version PDF)
+Docs/                                    Les notes du talk (contexte, plan, script oral, milestones) : copies du vault de Sébastien
+Presentation/                            Les slides du talk
+  30 ans de poudre de Perlin.html        V1 : page web autonome aux maquettes interactives
+  30 ans de poudre de Perlin (version Corporate).pdf   V2 : aux couleurs Code Busters, sans interactivité
+  V1/                                    Sources et scripts de la V1 (build.py, captures.ps1) : voir son README.md
+  V2/                                    Sources et scripts de la V2 (captures des maquettes, build_v2.py) : voir son README.md
+  Template_Code_Busters.pptx             Le template de l'entreprise, sur lequel la V2 est construite
 tools/                                   Tout ce qui sert à fabriquer la scène
   blender/                               Scripts Python qui génèrent les .blend et leurs rendus de contrôle
   assets/scene/                          La scène Blender source (atrium_kit.blend) ; scènes de réserve dans archived/

@@ -20,3 +20,7 @@
 # Godot : cache de dépliage UV2 (à versionner, sinon les lightmaps ne correspondent plus) et données de bake
 *.unwrap_cache filter=lfs diff=lfs merge=lfs -text
 *.lmbake binary
+
+# Documents de la présentation (PDF exporté, template PowerPoint)
+*.pdf filter=lfs diff=lfs merge=lfs -text
+*.pptx filter=lfs diff=lfs merge=lfs -text

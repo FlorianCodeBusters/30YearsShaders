@@ -1,0 +1,305 @@
+<div id="cadre">
+<div id="plateau">
+<div id="frise"><span class="vide"></span><span id="chrono" hidden>00:00</span><span id="compteur"></span></div>
+
+<!-- ============================================================ INTRO -->
+<section class="slide titre" data-part="0" data-t="20">
+  <div>
+    <span class="sur">Buster Conf · novembre 2026</span>
+    <h1>Shaders<span>.</span></h1>
+    <h2 style="margin-top:18px">30 ans de poudre de Perlin</h2>
+    <p class="sous">Ou comment on a passé 15 ans à ajouter du bruit, et 15 ans à l’enlever.</p>
+    <div class="duo">
+      <div class="badge"><div class="role">Au labo, avec les maquettes</div><div class="nom">Sébastien Cassard</div></div>
+      <div class="badge"><div class="role">Sur le terrain, dans la scène</div><div class="nom">Florian Kuhlmann</div></div>
+    </div>
+  </div>
+  <figure class="photo fond" style="transform:rotate(2.5deg)"><img src="{{img:scene_2026}}" alt="L’atrium de la démo, rendu de 2026"><figcaption>le terrain : un atrium, quelque part en 2026</figcaption></figure>
+</section>
+
+<section class="slide maq" data-part="0" data-t="50">
+  <header><span class="an encre">1996 → 2026</span><h2>La même scène, à 30 ans d’écart</h2></header>
+  <div class="texte">
+    <p class="accroche">Mêmes murs, mêmes néons, mêmes textures. Seule la façon de calculer l’image a changé.</p>
+    <ul>
+      <li><b>1996</b> : la carte 3D se <b>configure</b>.</li>
+      <li><b>2026</b> : elle <b>simule la lumière</b>.</li>
+      <li>Entre les deux : le <b>shader</b>, un tout petit programme.</li>
+    </ul>
+    <p class="repere">L’idée vient de Pixar (RenderMan, <b>1988</b>). Il faudra 13 ans pour qu’elle tourne en temps réel.</p>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain · Florian</span><span class="quoi">La scène tourne déjà en 1996 : <kbd>1</kbd>. On ne touche à rien.</span></div>
+  <div class="maquette" data-maquette="rideau"><span class="etiquette">Maquette n° 1 · le rideau</span></div>
+</section>
+
+<section class="slide plan" data-part="0" data-t="30">
+  <header><span class="an encre">Le voyage</span><h2>Trois décennies, une seule scène</h2></header>
+  <div class="cartes">
+    <div><figure class="photo fond"><img src="{{img:scene_2006}}" alt="La scène en 2006"><figcaption>1996 – 2006</figcaption></figure><p class="legende"><b>Du câblé au programmable</b>On arrête de configurer la carte : on la programme.</p></div>
+    <div><figure class="photo fond"><img src="{{img:scene_2016}}" alt="La scène en 2016"><figcaption>2006 – 2016</figcaption></figure><p class="legende"><b>La course au réalisme</b>Les shaders deviennent de vrais programmes.</p></div>
+    <div><figure class="photo fond"><img src="{{img:scene_2026}}" alt="La scène en 2026"><figcaption>2016 – 2026</figcaption></figure><p class="legende"><b>La lumière simulée</b>On arrête de tricher : on lance des rayons.</p></div>
+  </div>
+  <div class="bandeau">
+    <div class="badge"><div class="role">Au labo</div><p>Une notion, une maquette. Tout ce qui est sur la table se manipule.</p></div>
+    <div class="badge"><div class="role">Sur le terrain</div><p>La même notion, en vrai, dans la scène. Une touche, un effet.</p></div>
+    <div class="badge"><div class="role">Le fil rouge</div><p>Le <b>bruit</b>. Gardez-le à l’œil : il change de camp en route.</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ PARTIE 1 -->
+<section class="slide section" data-part="1" data-t="15">
+  <div><div class="grand">1996<br>2006</div><h2>Du câblé au programmable</h2><p class="message">Avant, on configurait la carte graphique. Après, on la programme.</p></div>
+  <figure class="photo fond"><img src="{{img:scene_1996}}" alt="La scène en 1996"><figcaption>point de départ : 1996</figcaption></figure>
+</section>
+
+<section class="slide maq" data-part="1" data-t="75">
+  <header><span class="an">1996</span><h2>Une carte graphique à interrupteurs</h2></header>
+  <div class="texte">
+    <p class="accroche">Le pipeline est <b>fixe</b> : une chaîne de montage dont on ne règle que quelques boutons.</p>
+    <ul>
+      <li>Textures, lumière, brouillard : <b>oui ou non</b>.</li>
+      <li>La lumière est calculée aux <b>sommets</b>, pas aux pixels.</li>
+      <li>Un effet que le fabricant n’a pas prévu <b>n’existe pas</b>.</li>
+    </ul>
+    <p class="repere"><b>1996</b> : Quake, et la 3dfx Voodoo dans les PC.</p>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain · Florian</span><span class="quoi">Preset <kbd>1</kbd>. Gros pixels, brouillard, ombres peintes dans les murs. Couper et rallumer <kbd>B</kbd>, <kbd>L</kbd>.</span></div>
+  <div class="maquette" data-maquette="interrupteurs"><span class="etiquette">Maquette n° 2 · le pupitre</span></div>
+</section>
+
+<section class="slide maq" data-part="1" data-t="45">
+  <header><span class="an">CPU / GPU</span><h2>Un chirurgien, ou une armée ?</h2></header>
+  <div class="texte">
+    <p class="accroche">Une image, ce sont des millions de petits calculs <b>indépendants</b>.</p>
+    <ul>
+      <li>Le <b>processeur</b> : quelques cœurs très malins, un calcul après l’autre.</li>
+      <li>La <b>carte graphique</b> : des milliers de cœurs simples, tous en même temps.</li>
+      <li>Peindre un pixel n’a pas besoin d’être malin. Il faut être <b>nombreux</b>.</li>
+    </ul>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain · Florian</span><span class="quoi">Rien à montrer : on enchaîne. (<kbd>F9</kbd> pour afficher les images par seconde, si on veut.)</span></div>
+  <div class="maquette" data-maquette="course"><span class="etiquette">Maquette n° 3 · la course</span></div>
+</section>
+
+<section class="slide maq" data-part="1" data-t="70">
+  <header><span class="an">2001</span><h2>Un programme pour un pixel</h2></header>
+  <div class="texte">
+    <p class="accroche">Le <b>shader</b> : quelques lignes de code, exécutées pour chaque pixel, à chaque image.</p>
+    <ul>
+      <li>Il reçoit <b>où</b> est le pixel. Il répond <b>une couleur</b>.</li>
+      <li>Chaque pixel ignore tout de ses voisins.</li>
+      <li>Changer l’image, c’est <b>changer la formule</b>.</li>
+    </ul>
+    <p class="repere"><b>2001</b> : la GeForce 3, première carte grand public programmable.</p>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain · Florian</span><span class="quoi"><kbd>→</kbd> haute résolution, puis <kbd>→</kbd> éclairage par pixel : les reflets apparaissent sur les murs.</span></div>
+  <div class="maquette" data-maquette="minishader"><span class="etiquette">Maquette n° 4 · l’écran quadrillé</span></div>
+</section>
+
+<section class="slide maq" data-part="1" data-t="60">
+  <header><span class="an">Le pipeline</span><h2>Du triangle au pixel</h2></header>
+  <div class="texte">
+    <p class="accroche">Une scène 3D, ce ne sont que des triangles. Deux programmes se relaient.</p>
+    <ul>
+      <li><b>Vertex shader</b> : où va chaque sommet ?</li>
+      <li><b>Rastérisation</b> : quels pixels sont couverts ? La carte s’en charge.</li>
+      <li><b>Fragment shader</b> : de quelle couleur, chacun ?</li>
+    </ul>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain · Florian</span><span class="quoi"><kbd>→</kbd> l’hologramme : un vertex shader le fait tourner et glitcher. Caméra <kbd>F4</kbd>, puis <kbd>F1</kbd>.</span></div>
+  <div class="maquette" data-maquette="triangle"><span class="etiquette">Maquette n° 5 · le triangle</span></div>
+</section>
+
+<section class="slide maq" data-part="1" data-t="95">
+  <header><span class="an">2004</span><h2>Du relief sans un triangle de plus</h2></header>
+  <div class="texte">
+    <p class="accroche">Puisqu’on calcule la lumière à chaque pixel, on peut lui <b>mentir</b> à chaque pixel.</p>
+    <ul>
+      <li>La lumière dépend de la direction où <b>regarde</b> la surface.</li>
+      <li>La <b>normal map</b> stocke cette direction dans une image.</li>
+      <li>Le mur reste plat. C’est l’éclairage qui dessine les briques.</li>
+    </ul>
+    <p class="repere"><b>2004</b> : Doom 3, tout en ombres et en relief.</p>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain · Florian</span><span class="quoi"><kbd>N</kbd> les normal maps, avant / après. Puis <kbd>M</kbd> : la lanterne, et des ombres calculées à chaque image.</span></div>
+  <div class="maquette" data-maquette="relief"><span class="etiquette">Maquette n° 6 · la lampe et le mur</span></div>
+</section>
+
+<section class="slide maq" data-part="1" data-t="140">
+  <header><span class="an bleu">1983</span><h2>Le bruit de Perlin</h2></header>
+  <div class="texte">
+    <p class="accroche">Du hasard <b>doux</b> : chaque point ressemble à ses voisins.</p>
+    <ul>
+      <li>Une grille. À chaque coin, une <b>flèche</b> tirée au hasard.</li>
+      <li>Entre les coins, on <b>mélange</b> en douceur.</li>
+      <li>Une vingtaine de lignes, et tout a l’air naturel.</li>
+    </ul>
+    <p class="repere">Ken Perlin sort de <b>Tron</b> : il trouve les images de synthèse trop propres. Oscar technique en <b>1997</b>.</p>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain · Florian</span><span class="quoi"><kbd>P</kbd> le bruit seul sur le sol, <kbd>P</kbd> branché : la flaque ondule, PERLIN grésille. <kbd>C</kbd> : elle reflète. Le code : <kbd>Tab</kbd>.</span></div>
+  <div class="maquette" data-maquette="perlin"><span class="etiquette">Maquette n° 7 · la grille de flèches</span></div>
+</section>
+
+<section class="slide phrase" data-part="1" data-t="40">
+  <div class="bloc">
+    <span class="an">D’où le titre</span>
+    <h2>30 ans de <span>poudre de Perlin</span></h2>
+    <p>L’eau, les nuages, le feu, le marbre, la rouille : depuis quarante ans, on saupoudre ce bruit partout pour que le faux ait l’air vrai.</p>
+    <p class="main">Retenez bien : ici, le bruit, on l’ajoute exprès.</p>
+  </div>
+</section>
+
+<!-- ============================================================ PARTIE 2 -->
+<section class="slide section" data-part="2" data-t="15">
+  <div><div class="grand">2006<br>2016</div><h2>La course au réalisme</h2><p class="message">Les shaders deviennent de vrais programmes, et la carte graphique un calculateur à tout faire.</p></div>
+  <figure class="photo fond"><img src="{{img:scene_2006}}" alt="La scène en 2006"><figcaption>où l’on en est : 2006</figcaption></figure>
+</section>
+
+<section class="slide maq" data-part="2" data-t="110">
+  <header><span class="an">2006</span><h2>Un shader sur l’image entière</h2></header>
+  <div class="texte">
+    <p class="accroche">Le <b>post-processing</b> : on calcule l’image, puis on la retouche, comme une photo.</p>
+    <ul>
+      <li><b>HDR</b> : dans l’image, un néon vaut 4, pas 1.</li>
+      <li><b>Glow</b> : ce qui dépasse, on le floute et on le rajoute.</li>
+      <li><b>Tonemapping</b> : on ramène le tout dans ce que l’écran sait afficher.</li>
+    </ul>
+    <p class="repere">Novembre <b>2006</b> : la GeForce 8800. Fini les circuits séparés, tout est programmable.</p>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain · Florian</span><span class="quoi">Preset <kbd>3</kbd>, puis <kbd>→</kbd> : les néons brûlent. Avant / après avec <kbd>G</kbd>.</span></div>
+  <div class="maquette" data-maquette="postfx"><span class="etiquette">Maquette n° 8 · la table de mixage</span></div>
+</section>
+
+<section class="slide maq" data-part="2" data-t="145">
+  <header><span class="an">2007</span><h2>L’ombre des recoins, à pile ou face</h2></header>
+  <div class="texte">
+    <p class="accroche">Le <b>SSAO</b> assombrit les creux… en tirant des fléchettes au hasard.</p>
+    <ul>
+      <li>Autour de chaque pixel, quelques points <b>au hasard</b>.</li>
+      <li>Beaucoup tombent dans le décor ? C’est un recoin.</li>
+      <li>Peu de fléchettes : l’image <b>grésille</b>. Alors on la floute.</li>
+    </ul>
+    <p class="repere"><b>2007</b> : Crysis. Première fois que le bruit <b>change de camp</b>.</p>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain · Florian</span><span class="quoi"><kbd>→</kbd> SSAO, <kbd>→</kbd> son tampon brut (du bruit !), <kbd>→</kbd> flouté, <kbd>→</kbd> retour à l’image.</span></div>
+  <div class="maquette" data-maquette="ssao"><span class="etiquette">Maquette n° 9 · les fléchettes</span></div>
+</section>
+
+<section class="slide maq" data-part="2" data-t="120">
+  <header><span class="an">2007 – 2009</span><h2>Le GPU sort du graphisme</h2></header>
+  <div class="texte">
+    <p class="accroche">Le <b>compute shader</b> ne dessine rien. Il calcule.</p>
+    <ul>
+      <li>Chaque oiseau regarde <b>tous</b> les autres : n × n comparaisons.</li>
+      <li>Trois règles simples, et la nuée apparaît.</li>
+      <li>Même recette pour la physique, la vidéo… et les <b>réseaux de neurones</b>.</li>
+    </ul>
+    <p class="repere"><b>2007</b> : CUDA. <b>2009</b> : les compute shaders de DirectX 11.</p>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain · Florian</span><span class="quoi"><kbd>→</kbd> des dizaines de lumières, <kbd>→</kbd> 1 024 drones calculés par le GPU, <kbd>→</kbd> la pluie. Le code : <kbd>Tab</kbd>.</span></div>
+  <div class="maquette" data-maquette="boids"><span class="etiquette">Maquette n° 10 · la volière</span></div>
+</section>
+
+<section class="slide maq" data-part="2" data-t="150">
+  <header><span class="an">2012 – 2014</span><h2>Décrire la matière, pas la couleur</h2></header>
+  <div class="texte">
+    <p class="accroche">Le <b>PBR</b> : on arrête de bidouiller, on décrit une matière physique.</p>
+    <ul>
+      <li>Est-ce du <b>métal</b> ? Est-ce <b>rugueux</b> ? Deux curseurs.</li>
+      <li>Les mêmes formules pour tout, sous toutes les lumières.</li>
+      <li>Un artiste règle la matière <b>une fois</b>, elle marche partout.</li>
+    </ul>
+    <p class="repere"><b>2012</b> : Disney publie son modèle. Les moteurs de jeu suivent.</p>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain · Florian</span><span class="quoi"><kbd>→</kbd> SSR : la flaque reflète la vraie scène. <kbd>→</kbd> PBR : le métal devient du métal. Avant / après : <kbd>A</kbd>.</span></div>
+  <div class="maquette" data-maquette="pbr"><span class="etiquette">Maquette n° 11 · la boule témoin</span></div>
+</section>
+
+<!-- ============================================================ PARTIE 3 -->
+<section class="slide section" data-part="3" data-t="15">
+  <div><div class="grand">2016<br>2026</div><h2>La lumière simulée</h2><p class="message">On arrête de tricher avec la lumière : on la simule. Et le bruit revient, sans qu’on l’ait invité.</p></div>
+  <figure class="photo fond"><img src="{{img:scene_2016}}" alt="La scène en 2016"><figcaption>où l’on en est : 2016</figcaption></figure>
+</section>
+
+<section class="slide maq" data-part="3" data-t="105">
+  <header><span class="an">La limite</span><h2>Ce qui n’est pas à l’écran n’existe pas</h2></header>
+  <div class="texte">
+    <p class="accroche">Depuis 20 ans, tous nos effets trichent : ils ne connaissent que <b>l’image</b>.</p>
+    <ul>
+      <li>Le reflet de la flaque est cherché <b>dans l’image</b> déjà calculée.</li>
+      <li>L’enseigne sort du cadre ? Son reflet <b>s’efface</b>.</li>
+      <li>Pour faire mieux, il faut connaître <b>toute la scène</b>.</li>
+    </ul>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain · Florian</span><span class="quoi">Preset <kbd>4</kbd>, caméra <kbd>F2</kbd>. Clic droit maintenu : baisser le regard, le reflet de l’enseigne disparaît.</span></div>
+  <div class="maquette" data-maquette="ssr"><span class="etiquette">Maquette n° 12 · la coupe</span></div>
+</section>
+
+<section class="slide maq" data-part="3" data-t="160">
+  <header><span class="an">2018</span><h2>Lancer des rayons</h2></header>
+  <div class="texte">
+    <p class="accroche">On refait le trajet de la lumière, <b>à l’envers</b> : de l’œil vers la scène.</p>
+    <ul>
+      <li>Un rayon par pixel. Il touche un objet et <b>rebondit</b>.</li>
+      <li>À chaque arrêt : « est-ce que je vois la lampe ? »</li>
+      <li>Ombres, reflets, lumière indirecte : <b>un seul mécanisme</b>.</li>
+    </ul>
+    <p class="repere"><b>2018</b> : les GeForce RTX. <b>2025</b> : Doom The Dark Ages ne démarre plus sans.</p>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain · Florian</span><span class="quoi"><kbd>→</kbd> TAA, <kbd>→</kbd> la brume, <kbd>→</kbd> la lumière rebondit : caméra <kbd>F3</kbd>, le plafond devient orange. Avant / après : <kbd>S</kbd>.</span></div>
+  <div class="maquette" data-maquette="rayons"><span class="etiquette">Maquette n° 13 · le billard</span></div>
+</section>
+
+<section class="slide maq" data-part="3" data-t="185">
+  <header><span class="an">Le prix</span><h2>Un rayon par pixel : du bruit</h2></header>
+  <div class="texte">
+    <p class="accroche">Simuler la lumière demande des milliers de rayons par pixel. On en a <b>un ou deux</b>.</p>
+    <ul>
+      <li>Deux pixels voisins tirent des hasards différents : l’image <b>grésille</b>.</li>
+      <li>Plus de rayons : propre, mais <b>hors de prix</b>.</li>
+      <li>Alors on <b>accumule</b> les images, et on <b>débruite</b>.</li>
+    </ul>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain · Florian</span><span class="quoi"><kbd>→</kbd> FSR 2, puis <kbd>→</kbd> un vrai lancer de rayons, brut : du bruit partout. <kbd>→</kbd> le même, débruité.</span></div>
+  <div class="maquette" data-maquette="bruit"><span class="etiquette">Maquette n° 14 · le sablier</span></div>
+</section>
+
+<section class="slide outils" data-part="3" data-t="75">
+  <header><span class="an">La boîte à outils</span><h2>Quatre façons d’enlever le bruit</h2></header>
+  <div class="grille">
+    <div class="fiche"><span class="num">1</span><h3>Plus de rayons</h3><p>La seule méthode exacte : deux fois plus de rayons, un peu moins de bruit.</p><p class="prix">Hors de prix en temps réel.</p></div>
+    <div class="fiche"><span class="num">2</span><h3>Accumuler</h3><p>On garde les images précédentes et on fait la moyenne au fil du temps.</p><p class="prix">Gratuit… tant que rien ne bouge.</p></div>
+    <div class="fiche"><span class="num">3</span><h3>Débruiter</h3><p>Un filtre devine l’image propre à partir des pixels voisins.</p><p class="prix">Rapide, parfois trop lisse.</p></div>
+    <div class="fiche"><span class="num">4</span><h3>Reconstruire</h3><p>Calculer moins de pixels, et laisser un réseau de neurones compléter : DLSS, FSR.</p><p class="prix">Le GPU calcule pour lui-même.</p></div>
+  </div>
+  <div class="terrain" style="justify-self:start"><span class="antenne"></span><span class="qui">Sur le terrain · Florian</span><span class="quoi"><kbd>K</kbd> fait défiler : temps réel, lancer de rayons bruité, débruité. Finir sur débruité.</span></div>
+</section>
+
+<!-- ============================================================ CONCLUSION -->
+<section class="slide trio" data-part="4" data-t="60">
+  <header><span class="an encre">30 ans</span><h2>Le bruit a changé de camp</h2></header>
+  <div class="grille">
+    <div class="maquette" data-maquette="trio-ajouter"><span class="etiquette">1983 · on l’ajoute</span><p>Perlin : du hasard doux, pour que le faux ait l’air vrai.</p></div>
+    <div class="maquette" data-maquette="trio-subir"><span class="etiquette">2018 · on le subit</span><p>Lancer de rayons : pas assez de rayons, l’image grésille.</p></div>
+    <div class="maquette" data-maquette="trio-enlever"><span class="etiquette">2026 · on l’enlève</span><p>Accumulation, débruiteurs, IA : on efface le hasard.</p></div>
+  </div>
+  <p class="chute">En 30 ans, on est passés d’ajouter du bruit pour faire réaliste… <span>à se battre pour l’enlever.</span></p>
+</section>
+
+<section class="slide titre" data-part="4" data-t="20">
+  <div>
+    <span class="sur">Tout ce que vous avez vu est un shader</span>
+    <h1>Merci<span>.</span></h1>
+    <p class="sous">Y compris la version 1996 : on l’a simulée.</p>
+    <div class="liens">
+      <p>Pour jouer : <code>shadertoy.com</code></p>
+      <p>Le moteur de la démo : <code>godotengine.org</code></p>
+      <p>La démo : <code>[lien du dépôt à ajouter]</code></p>
+    </div>
+  </div>
+  <figure class="photo fond" style="transform:rotate(-2deg)"><img src="{{img:scene_1996}}" alt="La scène en 1996"><figcaption>la même, en 1996. Des questions ?</figcaption></figure>
+</section>
+
+<div id="nav"><button id="precedent" type="button" aria-label="Slide précédente">‹</button><button id="suivant" type="button" aria-label="Slide suivante">›</button></div>
+</div>
+</div>
