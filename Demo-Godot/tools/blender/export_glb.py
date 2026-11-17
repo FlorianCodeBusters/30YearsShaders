@@ -19,7 +19,7 @@ from pathlib import Path
 
 import bpy
 
-PROJECT = Path(__file__).resolve().parents[2]          # projet-shaders-seb/
+PROJECT = Path(__file__).resolve().parents[2]          # Demo-Godot/
 DEFAULT_BLEND = PROJECT.parent / "assets" / "scene" / "atrium_kit.blend"
 DEFAULT_OUT = PROJECT / "assets" / "scene" / "atrium_kit.glb"
 

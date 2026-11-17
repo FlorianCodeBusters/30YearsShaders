@@ -38,14 +38,14 @@ export/              Sorties locales (rendus de contrôle, vidéos), ignorées p
 
 **Objets** (leurs noms deviennent les noms des nœuds dans Godot) :
 
-| Nom | Rôle |
-|---|---|
-| `Ground` | Sol de la ruelle |
-| `Puddle` | Flaque, objet séparé. Dans `projet-shaders-seb`, elle ne sert plus qu'avant 2001 : ensuite c'est le matériau de `Ground` qui porte l'eau (flaques à bords fondus) |
-| `Wall_*` | Murs (`Wall_Left`, `Wall_Right`…) |
-| `Neon_01`, `Neon_02`… | Enseignes au néon, une par objet (pour les faire grésiller individuellement) |
-| `Atrium_*` | Colonnes, sol et murs de l'atrium |
-| `Prop_*` | Volumes divers : poubelle, climatiseur, caisses, tuyaux |
+| Nom | Rôle                                                                                                                                                                                                                                     |
+|---|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Ground` | Sol de la ruelle                                                                                                                                                                                                                         |
+| `Puddle` | Flaque, objet séparé. Dans `Demo-Godot`, elle ne sert plus qu'avant 2001 : ensuite c'est le matériau de `Ground` qui porte l'eau (flaques à bords fondus)                                                                                |
+| `Wall_*` | Murs (`Wall_Left`, `Wall_Right`…)                                                                                                                                                                                                        |
+| `Neon_01`, `Neon_02`… | Enseignes au néon, une par objet (pour les faire grésiller individuellement)                                                                                                                                                             |
+| `Atrium_*` | Colonnes, sol et murs de l'atrium                                                                                                                                                                                                        |
+| `Prop_*` | Volumes divers : poubelle, climatiseur, caisses, tuyaux                                                                                                                                                                                  |
 | `Prop_Hologram` | (`atrium_kit.blend`) Prisme holographique pour les démos de vertex shaders. **Seule exception** à « transformations appliquées » : son origine est au centre du prisme, pour qu'un vertex shader le fasse tourner ou pulser sur lui-même |
 
 **Matériaux** (Principled BSDF + textures image uniquement, pas de nœuds procéduraux) :
