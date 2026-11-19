@@ -31,8 +31,9 @@ def lire(nom):
 
 
 def main():
-    images = {p.stem: "data:image/jpeg;base64," + base64.b64encode(p.read_bytes()).decode("ascii")
-              for p in sorted((SRC / "img").glob("*.jpg"))}
+    types = {".jpg": "image/jpeg", ".png": "image/png"}   # .png : pour le QR code de feedback
+    images = {p.stem: f"data:{types[p.suffix]};base64," + base64.b64encode(p.read_bytes()).decode("ascii")
+              for p in sorted((SRC / "img").iterdir()) if p.suffix in types}
     corps = re.sub(r"\{\{img:(\w+)\}\}", lambda m: images[m.group(1)], lire("slides.html"))
     scripts = "\n".join(lire(nom) for nom in ("engine.js", "m_partie1.js", "m_partie2.js", "m_partie3.js"))
     table = "window.DECK_IMAGES = {" + ",".join(f'"{k}":"{v}"' for k, v in images.items()) + "};"

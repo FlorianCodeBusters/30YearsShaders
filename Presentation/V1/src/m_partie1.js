@@ -6,19 +6,21 @@
   // ------------------------------------------------------------------ Le rideau : 1996 | 2026
   register("rideau", (root) => {
     const box = M.el("div", "pile", root);
-    box.style.cssText = "width:1060px;height:387px;border:6px solid var(--encre);border-radius:8px;overflow:hidden;cursor:ew-resize;touch-action:none";
+    const largeur = +root.dataset.largeur || 1060;   // data-largeur : plus petit sur la dernière slide
+    box.style.cssText = `width:${largeur}px;height:${Math.round(largeur * 387 / 1060)}px;border:6px solid var(--encre);border-radius:8px;overflow:hidden;cursor:ew-resize;touch-action:none`;
     const apres = M.el("img", "", box), avant = M.el("img", "", box), barre = M.el("div", "", box);
     apres.src = window.DECK_IMAGES.scene_2026; avant.src = window.DECK_IMAGES.scene_1996;
     apres.alt = "La scène en 2026"; avant.alt = "La même scène en 1996";
     for (const img of [apres, avant]) img.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;max-width:none";
     barre.style.cssText = "position:absolute;top:0;bottom:0;width:8px;margin-left:-4px;background:#f2b824;box-shadow:0 0 0 3px #2a1f14";
-    const lecture = M.lecture(root);
+    // data-sobre (dernière slide) : le rideau seul, sans la légende.
+    const lecture = "sobre" in root.dataset ? null : M.lecture(root);
     let x = 0.5, libre = true;
     const poser = (v) => {
       x = M.clamp(v, 0.02, 0.98);
       avant.style.clipPath = `inset(0 ${(1 - x) * 100}% 0 0)`;
       barre.style.left = x * 100 + "%";
-      lecture.innerHTML = "<b>1996</b> à gauche du rideau · <b>2026</b> à droite. Même géométrie, mêmes textures.";
+      if (lecture) lecture.innerHTML = "<b>1996</b> à gauche du rideau · <b>2026</b> à droite. Même géométrie, mêmes textures.";
     };
     const bouger = (e) => { const r = box.getBoundingClientRect(); libre = false; poser((e.clientX - r.left) / r.width); };
     box.addEventListener("pointerdown", (e) => { box.setPointerCapture(e.pointerId); bouger(e); });
@@ -137,7 +139,8 @@
     const note = M.lecture(bas);
     note.innerHTML = "En 1080p : <b>2 073 600</b> pixels, 60 fois par seconde.";
     dessiner();
-    return { start() { t = 0; anim.start(); }, stop: anim.stop };
+    // La course ne part qu'au clic sur « Départ ! » ; en revenant sur la slide, pistes remises à zéro.
+    return { start() { t = 0; dessiner(); }, stop: anim.stop };
   });
 
   // ------------------------------------------------------------------ Le mini-shader : un programme par pixel
@@ -318,7 +321,7 @@
     const cv = M.canvas(pile, W, H, false); cv.style.width = DW + "px";
     const calque = M.canvas(pile, DW, DH, false); calque.style.width = "100%"; calque.style.height = "100%";
     const ctx = cv.getContext("2d"), img = ctx.createImageData(W, H), c2 = calque.getContext("2d");
-    const etat = { mode: 1, grille: 6, fleches: true, palette: 0, graine: 1 };
+    const etat = { mode: 0, grille: 6, fleches: true, palette: 0, graine: 1 };   // part du hasard brut
     const pal = [
       (v) => [v, v, v],
       (v) => { const s = Math.pow(v, 3); return [0.04 + 0.2 * v + s, 0.22 + 0.45 * v + s * 0.8, 0.42 + 0.5 * v + s * 0.5]; },
@@ -352,7 +355,7 @@
       }
     }
     const r1 = M.rang(root);
-    M.choice(r1, ["Hasard brut", "Perlin"], 1, (i) => { etat.mode = i; });
+    M.choice(r1, ["Hasard brut", "Perlin"], 0, (i) => { etat.mode = i; });
     M.toggle(r1, "Flèches", true, (v) => { etat.fleches = v; });
     M.slider(r1, "Grille :", 2, 16, 1, etat.grille, (v) => v + " cases", (v) => { etat.grille = v; });
     M.button(r1, "Relancer les dés", () => { etat.graine = 1 + Math.floor(Math.random() * 999); });

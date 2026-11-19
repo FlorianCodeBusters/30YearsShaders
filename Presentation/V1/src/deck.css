@@ -94,7 +94,7 @@ button:focus-visible, input:focus-visible { outline: 4px solid var(--bleu); outl
 .repere { font: 600 30px/1.2 var(--main); color: var(--bleu); transform: rotate(-1.2deg); }
 .repere b { color: var(--rouge); font-weight: 700; }
 
-/* Le ticket « sur le terrain » : le relais à Florian, dans la scène Godot. */
+/* Le ticket « sur le terrain » : le relais à la démo, dans la scène Godot. */
 .terrain {
   background: var(--encre); color: var(--papier); border-radius: 14px; padding: 16px 22px 18px;
   display: grid; grid-template-columns: auto 1fr; column-gap: 16px; align-items: center;
@@ -215,5 +215,15 @@ figure { margin: 0; }
 .liens { display: flex; flex-direction: column; gap: 16px; margin-top: 34px; }
 .liens p { font: 600 34px var(--texte); }
 .liens code { font: 600 30px var(--code); background: var(--papier); border: 2px solid var(--papier-bord); border-radius: 8px; padding: 2px 12px; }
+
+/* Dernière slide : le rideau de l'intro, et la place du QR code de feedback. */
+.slide.titre .colonne { display: flex; flex-direction: column; gap: 40px; align-self: center; }
+.colonne .maquette { padding: 22px; transform: rotate(1deg); }
+/* Le QR code se scanne depuis la salle, sur un grand écran : on le veut gros, sur fond blanc, avec une marge claire. */
+.avis { display: flex; gap: 30px; align-items: center; background: var(--papier); border: 3px solid var(--encre); border-radius: 14px; padding: 22px 28px; box-shadow: 0 6px 0 var(--encre); transform: rotate(-0.8deg); }
+.avis .role { font: 700 24px var(--titre); letter-spacing: 1.5px; text-transform: uppercase; color: var(--rouge); }
+.avis p { font: 600 32px/1.25 var(--texte); margin-top: 8px; }
+.qr { width: 400px; height: 400px; flex: none; display: block; background: #fff; padding: 20px; box-sizing: border-box; border-radius: 8px; image-rendering: pixelated; }
+.qr.vide { display: grid; place-items: center; text-align: center; border: 4px dashed var(--encre-douce); background: var(--carton); font: 700 40px/1.15 var(--main); color: var(--encre-douce); }
 
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

@@ -30,6 +30,14 @@ Le script oral (qui dit quoi, quelle maquette manipuler, quelles touches presser
 | `src/m_partie1.js` … `m_partie3.js` | Les 17 maquettes, une fonction `register("nom", …)` chacune |
 | `src/img/` | Les captures de la scène Godot (1996, 2006, 2016, 2026) |
 
+### Le QR code de feedback
+
+La dernière slide lui garde une place (un carré pointillé « QR code à venir »). Quand il arrive :
+
+1. déposer l'image dans `src/img/qr_feedback.png` (ou `.jpg`) ;
+2. dans `src/slides.html`, remplacer la ligne `<div class="qr vide">QR code<br>à venir</div>` par :
+   `<img class="qr" src="{{img:qr_feedback}}" alt="QR code du questionnaire">`
+
 Puis réassembler :
 
 ```bash
