@@ -1,0 +1,916 @@
+<title>Fiche Shaders 1996-2006</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Mise en page : une colonne de lecture, chaque effet = texte à gauche, figure interactive à droite. */
+:root {
+  --bg: #f2f3f7;
+  --surface: #ffffff;
+  --ink: #15171f;
+  --muted: #565c6e;
+  --line: #d9dce6;
+  --pink: #c81e68;
+  --cyan: #0a7f98;
+  --code: #e8eaf2;
+  --soft-pink: #fbe3ee;
+  --soft-cyan: #dff2f6;
+  --warn: #8a5a00;
+  --warn-bg: #fff1d0;
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1016; --surface: #171a23; --ink: #e7e9f1; --muted: #9ba2b5; --line: #2a2f3e;
+    --pink: #ff5fa2; --cyan: #4fd3ec; --code: #1f2330; --soft-pink: #34172a; --soft-cyan: #102a31;
+    --warn: #f3c969; --warn-bg: #3a2c0c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1016; --surface: #171a23; --ink: #e7e9f1; --muted: #9ba2b5; --line: #2a2f3e;
+  --pink: #ff5fa2; --cyan: #4fd3ec; --code: #1f2330; --soft-pink: #34172a; --soft-cyan: #102a31;
+  --warn: #f3c969; --warn-bg: #3a2c0c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+.wrap { max-width: 1080px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3.2rem); letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: -0.01em; }
+h3 { font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-family: var(--font-body); font-weight: 600; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em; background: var(--code); padding: 0.1em 0.38em; border-radius: 4px; }
+a { color: var(--cyan); }
+
+header.top { padding-block: 56px 28px; display: grid; gap: 16px; }
+.kicker { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pink); }
+.lede { max-width: 62ch; color: var(--muted); font-size: 1.1rem; }
+.index { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.index a { text-decoration: none; font-size: 0.85rem; padding: 4px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); }
+.index a:hover { border-color: var(--pink); color: var(--pink); }
+
+section.effect { padding-block: 44px; border-top: 1px solid var(--line); display: grid; gap: 22px; }
+.head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.year { font-family: var(--font-mono); font-weight: 600; color: var(--bg); background: var(--ink); padding: 2px 10px; border-radius: 4px; font-size: 0.9rem; }
+.key { font-family: var(--font-mono); font-size: 0.8rem; border: 1px solid var(--muted); border-bottom-width: 3px; border-radius: 5px; padding: 1px 8px; color: var(--muted); }
+.lead { font-size: 1.15rem; max-width: 60ch; }
+.split { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+@media (max-width: 820px) { .split { grid-template-columns: minmax(0, 1fr); } }
+.text { display: grid; gap: 14px; min-width: 0; }
+.text ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.text h3 { margin-top: 6px; }
+.fig { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.fig figcaption, .cap { font-size: 0.85rem; color: var(--muted); }
+.fig svg { width: 100%; height: auto; display: block; }
+.scroll { overflow-x: auto; }
+canvas { width: 100%; display: block; border-radius: 6px; background: #000; touch-action: none; }
+canvas.px { image-rendering: pixelated; }
+.row { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; font-size: 0.88rem; }
+.row label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.row input[type=range] { accent-color: var(--pink); flex: 1 1 140px; min-width: 100px; }
+.row button { font: inherit; font-size: 0.85rem; padding: 3px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.row button[aria-pressed=true] { background: var(--pink); color: #fff; border-color: var(--pink); }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pair div { display: grid; gap: 4px; font-size: 0.8rem; color: var(--muted); }
+.tip { border-left: 3px solid var(--pink); background: var(--soft-pink); padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+.tip b { color: var(--pink); }
+.godot { border-left: 3px solid var(--cyan); background: var(--soft-cyan); padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+.godot b { color: var(--cyan); }
+.vf { font-size: 0.68rem; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--warn); background: var(--warn-bg); padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.timeline { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.timeline div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 0.86rem; }
+.timeline b { display: block; font-family: var(--font-mono); color: var(--pink); font-size: 0.95rem; }
+.swatches { display: flex; gap: 8px; flex-wrap: wrap; font-size: 0.78rem; color: var(--muted); }
+.swatches span { display: grid; gap: 2px; justify-items: center; }
+.swatches i { width: 56px; height: 28px; border-radius: 5px; display: block; border: 1px solid var(--line); }
+footer { padding-block: 36px 60px; border-top: 1px solid var(--line); display: grid; gap: 16px; }
+svg .t { fill: var(--ink); font-family: var(--font-body); font-size: 12px; }
+svg .m { fill: var(--muted); font-family: var(--font-body); font-size: 11px; }
+svg .mono { fill: var(--muted); font-family: var(--font-mono); font-size: 11px; background: none; }
+svg .box { fill: var(--surface); stroke: var(--muted); stroke-width: 1.5; }
+svg .hard { fill: var(--code); stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 3; }
+svg .prog { fill: var(--soft-pink); stroke: var(--pink); stroke-width: 2; }
+svg .ln { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+svg .ac { stroke: var(--pink); stroke-width: 2; fill: none; }
+svg .cy { stroke: var(--cyan); stroke-width: 2; fill: none; }
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="kicker">Buster Conf · talk « 30 ans de poudre de Perlin »</div>
+  <h1>Partie 1 : 1996 → 2006<br>du câblé au programmable</h1>
+  <p class="lede">Une fiche à lire pour s'imprégner de chaque effet de la démo : ce qu'il fait, comment il marche, d'où il vient et comment on l'a écrit dans Godot. Les schémas marquent d'un petit repère ce qui est à vérifier avant de le mettre sur une slide.</p>
+  <nav class="index" aria-label="Sommaire">
+    <a href="#pipeline">Le pipeline</a><a href="#lowres">640×480</a><a href="#bits">16 bits</a><a href="#fog">Brouillard</a>
+    <a href="#vertex">Par sommet</a><a href="#lightmap">Lightmaps</a><a href="#vshader">Vertex shader</a><a href="#pixel">Par pixel</a>
+    <a href="#perlin">Perlin</a><a href="#normal">Normal maps</a><a href="#shadows">Ombres</a><a href="#cube">Cubemap</a><a href="#qa">Questions</a>
+  </nav>
+</header>
+
+<section class="effect" id="pipeline" style="border-top:none">
+  <div class="head"><span class="year">1996 → 2001</span><h2>Le pipeline : câblé, puis programmable</h2></div>
+  <p class="lead">Avant 2001, on <em>règle</em> la carte graphique avec des options. Après, on <em>écrit</em> ce qu'elle fait à deux endroits précis : chaque sommet et chaque pixel.</p>
+  <figure class="fig" style="margin:0">
+    <svg viewBox="0 0 760 230" role="img" aria-label="Deux chaînes de rendu : fixe en 1996, avec deux étapes programmables en 2001">
+      <text class="mono" x="0" y="16">1996 · PIPELINE FIXE : les étapes sont câblées dans la puce</text>
+      <g>
+        <rect class="box" x="0" y="28" width="130" height="62" rx="8"/><text class="t" x="65" y="64" text-anchor="middle">Sommets</text>
+        <rect class="hard" x="155" y="28" width="130" height="62" rx="8"/><text class="t" x="220" y="56" text-anchor="middle">Transformer</text><text class="t" x="220" y="74" text-anchor="middle">+ éclairer</text>
+        <rect class="box" x="310" y="28" width="130" height="62" rx="8"/><text class="t" x="375" y="64" text-anchor="middle">Rastériser</text>
+        <rect class="hard" x="465" y="28" width="130" height="62" rx="8"/><text class="t" x="530" y="56" text-anchor="middle">Texturer</text><text class="t" x="530" y="74" text-anchor="middle">× couleur</text>
+        <rect class="box" x="620" y="28" width="130" height="62" rx="8"/><text class="t" x="685" y="64" text-anchor="middle">Image</text>
+        <path class="ln" d="M130 59h25M285 59h25M440 59h25M595 59h25"/>
+      </g>
+      <text class="mono" x="0" y="136">2001 · PIPELINE PROGRAMMABLE : deux étapes sont à écrire</text>
+      <g>
+        <rect class="box" x="0" y="148" width="130" height="62" rx="8"/><text class="t" x="65" y="184" text-anchor="middle">Sommets</text>
+        <rect class="prog" x="155" y="148" width="130" height="62" rx="8"/><text class="t" x="220" y="176" text-anchor="middle">Vertex shader</text><text class="m" x="220" y="194" text-anchor="middle">ton code, 1× par sommet</text>
+        <rect class="box" x="310" y="148" width="130" height="62" rx="8"/><text class="t" x="375" y="184" text-anchor="middle">Rastériser</text>
+        <rect class="prog" x="465" y="148" width="130" height="62" rx="8"/><text class="t" x="530" y="176" text-anchor="middle">Fragment shader</text><text class="m" x="530" y="194" text-anchor="middle">ton code, 1× par pixel</text>
+        <rect class="box" x="620" y="148" width="130" height="62" rx="8"/><text class="t" x="685" y="184" text-anchor="middle">Image</text>
+        <path class="ln" d="M130 179h25M285 179h25M440 179h25M595 179h25"/>
+      </g>
+    </svg>
+    <figcaption>Tiretés gris : étapes câblées. Rose : étapes que le programmeur écrit. La rastérisation (transformer des triangles en pixels) reste fixe.</figcaption>
+  </figure>
+  <div class="timeline">
+    <div><b>1996</b>3dfx Voodoo : dessine les triangles texturés, le CPU fait le reste. Quake sort la même année.</div>
+    <div><b>1999</b>GeForce 256 : le calcul « transformer + éclairer » passe dans la puce, mais reste câblé.</div>
+    <div><b>2001</b>GeForce 3, DirectX 8 : vertex et pixel shaders, d'abord en langage assembleur.</div>
+    <div><b>2002 → 2004</b>HLSL et Cg (2002), puis GLSL avec OpenGL 2.0 (2004) : on écrit des shaders en langage lisible.</div>
+    <div><b>2004</b>Doom 3 et Half-Life 2 : l'éclairage par pixel et les normal maps deviennent la norme.</div>
+    <div><b>fin 2006</b>GeForce 8800 et DirectX 10 : shaders « unifiés ». C'est la fin de cette partie.</div>
+  </div>
+  <p class="cap"><span class="vf">à vérifier</span> les mois exacts de sortie des cartes et des jeux avant de les citer sur une slide.</p>
+  <div class="tip"><b>À l'oral.</b> Deux analogies du plan : la chaîne de montage (on règle des boutons) contre l'atelier (on écrit la recette). Le CPU est un chirurgien (peu d'opérations très souples), le GPU une armée (des milliers d'opérations simples en même temps).</div>
+</section>
+
+<section class="effect" id="lowres">
+  <div class="head"><span class="year">1996</span><h2>Rendu 640×480</h2><span class="key">R</span></div>
+  <p class="lead">De gros pixels. En 1996, 640×480 est déjà ce que la Voodoo fait de mieux en 3D.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Comment ça marche</h3>
+      <p>On calcule l'image dans une petite résolution, puis on l'agrandit à l'écran sans la lisser (« voisin le plus proche »). Chaque pixel du rendu devient un bloc visible. Moins de pixels, c'est moins de calcul : c'est ce qui rendait la 3D possible.</p>
+      <h3>Histoire</h3>
+      <p>Les premières cartes 3D grand public sont des accélérateurs ajoutés à une carte 2D. La Voodoo 1 affiche en 640×480 au maximum en 3D <span class="vf">à vérifier</span>. Les écrans de l'époque sont en 4:3.</p>
+      <div class="godot"><b>Dans Godot.</b> <code>features/1996/low_res.gd</code> ne fait qu'appeler <code>ctx.update_scaling()</code>, qui arbitre entre ce rendu, FSR 2 (2022) et le rendu natif. Le commentaire du code parle de 480 <em>lignes</em> : la largeur suit l'écran. Je n'ai pas relu <code>update_scaling()</code> en détail.</div>
+    </div>
+    <figure class="fig" style="margin:0">
+      <canvas id="resCanvas" class="px" width="320" height="180" aria-label="Scène simple rendue à basse résolution puis agrandie"></canvas>
+      <div class="row"><span>Lignes :</span>
+        <button data-l="45" aria-pressed="false">45</button><button data-l="90" aria-pressed="false">90</button><button data-l="180" aria-pressed="true">180</button><button data-l="360" aria-pressed="false">360</button><button data-l="720" aria-pressed="false">720</button>
+      </div>
+      <figcaption>Même dessin, rendu avec moins ou plus de lignes, puis affiché à la même taille.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="effect" id="bits">
+  <div class="head"><span class="year">1996</span><h2>16 bits et tramage</h2><span class="key">T</span></div>
+  <p class="lead">Une couleur tient sur 16 bits : 5 de rouge, 6 de vert, 5 de bleu. Le tramage cache les bandes que ça crée dans les dégradés.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Comment ça marche</h3>
+      <ul>
+        <li>Avec 5 bits, un canal n'a que <b>32 niveaux</b> (le vert 64). Un dégradé lent fait donc des marches, appelées <em>banding</em>.</li>
+        <li>Le <b>tramage</b> (<em>dithering</em>) ajoute, avant d'arrondir, une petite valeur qui dépend de la position du pixel. Les pixels voisins arrondissent dans des sens différents et l'œil refait la moyenne.</li>
+        <li>Le motif de la démo est une <b>matrice de Bayer 4×4</b> : 16 seuils, de 0 à 15, répartis pour que le motif ne se voie pas.</li>
+        <li>Formule du shader : <code>floor(couleur × niveaux + 0.5 + trame) / niveaux</code>, avec <code>niveaux = (31, 63, 31)</code>.</li>
+      </ul>
+      <h3>Histoire</h3>
+      <p>La Voodoo 1 stocke une image en 16 bits et la trame avant de l'envoyer à l'écran. Le tramage ordonné est bien plus ancien que la 3D : il vient de l'impression et des premiers écrans à peu de couleurs. <span class="vf">à vérifier</span> le détail du motif matériel de la Voodoo.</p>
+      <div class="godot"><b>Dans Godot.</b> <code>features/1996/color_16bit.gdshader</code> est un shader <code>canvas_item</code> : il lit l'image finale (<code>hint_screen_texture</code>) et la dégrade. <code>taille_pixel = 2.25</code> vient de 1080 ÷ 480 : un pixel du rendu occupe 2,25 pixels de l'écran, donc la trame a la même taille que les gros pixels. Je n'ai pas relu <code>color_16bit.gd</code>.</div>
+    </div>
+    <figure class="fig" style="margin:0">
+      <div class="pair" style="grid-template-columns:1fr">
+        <div>Idéal (256 niveaux)<canvas id="ditherA" class="px" width="192" height="26"></canvas></div>
+        <div>Arrondi seul : des bandes<canvas id="ditherB" class="px" width="192" height="26"></canvas></div>
+        <div>Arrondi + trame de Bayer<canvas id="ditherC" class="px" width="192" height="26"></canvas></div>
+      </div>
+      <div class="row"><label for="bitsRange">Bits par canal : <b id="bitsVal">3</b></label><input id="bitsRange" type="range" min="1" max="6" value="3"></div>
+      <figcaption>Le réglage par défaut (3 bits) exagère l'effet pour qu'il se voie. En 1996 c'était 5 bits, et vers 6 bits les deux dernières barres se confondent presque.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="effect" id="fog">
+  <div class="head"><span class="year">1996</span><h2>Brouillard linéaire</h2><span class="key">B</span></div>
+  <p class="lead">Plus un objet est loin, plus on le mélange à une couleur de brume. À l'époque, c'est surtout pour cacher le bout de la scène.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Comment ça marche</h3>
+      <ul>
+        <li>On fixe une distance de <b>début</b> et une distance de <b>fin</b>. Avant le début, rien. Après la fin, que de la brume. Entre les deux, une droite.</li>
+        <li><code>couleur finale = mélange(objet, brume, f)</code> où <code>f</code> passe de 0 à 1 le long de cette droite.</li>
+        <li>Dans le pipeline fixe, c'était une option à cocher, avec ces deux distances.</li>
+      </ul>
+      <h3>Pourquoi c'était vital</h3>
+      <p>La carte ne peut pas afficher une grande scène. Quand un objet apparaît d'un coup à la limite de la vue (<em>pop-in</em>), le brouillard le fait émerger doucement. C'est le fameux voile gris des jeux de l'époque.</p>
+      <div class="godot"><b>Dans Godot.</b> <code>features/1996/linear_fog.gd</code> : <code>fog_mode = FOG_MODE_DEPTH</code>, début à 6 m, fin à 34 m, couleur bleu nuit. Le brouillard volumétrique de 2016 est une autre fonctionnalité (touche F).</div>
+    </div>
+    <figure class="fig" style="margin:0">
+      <svg viewBox="0 0 360 210" role="img" aria-label="Courbe du brouillard : 0 jusqu'à 6 mètres, puis une montée linéaire jusqu'à 34 mètres, puis 1">
+        <path class="ln" d="M40 20V160H340"/>
+        <path d="M40 160H85L295 20H340" class="ac"/>
+        <path class="ln" style="stroke-dasharray:3 3" d="M85 160V170M295 160V170"/>
+        <text class="m" x="36" y="24" text-anchor="end">1</text><text class="m" x="36" y="164" text-anchor="end">0</text>
+        <text class="m" x="85" y="184" text-anchor="middle">début 6 m</text><text class="m" x="295" y="184" text-anchor="middle">fin 34 m</text>
+        <text class="m" x="340" y="200" text-anchor="end">distance à la caméra</text>
+        <text class="m" x="48" y="14">quantité de brume f</text>
+        <text class="t" x="190" y="108">f = (d − début) ÷ (fin − début)</text>
+      </svg>
+      <figcaption>Les distances de la démo. Au-delà de 34 m, tout est de la couleur de la brume.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="effect" id="vertex">
+  <div class="head"><span class="year">1996</span><h2>Éclairage par sommet</h2><span class="key">V</span></div>
+  <p class="lead">La lumière est calculée aux trois sommets de chaque triangle, puis répartie entre eux. Le reflet brillant disparaît.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Comment ça marche</h3>
+      <ul>
+        <li>On calcule la lumière en <b>chaque sommet</b> : un angle entre la surface et la lumière.</li>
+        <li>À l'intérieur du triangle, on <b>interpole</b> les couleurs (<em>Gouraud shading</em>).</li>
+        <li>Problème : une tache de lumière qui tombe <em>entre</em> les sommets n'existe pour personne. Elle disparaît, ou elle clignote quand elle passe sur un sommet.</li>
+        <li>Résultat : pas de reflet spéculaire, un sol mat, une « boule à facettes » sur un objet rond.</li>
+      </ul>
+      <h3>Histoire</h3>
+      <p>Henri Gouraud propose l'interpolation en 1971, Bui Tuong Phong l'éclairage par pixel en 1973, Jim Blinn la variante rapide de Phong en 1977 <span class="vf">à vérifier</span>. Il fallait attendre la puissance des années 2000 pour faire par pixel ce qu'on ne faisait que par sommet.</p>
+      <div class="godot"><b>Dans Godot.</b> <code>features/1996/vertex_lighting.gd</code> met <code>SHADING_MODE_PER_VERTEX</code> et <code>SPECULAR_DISABLED</code> sur tous les matériaux. Couper la fonctionnalité remet l'éclairage par pixel (<code>SPECULAR_SCHLICK_GGX</code>).</div>
+    </div>
+    <figure class="fig" style="margin:0">
+      <div class="pair">
+        <div>Par sommet (4 coins)<canvas id="lightV" width="150" height="150"></canvas></div>
+        <div>Par pixel<canvas id="lightP" width="150" height="150"></canvas></div>
+      </div>
+      <figcaption>Une dalle vue de dessus, une lumière juste au-dessus. Bouge la souris ou le doigt sur une des images : à gauche, seule la couleur des 4 coins est calculée.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="effect" id="lightmap">
+  <div class="head"><span class="year">1996</span><h2>Lightmaps basse résolution</h2><span class="key">L</span></div>
+  <p class="lead">Toute la lumière est calculée à l'avance et collée sur les murs comme une texture grossière. À l'exécution, c'est gratuit.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Comment ça marche</h3>
+      <ul>
+        <li>Hors ligne, un outil calcule la lumière reçue par chaque petit carré de mur (un <b>texel de lumière</b>) et l'écrit dans une image.</li>
+        <li>Au rendu : <code>couleur = texture du mur × lightmap</code>. Une seule multiplication, aucun éclairage à calculer.</li>
+        <li>Les ombres sont floues, car le texel est gros. Et la lumière est <b>figée</b> : un objet qui bouge ne projette rien.</li>
+      </ul>
+      <h3>Histoire</h3>
+      <p>Quake (1996) est l'emblème de cette technique : ses niveaux ont des ombres douces là où les moteurs précédents n'avaient que des aplats. Un texel de lumière y couvre environ 16 unités du niveau <span class="vf">à vérifier</span>. La technique sert encore, et c'est elle qui revient en 2026 avec le ray tracing précalculé.</p>
+      <div class="godot"><b>Dans Godot.</b> Un nœud <code>LightmapGI</code> et un fichier de bake, <code>bakes/lm_1996.lmbake</code> : un texel tous les 80 cm, débruité. Le <code>.glb</code> est importé avec une deuxième UV (<em>Static Lightmaps</em>) pour y plaquer la lumière. Le même nœud sert aux bakes de 2026 (10 cm, bruité ou non).</div>
+    </div>
+    <figure class="fig" style="margin:0">
+      <canvas id="lmCanvas" width="320" height="200" aria-label="Mur de briques éclairé par une lightmap de résolution réglable"></canvas>
+      <div class="row"><label for="lmRange">Texels de lumière sur la largeur : <b id="lmVal">12</b></label><input id="lmRange" type="range" min="4" max="96" value="12"></div>
+      <figcaption>Briques × lightmap. Une tache de lumière et l'ombre d'un pilier (à droite). Avec peu de texels, l'ombre n'a pas de bord net.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="effect" id="vshader">
+  <div class="head"><span class="year">2001</span><h2>Vertex shader : l'hologramme</h2><span class="key">H</span></div>
+  <p class="lead">Un programme exécuté pour chaque sommet. Il peut les déplacer. Il ne peut pas en créer : le maillage de départ reste le même.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Ce que fait le shader de la démo</h3>
+      <ul>
+        <li><b>Tourner</b> : une rotation 2D sur (x, z), avec une matrice 2×2 et l'angle <code>TIME × rotation</code>.</li>
+        <li><b>Respirer</b> : chaque sommet est poussé le long de sa normale d'une quantité <code>sin(TIME × 2 + y × 8)</code>.</li>
+        <li><b>Glitcher</b> : on découpe le prisme en tranches. Un hash fait décaler une tranche sur 12 environ, six fois par seconde.</li>
+        <li><b>Flotter</b> : tout monte et descend un peu.</li>
+        <li>Le <code>fragment()</code> ajoute un effet <b>Fresnel</b> (les bords brillent : <code>1 − |N·V|</code>) et des lignes qui défilent.</li>
+      </ul>
+      <p>Le hash du glitch est la même astuce <code>fract(sin(…) × 43758.5)</code> que celle du bruit de Perlin plus bas : c'est la ficelle universelle des shaders.</p>
+      <div class="godot"><b>Dans Godot.</b> <code>features/2001/hologram.gdshader</code>, matériau <code>blend_add</code> (la lumière s'additionne), <code>unshaded</code>. <code>Prop_Hologram</code> a 240 triangles subdivisés exprès : un vertex shader a besoin de beaucoup de sommets pour déformer proprement. Son origine est au centre du prisme pour qu'il tourne sur lui-même.</div>
+      <div class="tip"><b>À l'oral.</b> « Le shader ne crée rien, il déplace. Regardez le maillage : même nombre de points qu'avant, mais ils bougent. »</div>
+    </div>
+    <figure class="fig" style="margin:0">
+      <canvas id="vtxCanvas" width="320" height="260" aria-label="Maillage en forme de prisme dont les sommets sont déplacés"></canvas>
+      <div class="row">
+        <label><input type="checkbox" id="vSpin" checked> tourner</label>
+        <label><input type="checkbox" id="vBreath" checked> respirer</label>
+        <label><input type="checkbox" id="vGlitch" checked> glitcher</label>
+        <label><input type="checkbox" id="vFloat" checked> flotter</label>
+      </div>
+      <figcaption>Les sommets sont les points. Le tracé fin pointillé est le prisme d'origine. Décoche un effet pour voir ce qu'il apporte.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="effect" id="pixel">
+  <div class="head"><span class="year">2001</span><h2>Éclairage par pixel</h2><span class="key">V coupée</span></div>
+  <p class="lead">Le même calcul qu'en 1996, déplacé dans le fragment shader : on le fait pour chaque pixel et non pour chaque sommet.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Les deux termes à connaître</h3>
+      <ul>
+        <li><b>Diffus (Lambert)</b> : <code>max(N·L, 0)</code>. Plus la surface fait face à la lumière, plus elle est claire. <code>N</code> : la normale, <code>L</code> : direction vers la lumière.</li>
+        <li><b>Brillant (Blinn-Phong)</b> : <code>pow(N·H, brillance)</code> où <code>H</code> est la direction à mi-chemin entre la lumière et la caméra. Plus <code>brillance</code> est grand, plus la tache est petite et nette.</li>
+        <li>La normale est reçue du vertex shader, interpolée, puis <b>renormalisée</b> par pixel : une moyenne de deux vecteurs unitaires n'est plus unitaire.</li>
+      </ul>
+      <p>Regarde la figure de l'éclairage par sommet, juste au-dessus : l'image de droite montre exactement ce calcul, et le reflet au centre est ce qui manquait.</p>
+      <div class="godot"><b>Dans Godot.</b> Dans la scène : <code>SHADING_MODE_PER_PIXEL</code>. Pour le montrer écrit à la main : <code>lab/shaders/2001_eclairage_par_pixel.gdshader</code> (touche Tab dans la démo), en <code>render_mode unshaded</code> pour que ce soit notre calcul et non celui de Godot.</div>
+      <div class="tip"><b>À l'oral.</b> Même formule, autre endroit : c'est la phrase du talk. Ce n'est pas l'idée de l'éclairage par pixel qui est nouvelle, c'est qu'on peut enfin se le permettre.</div>
+    </div>
+    <figure class="fig" style="margin:0">
+      <svg viewBox="0 0 300 190" role="img" aria-label="Vecteurs N, L, V et H sur une surface">
+        <path class="ln" d="M20 150H280"/>
+        <circle cx="150" cy="150" r="4" style="fill:var(--ink)"/>
+        <path class="ac" d="M150 150V50"/><path class="ac" d="M145 58l5-8 5 8"/>
+        <text class="t" x="158" y="70">N</text>
+        <path class="cy" d="M150 150L70 55"/><path class="cy" d="M72 66l-4-12 12 3"/>
+        <text class="t" x="52" y="50">L → lumière</text>
+        <path class="ln" d="M150 150L240 60"/><path class="ln" d="M232 62l9-3-2 9"/>
+        <text class="t" x="232" y="52">V → caméra</text>
+        <path class="ln" style="stroke-dasharray:4 3" d="M150 150L155 38"/>
+        <text class="m" x="165" y="104">H = mi-chemin(L, V)</text>
+        <text class="m" x="22" y="176">diffus = N·L · reflet = (N·H)^brillance</text>
+      </svg>
+      <figcaption>Les quatre vecteurs en un point de la surface. Dans le shader, ils sont recalculés pour chaque pixel.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="effect" id="perlin">
+  <div class="head"><span class="year">2001 → 2006</span><h2>Le bruit de Perlin</h2><span class="key">P</span></div>
+  <p class="lead">Du hasard <em>doux</em> : chaque point ressemble à ses voisins. Un hasard normal donne de la neige, Perlin donne des collines. C'est le titre du talk.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Comment ça marche</h3>
+      <ul>
+        <li>On pose une <b>grille</b>. <code>floor(p)</code> donne la case, <code>fract(p)</code> la position dans la case.</li>
+        <li>Chaque coin reçoit une <b>direction au hasard</b> (un hash, toujours le même pour un même coin).</li>
+        <li>Chaque coin « pousse » le point : <code>dot(direction, point − coin)</code>. Quatre valeurs.</li>
+        <li>On les mélange avec la <b>courbe en S</b> <code>6t⁵ − 15t⁴ + 10t³</code>. C'est elle qui lisse : avec une droite, la grille apparaît.</li>
+        <li>Le temps fait <b>tourner</b> les directions : le bruit s'anime sans bouger de place.</li>
+      </ul>
+      <h3>Histoire</h3>
+      <p>Ken Perlin travaille sur <em>Tron</em> (1982) et trouve les images de synthèse trop propres, trop « machine ». Il invente le bruit en 1983, le publie à SIGGRAPH en 1985 et reçoit un Oscar technique en 1997. En 2002, son <em>improved noise</em> remplace la courbe d'origine <code>3t² − 2t³</code> par celle de degré 5 <span class="vf">à vérifier</span>. Depuis : eau, nuages, feu, marbre, terrains…</p>
+      <h3>Perlin d'origine ou le nôtre ?</h3>
+      <p>L'original tire ses directions d'une <b>table de 256 entiers mélangés</b> : <code>hash = p[(p[x &amp; 255] + y) &amp; 255]</code>, qui sert ensuite à choisir un gradient dans une petite liste (12 arêtes de cube en 3D, version 2002). Notre shader remplace la table par une formule d'une ligne, <code>fract(sin(dot(coin, (127.1, 311.7))) × 43758.5)</code> : même esprit, plus court à lire à l'écran, mais le résultat peut varier un peu d'un GPU à l'autre.</p>
+      <div class="godot"><b>Dans Godot.</b> <code>features/2001/perlin.gdshaderinc</code> : une vingtaine de lignes commentées en français, incluses dans deux shaders. <b>Flaque</b> (<code>perlin_flaque.gdshader</code>) : un bruit fixe sculpte le sol et l'eau remplit les creux, un second bruit animé fait onduler l'eau, et sa pente (hauteur comparée à celle des voisins) devient la normale. <b>Néon</b> (<code>perlin_neon.gdshader</code>) : on lit le bruit en 1D dans le temps.</div>
+    </div>
+    <div style="display:grid;gap:14px;min-width:0">
+      <figure class="fig" style="margin:0">
+        <div class="pair">
+          <div>Bruit blanc : chaque pixel au hasard<canvas id="whiteCanvas" class="px" width="160" height="160"></canvas></div>
+          <div>Perlin : voisins qui se ressemblent<canvas id="perlinCanvas" class="px" width="160" height="160"></canvas></div>
+        </div>
+        <div class="row">
+          <label for="pScale">Cases : <b id="pScaleVal">6</b></label><input id="pScale" type="range" min="2" max="16" value="6">
+        </div>
+        <div class="row">
+          <label><input type="checkbox" id="pSmooth" checked> courbe en S</label>
+          <label><input type="checkbox" id="pGrid"> grille</label>
+          <label><input type="checkbox" id="pAnim" checked> animer</label>
+        </div>
+        <figcaption>Décoche « courbe en S » : on voit apparaître des carreaux. C'est la manip du Lab dans la démo (remplacer la courbe par <code>f</code>).</figcaption>
+      </figure>
+      <figure class="fig" style="margin:0">
+        <svg viewBox="0 0 220 160" role="img" aria-label="Trois courbes d'interpolation : droite, 3t²−2t³ et 6t⁵−15t⁴+10t³">
+          <path class="ln" d="M30 130H200M30 130V20"/>
+          <path id="cLin" class="ln" style="stroke-dasharray:4 3" d="M30 130L200 20"/>
+          <path id="cOld" class="cy" d="M30 130"/>
+          <path id="cNew" class="ac" d="M30 130"/>
+          <text class="m" x="30" y="146">0</text><text class="m" x="196" y="146">1</text>
+          <text class="m" x="205" y="30">1</text>
+          <text class="m" x="36" y="16">interpolation entre deux coins</text>
+          <text class="m" x="110" y="156" text-anchor="middle">position dans la case</text>
+        </svg>
+        <div class="row" style="gap:12px"><span style="color:var(--muted)">- - droite</span><span style="color:var(--cyan)">— 3t²−2t³ (1985)</span><span style="color:var(--pink)">— 6t⁵−15t⁴+10t³ (2002)</span></div>
+        <figcaption>Les deux courbes en S arrivent à plat aux coins : c'est ce qui évite les cassures entre cases voisines.</figcaption>
+      </figure>
+      <figure class="fig" style="margin:0">
+        <canvas id="neonCanvas" width="460" height="190" aria-label="Bruit de Perlin lu dans le temps et luminosité du néon qui en découle"></canvas>
+        <div class="row"><label for="nCut">Coupure : <b id="nCutVal">-0.25</b></label><input id="nCut" type="range" min="-0.6" max="0.4" step="0.05" value="-0.25"></div>
+        <div class="row"><label for="nNerv">Nervosité : <b id="nNervVal">5</b></label><input id="nNerv" type="range" min="1" max="12" step="0.5" value="5"></div>
+        <figcaption>Le néon qui grésille. Courbe : le bruit, lu au fil du temps. Barre du bas : allumé en rose, éteint en sombre quand la courbe passe sous la coupure.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="effect" id="normal">
+  <div class="head"><span class="year">2004</span><h2>Normal maps</h2><span class="key">N</span></div>
+  <p class="lead">Une texture qui donne, pixel par pixel, la direction où regarde la surface. On éclaire avec cette direction : du relief sans un triangle de plus.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Comment ça marche</h3>
+      <ul>
+        <li>Chaque pixel de la texture code une direction : <b>rouge = x, vert = y, bleu = z</b>, avec <code>couleur = direction × 0,5 + 0,5</code>. Une surface plate vaut (0,5 ; 0,5 ; 1) : c'est pourquoi ces images sont bleu-violet.</li>
+        <li>Les directions sont exprimées dans le repère de la surface (tangente, bitangente, normale : la matrice <b>TBN</b>).</li>
+        <li>Au pixel : on lit la texture, on remet en [−1, 1], on déduit <code>z = √(1 − x² − y²)</code>, on tourne dans le repère du monde, puis on éclaire comme d'habitude.</li>
+        <li>Seule la lumière est trompée : le contour de l'objet reste plat, et vu de côté ça se voit.</li>
+      </ul>
+      <h3>Histoire</h3>
+      <p>Jim Blinn invente le <em>bump mapping</em> en 1978. L'idée de calculer des normales depuis un modèle très détaillé pour les plaquer sur un modèle léger date de la fin des années 1990 (Krishnamurthy et Levoy 1996, Cohen et al. 1998) <span class="vf">à vérifier</span>. Le matériel suit vers 2000-2001. <b>Doom 3 (2004)</b> en fait sa signature : tout est éclairé par pixel.</p>
+      <div class="godot"><b>Dans Godot.</b> <code>features/2001/normal_maps.gd</code> active ou coupe <code>normal_enabled</code> sur chaque matériau. Les textures sont au format <b>GL</b> (Y vers le haut) : un format DX inverserait le relief. À la main : <code>lab/shaders/2004_normal_map.gdshader</code>, avec <code>relief = false</code> pour voir le mur plat.</div>
+    </div>
+    <figure class="fig" style="margin:0">
+      <div class="pair">
+        <div>La normal map (RGB)<canvas id="nmCanvas" class="px" width="220" height="140"></canvas></div>
+        <div>Le rendu, éclairé<canvas id="nmRender" class="px" width="220" height="140"></canvas></div>
+      </div>
+      <div class="row"><label><input type="checkbox" id="nmRelief" checked> utiliser la normal map</label></div>
+      <div class="swatches">
+        <span><i style="background:rgb(128,128,255)"></i>plat</span>
+        <span><i style="background:rgb(51,128,230)"></i>penche à gauche</span>
+        <span><i style="background:rgb(204,128,230)"></i>penche à droite</span>
+        <span><i style="background:rgb(128,204,230)"></i>penche vers le haut</span>
+      </div>
+      <figcaption>Un mur plat, deux triangles. Bouge la lumière avec la souris sur le rendu : le relief des joints apparaît. Décoche la case : le mur redevient une image.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="effect" id="shadows">
+  <div class="head"><span class="year">2004</span><h2>Lumière mobile et ombres dynamiques</h2><span class="key">M</span></div>
+  <p class="lead">Doom 3 abandonne les lightmaps : toute la lumière est calculée à chaque image. La lanterne de la démo décrit un huit au-dessus du sol et chaque objet projette une ombre.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Comment ça marche : la carte d'ombres</h3>
+      <ul>
+        <li>On dessine la scène <b>depuis la lumière</b> et on ne garde que la distance au point le plus proche, dans une texture : la <em>shadow map</em>.</li>
+        <li>Pour chaque pixel visible, on calcule sa distance à la lumière et on la compare à la carte. Si quelque chose de plus proche a été vu, le pixel est <b>dans l'ombre</b>.</li>
+        <li>Une lampe ponctuelle éclaire dans toutes les directions : on stocke les 6 faces d'un cube.</li>
+        <li>Le bord de l'ombre est adouci avec une source de taille non nulle (<code>light_size</code>).</li>
+      </ul>
+      <h3>Histoire</h3>
+      <p>La carte d'ombres est décrite par Lance Williams en 1978. <b>Doom 3 utilise autre chose</b> : des <em>volumes d'ombre</em> dessinés avec le tampon de gabarit (<em>stencil</em>), dont la variante dite « Carmack's reverse » règle les cas où la caméra est dans l'ombre <span class="vf">à vérifier</span>. Les ombres nettes de Doom 3 sont donc la marque d'une technique que Godot n'utilise pas.</p>
+      <div class="godot"><b>Dans Godot.</b> <code>features/2001/mobile_light.gd</code> : une <code>OmniLight3D</code> avec <code>shadow_enabled</code>, <code>SHADOW_CUBE</code>, une atténuation en 1/d², <code>light_size = 0.25</code> pour l'adoucissement. Son chemin est une courbe de Lissajous : x en <code>sin(a)</code>, z en <code>sin(2a)</code>, ce qui dessine un huit couché. Avec les ombres, la lune devient dynamique aussi.</div>
+      <div class="tip"><b>À l'oral.</b> « L'effet est celui de Doom 3, la technique est celle de Godot (des cartes d'ombres). » Dis-le avant qu'on te le demande.</div>
+    </div>
+    <figure class="fig" style="margin:0">
+      <svg viewBox="0 0 420 250" role="img" aria-label="Schéma d'une carte d'ombres : un point éclairé et un point dans l'ombre">
+        <path class="ln" d="M20 210H400"/>
+        <path d="M104 210L316 210" style="stroke:var(--pink);stroke-width:6;opacity:.55"/>
+        <text class="m" x="210" y="232" text-anchor="middle" style="fill:var(--pink)">zone d'ombre</text>
+        <path class="ln" style="stroke-dasharray:4 3" d="M210 40L170 95M210 40L250 95M170 95L104 210M250 95L316 210"/>
+        <circle cx="210" cy="30" r="9" style="fill:#f2c230;stroke:var(--ink);stroke-width:1"/>
+        <text class="t" x="226" y="28">lumière</text>
+        <rect x="170" y="95" width="80" height="40" rx="4" style="fill:var(--code);stroke:var(--muted);stroke-width:1.5"/>
+        <text class="t" x="210" y="119" text-anchor="middle">objet</text>
+        <path class="cy" d="M210 40L60 210"/>
+        <circle cx="60" cy="210" r="5" style="fill:var(--cyan)"/>
+        <text class="t" x="60" y="196" text-anchor="middle">A</text>
+        <text class="m" x="30" y="120">rien devant :</text><text class="m" x="30" y="134">A est éclairé</text>
+        <path class="ac" d="M210 40L210 95"/><path class="ln" style="stroke-dasharray:3 3" d="M210 135V210"/>
+        <circle cx="210" cy="210" r="5" style="fill:var(--pink)"/>
+        <text class="t" x="210" y="196" text-anchor="middle">B</text>
+        <text class="m" x="270" y="164">la carte dit « objet plus près »</text><text class="m" x="270" y="178">que B : B est dans l'ombre</text>
+      </svg>
+      <figcaption>La carte stocke, pour chaque direction, la distance du premier obstacle (trait rose). B est plus loin que cette distance.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="effect" id="cube">
+  <div class="head"><span class="year">2004</span><h2>Reflets par cubemap</h2><span class="key">C</span></div>
+  <p class="lead">On photographie la scène une fois, depuis un point, dans les six directions. Les surfaces brillantes reflètent cette photo. C'est faux, et ça suffit pour une flaque.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Comment ça marche</h3>
+      <ul>
+        <li>Un <b>cube</b> de six images (haut, bas, quatre côtés) prises au centre de la scène.</li>
+        <li>Pour un pixel brillant : on calcule la direction de reflet <code>R = reflect(−V, N)</code>, puis on lit le cube dans cette direction.</li>
+        <li>Pourquoi c'est faux : le cube est pris d'<em>un seul point</em>. Il ne tient pas compte de l'endroit où se trouve l'objet, ni de la scène qui bouge.</li>
+        <li>Pourquoi ça marche : une flaque est floue et déformée, personne ne vérifie la parallaxe.</li>
+      </ul>
+      <h3>Histoire</h3>
+      <p>Blinn et Newell décrivent le reflet par texture d'environnement en 1976. Les cartes grand public lisent des cubemaps en matériel vers 1999-2000 <span class="vf">à vérifier</span>. Half-Life 2 (2004) les utilise pour les vitres, l'eau et le métal. Le défaut se voit avec le SSR de 2011 (la flaque montre alors la vraie scène).</p>
+      <div class="godot"><b>Dans Godot.</b> <code>features/2001/reflection_probe.gd</code> : une <code>ReflectionProbe</code> dans la scène, et <code>reflected_light_source</code> passe de <code>DISABLED</code> à <code>BG</code>. Sans la sonde, la flaque est <b>noire</b> : un miroir qui ne reflète rien. À partir de l'étape Perlin, la flaque est un miroir qui ondule (<code>METALLIC = 1</code>), donc elle montre fidèlement ce que la technique du moment sait faire.</div>
+    </div>
+    <figure class="fig" style="margin:0">
+      <svg viewBox="0 0 360 270" role="img" aria-label="Un cube déplié en croix avec ses six faces">
+        <g class="box">
+          <rect class="box" x="100" y="10" width="80" height="80"/><text class="t" x="140" y="54" text-anchor="middle">+Y haut</text>
+          <rect class="box" x="20" y="90" width="80" height="80"/><text class="t" x="60" y="134" text-anchor="middle">−X</text>
+          <rect class="box" x="100" y="90" width="80" height="80" style="fill:var(--soft-cyan)"/><text class="t" x="140" y="134" text-anchor="middle">+Z devant</text>
+          <rect class="box" x="180" y="90" width="80" height="80"/><text class="t" x="220" y="134" text-anchor="middle">+X</text>
+          <rect class="box" x="260" y="90" width="80" height="80"/><text class="t" x="300" y="134" text-anchor="middle">−Z</text>
+          <rect class="box" x="100" y="170" width="80" height="80"/><text class="t" x="140" y="214" text-anchor="middle">−Y sol</text>
+        </g>
+        <text class="m" x="196" y="40">les six images prises</text><text class="m" x="196" y="54">au centre de la scène</text>
+      </svg>
+      <svg viewBox="0 0 300 160" role="img" aria-label="Le vecteur de reflet R se déduit de la vue V et de la normale N">
+        <path class="ln" d="M20 130H280"/>
+        <circle cx="150" cy="130" r="4" style="fill:var(--ink)"/>
+        <path class="ac" d="M150 130V50"/><text class="t" x="158" y="64">N</text>
+        <path class="ln" d="M60 40L150 130"/><text class="t" x="40" y="34">œil (V)</text>
+        <path class="cy" d="M150 130L240 40"/><text class="t" x="228" y="34">R → on lit le cube</text>
+      </svg>
+      <figcaption>Le cube déplié, et le rayon qui sort du pixel : on ne regarde pas la scène, on regarde l'image du cube dans la direction R.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="effect" id="qa">
+  <div class="head"><h2>Questions probables du public</h2></div>
+  <div class="split">
+    <div class="text">
+      <ul>
+        <li><b>« Les shaders, c'est 2001, pourquoi 30 ans ? »</b> 1996 est la première carte 3D grand public. Le titre prend une petite licence, à assumer.</li>
+        <li><b>« Votre Perlin n'est pas celui de Perlin. »</b> Vrai : même principe, hash par formule au lieu d'une table de 256 valeurs, pour tenir en 20 lignes.</li>
+        <li><b>« Doom 3 utilise vos ombres ? »</b> Non : des volumes d'ombre avec le stencil. Godot utilise des cartes d'ombres.</li>
+        <li><b>« Pourquoi la flaque est noire avant 2004 ? »</b> Un miroir sans technique de reflet ne montre rien. C'est voulu, et c'est la démonstration.</li>
+        <li><b>« Les années de la frise sont-elles exactes ? »</b> Elles situent une généralisation, pas une première. Le README de la démo le dit lui-même.</li>
+      </ul>
+    </div>
+    <div class="text">
+      <h3>Dates et faits à vérifier avant une slide</h3>
+      <ul>
+        <li>Sorties de la Voodoo, de la GeForce 256 et de la GeForce 3.</li>
+        <li>Quake : taille d'un texel de lumière.</li>
+        <li>Perlin : 1983 invention, 1985 publication, 1997 Oscar, 2002 <em>improved noise</em>.</li>
+        <li>Gouraud 1971, Phong 1973, Blinn 1977 et 1978, Williams 1978, Blinn et Newell 1976.</li>
+        <li>Normal maps : Krishnamurthy et Levoy 1996, Cohen et al. 1998.</li>
+      </ul>
+      <p class="cap">Tout ce qui concerne le code vient des fichiers de <code>Demo-Godot/</code>, lus le 18/11/2026. Seuls <code>color_16bit.gd</code>, <code>update_scaling()</code> et le shader du pipeline fixe du Lab n'ont pas été relus.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="cap">Partie 2 (2006-2016 : HDR, SSAO, compute shader, SSR, PBR, pluie) et Partie 3 (2016-2026 : TAA, brouillard volumétrique, SDFGI, FSR 2, path tracing, bakes) viendront dans la suite de la fiche.</p>
+</footer>
+</div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var T = 0;
+  var anims = [];
+  function fract(x) { return x - Math.floor(x); }
+  function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+  function smoothstep(a, b, x) { var t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); }
+  function ctxOf(id) { var c = document.getElementById(id); return [c, c.getContext('2d')]; }
+  function $(id) { return document.getElementById(id); }
+  function reg(el, draw) {
+    var a = { el: el, draw: draw, vis: false };
+    anims.push(a);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (e) { a.vis = e[0].isIntersecting; }).observe(el);
+    } else { a.vis = true; }
+    draw(0);
+    return function () { draw(T); };
+  }
+  function loop(now) {
+    if (!reduce) { T = now / 1000; for (var i = 0; i < anims.length; i++) if (anims[i].vis) anims[i].draw(T); }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  /* ---------- 640x480 : résolution ---------- */
+  (function () {
+    var p = ctxOf('resCanvas'), cv = p[0], g = p[1];
+    var small = document.createElement('canvas'), sg = small.getContext('2d');
+    var lines = 180;
+    function draw() {
+      var h = lines, w = Math.round(h * 16 / 9);
+      small.width = w; small.height = h;
+      sg.imageSmoothingEnabled = false;
+      var u = h / 180;
+      sg.fillStyle = '#10142a'; sg.fillRect(0, 0, w, h);
+      sg.fillStyle = '#2a3158'; sg.fillRect(0, h * 0.7, w, h * 0.3);
+      sg.strokeStyle = '#ff5fa2'; sg.lineWidth = Math.max(1, 3 * u);
+      sg.beginPath(); sg.moveTo(w * 0.05, h * 0.9); sg.lineTo(w * 0.55, h * 0.12); sg.stroke();
+      sg.fillStyle = '#4fd3ec'; sg.beginPath(); sg.arc(w * 0.68, h * 0.42, h * 0.22, 0, 6.2832); sg.fill();
+      sg.fillStyle = '#10142a'; sg.beginPath(); sg.arc(w * 0.72, h * 0.38, h * 0.13, 0, 6.2832); sg.fill();
+      sg.fillStyle = '#f2c230'; sg.font = 'bold ' + Math.round(26 * u) + 'px sans-serif'; sg.fillText('SHADER', w * 0.06, h * 0.2);
+      g.imageSmoothingEnabled = false;
+      g.clearRect(0, 0, cv.width, cv.height);
+      g.drawImage(small, 0, 0, w, h, 0, 0, cv.width, cv.height);
+    }
+    document.querySelectorAll('[data-l]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        lines = +b.getAttribute('data-l');
+        document.querySelectorAll('[data-l]').forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+        draw();
+      });
+    });
+    draw();
+  })();
+
+  /* ---------- 16 bits : tramage ---------- */
+  (function () {
+    var BAYER = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
+    var A = ctxOf('ditherA'), B = ctxOf('ditherB'), C = ctxOf('ditherC');
+    var c0 = [26, 12, 58], c1 = [255, 95, 162];
+    function draw() {
+      var bits = +$('bitsRange').value;
+      $('bitsVal').textContent = bits;
+      var levels = Math.pow(2, bits) - 1;
+      var W = A[0].width, H = A[0].height;
+      var ia = A[1].createImageData(W, H), ib = B[1].createImageData(W, H), ic = C[1].createImageData(W, H);
+      for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+        var t = x / (W - 1), i = (y * W + x) * 4;
+        var trame = BAYER[x % 4][y % 4] / 16 - 0.5;
+        for (var k = 0; k < 3; k++) {
+          var v = (c0[k] + (c1[k] - c0[k]) * t) / 255;
+          ia.data[i + k] = Math.round(v * 255);
+          ib.data[i + k] = Math.round(Math.floor(v * levels + 0.5) / levels * 255);
+          ic.data[i + k] = Math.round(clamp(Math.floor(v * levels + 0.5 + trame) / levels, 0, 1) * 255);
+        }
+        ia.data[i + 3] = ib.data[i + 3] = ic.data[i + 3] = 255;
+      }
+      A[1].putImageData(ia, 0, 0); B[1].putImageData(ib, 0, 0); C[1].putImageData(ic, 0, 0);
+    }
+    $('bitsRange').addEventListener('input', draw);
+    draw();
+  })();
+
+  /* ---------- éclairage par sommet / par pixel ---------- */
+  (function () {
+    var V = ctxOf('lightV'), P = ctxOf('lightP');
+    var light = { x: 0.25, y: 0.15, z: 0.5 };
+    var cam = [0, 0, 2.5];
+    function shade(x, y, spec) {
+      var lx = light.x - x, ly = light.y - y, lz = light.z;
+      var d2 = lx * lx + ly * ly + lz * lz, d = Math.sqrt(d2);
+      lx /= d; ly /= d; lz /= d;
+      var vx = cam[0] - x, vy = cam[1] - y, vz = cam[2];
+      var vl = Math.sqrt(vx * vx + vy * vy + vz * vz); vx /= vl; vy /= vl; vz /= vl;
+      var atten = 1 / (1 + 1.5 * d2);
+      var diff = Math.max(lz, 0) * atten;
+      var s = 0;
+      if (spec) {
+        var hx = lx + vx, hy = ly + vy, hz = lz + vz, hl = Math.sqrt(hx * hx + hy * hy + hz * hz);
+        s = Math.pow(Math.max(hz / hl, 0), 60) * atten * 1.4;
+      }
+      return [0.04 + diff * 1.1 + s, 0.04 + diff * 0.62 + s, 0.05 + diff * 0.45 + s];
+    }
+    function draw() {
+      var W = V[0].width, H = V[0].height;
+      var cs = [[-1, 1], [1, 1], [-1, -1], [1, -1]].map(function (c) { return shade(c[0], c[1], false); });
+      var iv = V[1].createImageData(W, H), ip = P[1].createImageData(W, H);
+      for (var py = 0; py < H; py++) for (var px = 0; px < W; px++) {
+        var u = px / (W - 1), v = py / (H - 1), i = (py * W + px) * 4;
+        var x = u * 2 - 1, y = 1 - v * 2;
+        var p = shade(x, y, true);
+        for (var k = 0; k < 3; k++) {
+          var top = cs[0][k] * (1 - u) + cs[1][k] * u, bot = cs[2][k] * (1 - u) + cs[3][k] * u;
+          iv.data[i + k] = clamp(top * (1 - v) + bot * v, 0, 1) * 255;
+          ip.data[i + k] = clamp(p[k], 0, 1) * 255;
+        }
+        iv.data[i + 3] = ip.data[i + 3] = 255;
+      }
+      V[1].putImageData(iv, 0, 0); P[1].putImageData(ip, 0, 0);
+      [V, P].forEach(function (q) {
+        var cx = (light.x + 1) / 2 * W, cy = (1 - light.y) / 2 * H;
+        q[1].strokeStyle = '#4fd3ec'; q[1].lineWidth = 1.5;
+        q[1].beginPath(); q[1].arc(cx, cy, 5, 0, 6.2832); q[1].stroke();
+      });
+    }
+    function move(e) {
+      var r = e.currentTarget.getBoundingClientRect();
+      light.x = clamp((e.clientX - r.left) / r.width * 2 - 1, -1, 1);
+      light.y = clamp(1 - (e.clientY - r.top) / r.height * 2, -1, 1);
+      draw();
+    }
+    [V[0], P[0]].forEach(function (c) { c.addEventListener('pointermove', move); c.addEventListener('pointerdown', move); });
+    draw();
+  })();
+
+  /* ---------- lightmap ---------- */
+  (function () {
+    var D = ctxOf('lmCanvas'), cv = D[0], g = D[1];
+    var small = document.createElement('canvas'), sg = small.getContext('2d');
+    var bricks = document.createElement('canvas'); bricks.width = cv.width; bricks.height = cv.height;
+    (function () {
+      var b = bricks.getContext('2d');
+      b.fillStyle = '#9a9aa2'; b.fillRect(0, 0, bricks.width, bricks.height);
+      var bw = 40, bh = 20;
+      for (var r = 0; r * bh < bricks.height; r++) for (var c = -1; c * bw < bricks.width; c++) {
+        var off = (r % 2) * bw / 2, id = r * 31 + c;
+        var tint = 0.85 + 0.3 * fract(Math.sin(id * 12.9898) * 43758.5);
+        b.fillStyle = 'rgb(' + Math.round(205 * tint) + ',' + Math.round(100 * tint) + ',' + Math.round(72 * tint) + ')';
+        b.fillRect(c * bw + off + 1, r * bh + 1, bw - 2, bh - 2);
+      }
+    })();
+    function lum(u, v) {
+      var a = Math.exp(-(Math.pow(u - 0.3, 2) + Math.pow(v - 0.5, 2)) / 0.06);
+      var b = 0.55 * Math.exp(-(Math.pow(u - 0.85, 2) + Math.pow(v - 0.35, 2)) / 0.05);
+      var s = (u > 0.58 && u < 0.66 && v > 0.15) ? 0.18 : 1;
+      return clamp((0.12 + a + b) * s, 0, 1);
+    }
+    function draw() {
+      var n = +$('lmRange').value; $('lmVal').textContent = n;
+      var w = n, h = Math.max(2, Math.round(n * cv.height / cv.width));
+      small.width = w; small.height = h;
+      var img = sg.createImageData(w, h);
+      for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
+        var l = Math.round(lum((x + 0.5) / w, (y + 0.5) / h) * 255), i = (y * w + x) * 4;
+        img.data[i] = img.data[i + 1] = img.data[i + 2] = l; img.data[i + 3] = 255;
+      }
+      sg.putImageData(img, 0, 0);
+      g.globalCompositeOperation = 'source-over';
+      g.imageSmoothingEnabled = true;
+      g.drawImage(small, 0, 0, w, h, 0, 0, cv.width, cv.height);
+      g.globalCompositeOperation = 'multiply';
+      g.drawImage(bricks, 0, 0);
+      g.globalCompositeOperation = 'source-over';
+    }
+    $('lmRange').addEventListener('input', draw);
+    draw();
+  })();
+
+  /* ---------- vertex shader ---------- */
+  (function () {
+    var D = ctxOf('vtxCanvas'), cv = D[0], g = D[1];
+    var R = 13, K = 14;
+    function hash(s, t) { return fract(Math.sin(s * 91.7 + Math.floor(t * 6) * 13.3) * 43758.5); }
+    function point(i, j, t, live) {
+      var y = -1 + 2 * i / (R - 1), r = 0.55 * (1 - Math.abs(y)) + 0.001;
+      var th = 2 * Math.PI * j / K + (live && $('vSpin').checked ? t * 0.8 : 0);
+      var x = r * Math.cos(th), z = r * Math.sin(th);
+      if (live) {
+        var nx = Math.cos(th) * 0.8, ny = (y >= 0 ? 0.6 : -0.6), nz = Math.sin(th) * 0.8, nl = Math.sqrt(nx * nx + ny * ny + nz * nz);
+        if ($('vBreath').checked) {
+          var k = 0.09 * Math.sin(t * 2 + y * 8);
+          x += nx / nl * k; y += ny / nl * k; z += nz / nl * k;
+        }
+        if ($('vGlitch').checked && hash(Math.floor(y * 10), t) > 0.92) x += 0.14;
+        if ($('vFloat').checked) y += 0.08 * Math.sin(t * 1.3);
+      }
+      return [x, y, z];
+    }
+    function proj(p) { return [cv.width / 2 + p[0] * 135, cv.height / 2 - p[1] * 105]; }
+    function drawMesh(t, live, color, alphaBase, dash, dots) {
+      g.setLineDash(dash || []);
+      g.strokeStyle = color; g.fillStyle = color; g.lineWidth = live ? 1.3 : 1;
+      var pts = [];
+      for (var i = 0; i < R; i++) { pts[i] = []; for (var j = 0; j < K; j++) pts[i][j] = point(i, j, t, live); }
+      for (var i2 = 0; i2 < R; i2++) for (var j2 = 0; j2 < K; j2++) {
+        var a = pts[i2][j2], b = pts[i2][(j2 + 1) % K], c = i2 + 1 < R ? pts[i2 + 1][j2] : null;
+        g.globalAlpha = alphaBase * (0.45 + 0.55 * clamp((a[2] + 0.55) / 1.1, 0, 1));
+        var pa = proj(a), pb = proj(b);
+        g.beginPath(); g.moveTo(pa[0], pa[1]); g.lineTo(pb[0], pb[1]);
+        if (c) { var pc = proj(c); g.moveTo(pa[0], pa[1]); g.lineTo(pc[0], pc[1]); }
+        g.stroke();
+        if (dots) { g.beginPath(); g.arc(pa[0], pa[1], 1.8, 0, 6.2832); g.fill(); }
+      }
+      g.globalAlpha = 1; g.setLineDash([]);
+    }
+    function draw(t) {
+      g.fillStyle = '#0b0e1a'; g.fillRect(0, 0, cv.width, cv.height);
+      drawMesh(0, false, '#8890aa', 0.55, [3, 3], false);
+      drawMesh(t, true, '#4dff7a', 1, null, true);
+    }
+    var redraw = reg(cv, draw);
+    ['vSpin', 'vBreath', 'vGlitch', 'vFloat'].forEach(function (id) { $(id).addEventListener('change', redraw); });
+  })();
+
+  /* ---------- bruit de Perlin ---------- */
+  function dir(cx, cy, t) {
+    var h = fract(Math.sin(cx * 127.1 + cy * 311.7) * 43758.5453), a = 6.2831853 * h + t;
+    return [Math.cos(a), Math.sin(a)];
+  }
+  function perlin(px, py, t, smooth) {
+    var cx = Math.floor(px), cy = Math.floor(py), fx = px - cx, fy = py - cy;
+    function g(ox, oy) { var d = dir(cx + ox, cy + oy, t); return d[0] * (fx - ox) + d[1] * (fy - oy); }
+    var a = g(0, 0), b = g(1, 0), c = g(0, 1), d = g(1, 1);
+    function sf(f) { return smooth ? f * f * f * (f * (f * 6 - 15) + 10) : f; }
+    var sx = sf(fx), sy = sf(fy);
+    return ((a + (b - a) * sx) * (1 - sy) + (c + (d - c) * sx) * sy) * 1.4;
+  }
+  (function () {
+    var W = ctxOf('whiteCanvas'), P = ctxOf('perlinCanvas');
+    var wi = W[1].createImageData(W[0].width, W[0].height);
+    var seed = 12345;
+    for (var i = 0; i < wi.data.length; i += 4) {
+      seed = (seed * 1664525 + 1013904223) % 4294967296;
+      var v = (seed >>> 8) & 255; wi.data[i] = wi.data[i + 1] = wi.data[i + 2] = v; wi.data[i + 3] = 255;
+    }
+    W[1].putImageData(wi, 0, 0);
+    var img = P[1].createImageData(P[0].width, P[0].height);
+    function draw(t) {
+      var n = +$('pScale').value; $('pScaleVal').textContent = n;
+      var smooth = $('pSmooth').checked, tt = $('pAnim').checked ? t * 0.9 : 0;
+      var w = P[0].width, h = P[0].height;
+      for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
+        var v = clamp(perlin(x / w * n, y / h * n, tt, smooth) * 0.5 + 0.5, 0, 1) * 255, k = (y * w + x) * 4;
+        img.data[k] = img.data[k + 1] = img.data[k + 2] = v; img.data[k + 3] = 255;
+      }
+      P[1].putImageData(img, 0, 0);
+      if ($('pGrid').checked) {
+        P[1].strokeStyle = 'rgba(79,211,236,0.85)'; P[1].lineWidth = 1;
+        P[1].beginPath();
+        for (var c = 1; c < n; c++) { var p = Math.round(c * w / n) + 0.5; P[1].moveTo(p, 0); P[1].lineTo(p, h); P[1].moveTo(0, p); P[1].lineTo(w, p); }
+        P[1].stroke();
+      }
+    }
+    var redraw = reg(P[0], draw);
+    ['pScale', 'pSmooth', 'pGrid', 'pAnim'].forEach(function (id) { $(id).addEventListener('input', redraw); });
+    // courbes d'interpolation
+    function path(fn) {
+      var d = ''; for (var i = 0; i <= 40; i++) { var t = i / 40; d += (i ? 'L' : 'M') + (30 + 170 * t).toFixed(1) + ' ' + (130 - 110 * fn(t)).toFixed(1); }
+      return d;
+    }
+    $('cOld').setAttribute('d', path(function (t) { return t * t * (3 - 2 * t); }));
+    $('cNew').setAttribute('d', path(function (t) { return t * t * t * (t * (t * 6 - 15) + 10); }));
+  })();
+
+  /* ---------- néon qui grésille ---------- */
+  (function () {
+    var D = ctxOf('neonCanvas'), cv = D[0], g = D[1];
+    function draw(t) {
+      var cut = +$('nCut').value, nerv = +$('nNerv').value;
+      $('nCutVal').textContent = cut.toFixed(2); $('nNervVal').textContent = nerv;
+      var cs = getComputedStyle(document.documentElement);
+      var pink = cs.getPropertyValue('--pink').trim() || '#ff5fa2', cyan = cs.getPropertyValue('--cyan').trim() || '#4fd3ec', muted = cs.getPropertyValue('--muted').trim() || '#999';
+      var W = cv.width, H = cv.height, span = 6, top = 124;
+      g.fillStyle = '#0b0e1a'; g.fillRect(0, 0, W, H);
+      function yOf(v) { return top - (v + 1) / 2 * (top - 14) + 8; }
+      g.fillStyle = 'rgba(255,255,255,0.07)';
+      g.fillRect(0, yOf(cut + 0.1), W, yOf(cut - 0.1) - yOf(cut + 0.1));
+      g.strokeStyle = muted; g.setLineDash([4, 3]); g.lineWidth = 1;
+      g.beginPath(); g.moveTo(0, yOf(cut)); g.lineTo(W, yOf(cut)); g.stroke(); g.setLineDash([]);
+      g.fillStyle = muted; g.font = '11px sans-serif'; g.fillText('coupure', 6, yOf(cut) - 4);
+      g.strokeStyle = cyan; g.lineWidth = 2; g.beginPath();
+      var bars = [];
+      for (var x = 0; x < W; x++) {
+        var tt = t - span + x / W * span, n = perlin(tt * nerv, 7.3, 0, true);
+        var a = smoothstep(cut - 0.1, cut + 0.1, n);
+        bars.push(0.08 + (1 - 0.08) * a);
+        if (x) g.lineTo(x, yOf(n)); else g.moveTo(x, yOf(n));
+      }
+      g.stroke();
+      g.fillStyle = muted; g.fillText('bruit lu dans le temps', 6, 12);
+      for (var x2 = 0; x2 < W; x2++) {
+        g.globalAlpha = bars[x2]; g.fillStyle = pink; g.fillRect(x2, 140, 1, 38);
+      }
+      g.globalAlpha = 1; g.fillStyle = muted; g.fillText('luminosité du néon', 6, 188);
+    }
+    var redraw = reg(cv, draw);
+    ['nCut', 'nNerv'].forEach(function (id) { $(id).addEventListener('input', redraw); });
+  })();
+
+  /* ---------- normal map ---------- */
+  (function () {
+    var N = ctxOf('nmCanvas'), Rn = ctxOf('nmRender');
+    var W = N[0].width, H = N[0].height, bw = 56, bh = 28;
+    var hgt = new Float32Array(W * H), nrm = new Float32Array(W * H * 3), col = new Float32Array(W * H * 3);
+    for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+      var row = Math.floor(y / bh), off = (row % 2) ? bw / 2 : 0;
+      var xx = (x + off) % bw, yy = y % bh, d = Math.min(xx, bw - xx, yy, bh - yy);
+      var id = row * 17 + Math.floor((x + off) / bw), tint = 0.82 + 0.3 * fract(Math.sin(id * 12.9898) * 43758.5);
+      var m = smoothstep(0, 5, d);
+      var i = y * W + x;
+      hgt[i] = m;
+      col[i * 3] = (0.78 * m + 0.5 * (1 - m)) * (m > 0.5 ? tint : 1);
+      col[i * 3 + 1] = (0.36 * m + 0.5 * (1 - m)) * (m > 0.5 ? tint : 1);
+      col[i * 3 + 2] = (0.26 * m + 0.52 * (1 - m)) * (m > 0.5 ? tint : 1);
+    }
+    var img = N[1].createImageData(W, H);
+    for (var y2 = 0; y2 < H; y2++) for (var x2 = 0; x2 < W; x2++) {
+      var i2 = y2 * W + x2;
+      var hx = hgt[y2 * W + Math.min(W - 1, x2 + 1)] - hgt[y2 * W + Math.max(0, x2 - 1)];
+      var hy = hgt[Math.min(H - 1, y2 + 1) * W + x2] - hgt[Math.max(0, y2 - 1) * W + x2];
+      var nx = -hx * 3, ny = hy * 3, nz = 1, l = Math.sqrt(nx * nx + ny * ny + nz * nz);
+      nrm[i2 * 3] = nx / l; nrm[i2 * 3 + 1] = ny / l; nrm[i2 * 3 + 2] = nz / l;
+      img.data[i2 * 4] = (nx / l * 0.5 + 0.5) * 255; img.data[i2 * 4 + 1] = (ny / l * 0.5 + 0.5) * 255; img.data[i2 * 4 + 2] = (nz / l * 0.5 + 0.5) * 255; img.data[i2 * 4 + 3] = 255;
+    }
+    N[1].putImageData(img, 0, 0);
+    var light = { x: 70, y: 40 };
+    function draw() {
+      var out = Rn[1].createImageData(W, H), relief = $('nmRelief').checked;
+      for (var y3 = 0; y3 < H; y3++) for (var x3 = 0; x3 < W; x3++) {
+        var i3 = y3 * W + x3;
+        var lx = light.x - x3, ly = -(light.y - y3), lz = 55, ll = Math.sqrt(lx * lx + ly * ly + lz * lz);
+        lx /= ll; ly /= ll; lz /= ll;
+        var nx3 = relief ? nrm[i3 * 3] : 0, ny3 = relief ? nrm[i3 * 3 + 1] : 0, nz3 = relief ? nrm[i3 * 3 + 2] : 1;
+        var diff = Math.max(nx3 * lx + ny3 * ly + nz3 * lz, 0);
+        var atten = 1 / (1 + Math.pow(ll / 150, 2));
+        var k = 0.12 + 1.5 * diff * atten;
+        out.data[i3 * 4] = clamp(col[i3 * 3] * k, 0, 1) * 255;
+        out.data[i3 * 4 + 1] = clamp(col[i3 * 3 + 1] * k, 0, 1) * 255;
+        out.data[i3 * 4 + 2] = clamp(col[i3 * 3 + 2] * k, 0, 1) * 255;
+        out.data[i3 * 4 + 3] = 255;
+      }
+      Rn[1].putImageData(out, 0, 0);
+    }
+    function move(e) {
+      var r = Rn[0].getBoundingClientRect();
+      light.x = (e.clientX - r.left) / r.width * W; light.y = (e.clientY - r.top) / r.height * H; draw();
+    }
+    Rn[0].addEventListener('pointermove', move); Rn[0].addEventListener('pointerdown', move);
+    $('nmRelief').addEventListener('change', draw);
+    draw();
+  })();
+})();
+</script>
