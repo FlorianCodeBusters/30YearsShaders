@@ -158,6 +158,20 @@ input[type="range"]::-moz-range-thumb { width: 28px; height: 28px; border-radius
 .choix button:first-child { border-radius: 12px 0 0 12px; margin-left: 0; } .choix button:last-child { border-radius: 0 12px 12px 0; }
 .choix button[aria-pressed="true"] { background: var(--encre); color: var(--papier); }
 
+/* Maquette n° 2, la chaîne de montage : qui fait quoi, et qui ralentit l'autre. */
+.tag { font: 700 20px var(--titre); letter-spacing: 1px; text-transform: uppercase; color: #fff; padding: 6px 14px; border-radius: 8px; transform: rotate(-1.5deg); }
+.tag.cpu { background: var(--bleu); } .tag.carte { background: var(--rouge); }
+.jauges { display: flex; flex-direction: column; gap: 16px; width: 430px; }
+.jauge .nom { font: 600 22px var(--texte); margin-bottom: 6px; }
+.jauge .nom b { font-family: var(--code); }
+.jauge .piste { position: relative; height: 30px; border: 3px solid var(--encre); border-radius: 8px; background: var(--carton); overflow: hidden; }
+.jauge .rempli { height: 100%; width: 0; transition: width 0.25s; }
+.jauge.cpu .rempli { background-color: var(--bleu); } .jauge.carte .rempli { background-color: var(--rouge); }
+.jauge.goulot .rempli { background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.35) 0 10px, transparent 10px 20px); }
+.jauge .seuil { position: absolute; left: 33.3%; top: 0; bottom: 0; z-index: 1; border-left: 3px dashed var(--encre); padding-left: 5px; font: 700 14px/24px var(--code); color: var(--encre); }
+.ips { font: 700 32px var(--titre); }
+.ips.lent { color: var(--rouge); }
+
 /* --- Slides sans maquette ---------------------------------------------------------------------- */
 .slide.titre { grid-template-columns: 1fr 760px; column-gap: 60px; align-items: center; }
 .slide.titre .sur { font: 700 44px var(--main); color: var(--rouge); transform: rotate(-2deg); display: inline-block; }

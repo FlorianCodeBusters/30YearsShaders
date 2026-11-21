@@ -53,18 +53,18 @@
 </section>
 
 <section class="slide maq" data-part="1" data-t="75">
-  <header><span class="an">1996</span><h2>Une carte graphique à interrupteurs</h2></header>
+  <header><span class="an">1996</span><h2>La carte 3D ne sait que peindre</h2></header>
   <div class="texte">
-    <p class="accroche">Le pipeline est <b>fixe</b> : une chaîne de montage dont on ne règle que quelques boutons.</p>
+    <p class="accroche">La carte graphique <b>remplit des triangles</b>. Tout le reste, c’est le <b>processeur</b>.</p>
     <ul>
-      <li>Textures, lumière, brouillard : <b>oui ou non</b>.</li>
-      <li>La lumière est calculée aux <b>sommets</b>, pas aux pixels.</li>
-      <li>Un effet que le fabricant n’a pas prévu <b>n’existe pas</b>.</li>
+      <li>Le <b>processeur</b> place chaque sommet et calcule sa lumière, un par un.</li>
+      <li>La <b>carte</b> colorie l’intérieur : texture, brouillard, transparence. Des <b>interrupteurs</b>, rien de plus.</li>
+      <li>La lumière n’existe qu’aux <b>coins</b> : la carte mélange leurs couleurs.</li>
     </ul>
-    <p class="repere"><b>1996</b> : Quake, et la 3dfx Voodoo dans les PC.</p>
+    <p class="repere"><b>1996</b> : la 3dfx Voodoo. Il faut attendre <b>1999</b> et la GeForce 256 pour que la carte calcule elle-même sommets et lumière.</p>
   </div>
-  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi">Preset <kbd>1</kbd>. Gros pixels, brouillard, ombres peintes dans les murs. Couper et rallumer <kbd>B</kbd>, <kbd>L</kbd>.</span></div>
-  <div class="maquette" data-maquette="interrupteurs"><span class="etiquette">Maquette n° 2 · le pupitre</span></div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi">Preset <kbd>1</kbd>. Gros pixels, brouillard, ombres peintes dans les murs. Couper et rallumer <kbd>B</kbd>, <kbd>L</kbd>. Images par seconde : <kbd>F9</kbd>.</span></div>
+  <div class="maquette" data-maquette="interrupteurs"><span class="etiquette">Maquette n° 2 · la chaîne de montage</span></div>
 </section>
 
 <section class="slide maq" data-part="1" data-t="45">
@@ -81,33 +81,33 @@
   <div class="maquette" data-maquette="course"><span class="etiquette">Maquette n° 3 · la course</span></div>
 </section>
 
-<section class="slide maq" data-part="1" data-t="70">
-  <header><span class="an">2001</span><h2>Un programme pour un pixel</h2></header>
-  <div class="texte">
-    <p class="accroche">Le <b>shader</b> : quelques lignes de code, exécutées pour chaque pixel, à chaque image.</p>
-    <ul>
-      <li>Il reçoit <b>où</b> est le pixel. Il répond <b>une couleur</b>.</li>
-      <li>Chaque pixel ignore tout de ses voisins.</li>
-      <li>Changer l’image, c’est <b>changer la formule</b>.</li>
-    </ul>
-    <p class="repere"><b>2001</b> : la GeForce 3, première carte grand public programmable.</p>
-  </div>
-  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi"><kbd>→</kbd> haute résolution, puis <kbd>→</kbd> éclairage par pixel : les reflets apparaissent sur les murs.</span></div>
-  <div class="maquette" data-maquette="minishader"><span class="etiquette">Maquette n° 4 · l’écran quadrillé</span></div>
-</section>
-
 <section class="slide maq" data-part="1" data-t="60">
-  <header><span class="an">Le pipeline</span><h2>Du triangle au pixel</h2></header>
+  <header><span class="an">2001</span><h2>Du triangle au pixel</h2></header>
   <div class="texte">
-    <p class="accroche">Une scène 3D, ce ne sont que des triangles. Deux programmes se relaient.</p>
+    <p class="accroche">La carte devient <b>programmable</b>. Une scène 3D, ce ne sont que des triangles : deux programmes se relaient.</p>
     <ul>
       <li><b>Vertex shader</b> : où va chaque sommet ?</li>
       <li><b>Rastérisation</b> : quels pixels sont couverts ? La carte s’en charge.</li>
       <li><b>Fragment shader</b> : de quelle couleur, chacun ?</li>
     </ul>
+    <p class="repere"><b>2001</b> : la GeForce 3, première carte grand public programmable.</p>
   </div>
-  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi"><kbd>→</kbd> l’hologramme : un vertex shader le fait tourner et glitcher. Caméra <kbd>F4</kbd>, puis <kbd>F1</kbd>.</span></div>
-  <div class="maquette" data-maquette="triangle"><span class="etiquette">Maquette n° 5 · le triangle</span></div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi"><kbd>H</kbd> l’hologramme : un vertex shader le fait tourner et glitcher. Caméra <kbd>F4</kbd>, puis <kbd>F1</kbd>.</span></div>
+  <div class="maquette" data-maquette="triangle"><span class="etiquette">Maquette n° 4 · le triangle</span></div>
+</section>
+
+<section class="slide maq" data-part="1" data-t="70">
+  <header><span class="an bleu">Fragment shader</span><h2>Un programme pour un pixel</h2></header>
+  <div class="texte">
+    <p class="accroche">Zoom sur le <b>fragment shader</b> : quelques lignes de code, exécutées pour chaque pixel, à chaque image.</p>
+    <ul>
+      <li>Il reçoit <b>où</b> est le pixel. Il répond <b>une couleur</b>.</li>
+      <li>Chaque pixel ignore tout de ses voisins.</li>
+      <li>Changer l’image, c’est <b>changer la formule</b>.</li>
+    </ul>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi"><kbd>→</kbd> haute résolution, <kbd>→</kbd> éclairage par pixel : les reflets apparaissent sur les murs. <kbd>→</kbd> : l’hologramme revient.</span></div>
+  <div class="maquette" data-maquette="minishader"><span class="etiquette">Maquette n° 5 · l’écran quadrillé</span></div>
 </section>
 
 <section class="slide maq" data-part="1" data-t="95">
@@ -155,6 +155,21 @@
   <figure class="photo fond"><img src="{{img:scene_2006}}" alt="La scène en 2006"><figcaption>où l’on en est : 2006</figcaption></figure>
 </section>
 
+<section class="slide maq" data-part="2" data-t="150">
+  <header><span class="an">2012 – 2014</span><h2>Décrire la matière, pas la couleur</h2></header>
+  <div class="texte">
+    <p class="accroche">Le <b>PBR</b> : on arrête de bidouiller, on décrit une matière physique.</p>
+    <ul>
+      <li>Est-ce du <b>métal</b> ? Est-ce <b>rugueux</b> ? Deux curseurs.</li>
+      <li>Les mêmes formules pour tout, sous toutes les lumières.</li>
+      <li>Un artiste règle la matière <b>une fois</b>, elle marche partout.</li>
+    </ul>
+    <p class="repere"><b>2012</b> : Disney publie son modèle. Les moteurs de jeu suivent.</p>
+  </div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi">Preset <kbd>3</kbd>, puis des lettres, pas <kbd>→</kbd> : <kbd>A</kbd> PBR, le métal devient du métal. Avant / après : <kbd>A</kbd>.</span></div>
+  <div class="maquette" data-maquette="pbr"><span class="etiquette">Maquette n° 8 · la boule témoin</span></div>
+</section>
+
 <section class="slide maq" data-part="2" data-t="110">
   <header><span class="an">2006</span><h2>Un shader sur l’image entière</h2></header>
   <div class="texte">
@@ -166,8 +181,8 @@
     </ul>
     <p class="repere">Novembre <b>2006</b> : la GeForce 8800. Fini les circuits séparés, tout est programmable.</p>
   </div>
-  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi">Preset <kbd>3</kbd>, puis <kbd>→</kbd> : les néons brûlent. Avant / après avec <kbd>G</kbd>.</span></div>
-  <div class="maquette" data-maquette="postfx"><span class="etiquette">Maquette n° 8 · la table de mixage</span></div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi"><kbd>G</kbd> : les néons brûlent. Avant / après : <kbd>G</kbd>.</span></div>
+  <div class="maquette" data-maquette="postfx"><span class="etiquette">Maquette n° 9 · la table de mixage</span></div>
 </section>
 
 <section class="slide maq" data-part="2" data-t="145">
@@ -181,32 +196,12 @@
     </ul>
     <p class="repere"><b>2007</b> : Crysis. Première fois que le bruit <b>change de camp</b>.</p>
   </div>
-  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi"><kbd>→</kbd> SSAO, <kbd>→</kbd> son tampon brut (du bruit !), <kbd>→</kbd> flouté, <kbd>→</kbd> retour à l’image.</span></div>
-  <div class="maquette" data-maquette="ssao"><span class="etiquette">Maquette n° 9 · les fléchettes</span></div>
-</section>
-
-<section class="slide maq" data-part="2" data-t="150">
-  <header><span class="an">2012 – 2014</span><h2>Décrire la matière, pas la couleur</h2></header>
-  <div class="texte">
-    <p class="accroche">Le <b>PBR</b> : on arrête de bidouiller, on décrit une matière physique.</p>
-    <ul>
-      <li>Est-ce du <b>métal</b> ? Est-ce <b>rugueux</b> ? Deux curseurs.</li>
-      <li>Les mêmes formules pour tout, sous toutes les lumières.</li>
-      <li>Un artiste règle la matière <b>une fois</b>, elle marche partout.</li>
-    </ul>
-    <p class="repere"><b>2012</b> : Disney publie son modèle. Les moteurs de jeu suivent.</p>
-  </div>
-  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi">Lettres, pas <kbd>→</kbd> : <kbd>E</kbd> SSR, la flaque reflète la vraie scène. <kbd>A</kbd> PBR, le métal devient du métal. Avant / après : <kbd>A</kbd>.</span></div>
-  <div class="maquette" data-maquette="pbr"><span class="etiquette">Maquette n° 10 · la boule témoin</span></div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi"><kbd>O</kbd> SSAO, <kbd>D</kbd> son tampon brut (du bruit !), <kbd>D</kbd> flouté, <kbd>D</kbd> retour à l’image.</span></div>
+  <div class="maquette" data-maquette="ssao"><span class="etiquette">Maquette n° 10 · les fléchettes</span></div>
 </section>
 
 <!-- ============================================================ PARTIE 3 -->
-<section class="slide section" data-part="3" data-t="15">
-  <div><div class="grand">2016<br>2026</div><h2>La lumière simulée</h2><p class="message">On arrête de tricher avec la lumière : on la simule. Et le bruit revient, sans qu’on l’ait invité.</p></div>
-  <figure class="photo fond"><img src="{{img:scene_2016}}" alt="La scène en 2016"><figcaption>où l’on en est : 2016</figcaption></figure>
-</section>
-
-<section class="slide maq" data-part="3" data-t="105">
+<section class="slide maq" data-part="2" data-t="105">
   <header><span class="an">La limite</span><h2>Ce qui n’est pas à l’écran n’existe pas</h2></header>
   <div class="texte">
     <p class="accroche">Depuis 20 ans, tous nos effets trichent : ils ne connaissent que <b>l’image</b>.</p>
@@ -216,8 +211,13 @@
       <li>Pour faire mieux, il faut connaître <b>toute la scène</b>.</li>
     </ul>
   </div>
-  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi">Preset <kbd>4</kbd>, caméra <kbd>F2</kbd>. Clic droit maintenu : baisser le regard, le reflet de l’enseigne disparaît.</span></div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi"><kbd>E</kbd> : la flaque reflète la vraie scène. Caméra <kbd>F2</kbd>, clic droit maintenu : baisser le regard, le reflet de l’enseigne disparaît.</span></div>
   <div class="maquette" data-maquette="ssr"><span class="etiquette">Maquette n° 11 · la coupe</span></div>
+</section>
+
+<section class="slide section" data-part="3" data-t="15">
+  <div><div class="grand">2016<br>2026</div><h2>La lumière simulée</h2><p class="message">On arrête de tricher avec la lumière : on la simule. Et le bruit revient, sans qu’on l’ait invité.</p></div>
+  <figure class="photo fond"><img src="{{img:scene_2016}}" alt="La scène en 2016"><figcaption>où l’on en est : 2016</figcaption></figure>
 </section>
 
 <section class="slide maq" data-part="3" data-t="160">
@@ -231,7 +231,7 @@
     </ul>
     <p class="repere"><b>2018</b> : les GeForce RTX. <b>2025</b> : Doom The Dark Ages ne démarre plus sans.</p>
   </div>
-  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi"><kbd>→</kbd> TAA, <kbd>→</kbd> la brume, <kbd>→</kbd> la lumière rebondit : caméra <kbd>F3</kbd>, le plafond devient orange. Avant / après : <kbd>S</kbd>.</span></div>
+  <div class="terrain"><span class="antenne"></span><span class="qui">Sur le terrain</span><span class="quoi">Preset <kbd>4</kbd>, puis <kbd>→</kbd> TAA, <kbd>→</kbd> la brume, <kbd>→</kbd> la lumière rebondit : caméra <kbd>F3</kbd>, le plafond devient orange. Avant / après : <kbd>S</kbd>.</span></div>
   <div class="maquette" data-maquette="rayons"><span class="etiquette">Maquette n° 12 · le billard</span></div>
 </section>
 

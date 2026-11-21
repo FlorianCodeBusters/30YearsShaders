@@ -30,41 +30,95 @@
     return { start: () => { libre = true; anim.start(); }, stop: anim.stop };
   });
 
-  // ------------------------------------------------------------------ Le pupitre du pipeline fixe
+  // ------------------------------------------------------------------ La chaîne de montage de 1996 : le processeur calcule, la carte peint
+  // Les coûts ci-dessous sont des ordres de grandeur pour l'image, pas des mesures d'époque.
   register("interrupteurs", (root) => {
+    const etat = { textures: true, lumiere: true, brouillard: true, triangles: 2000, an1999: false };
+    const couts = () => {
+      const n = etat.triangles, peinture = 9 + (etat.textures ? 5 : 0);   // le brouillard est gratuit : câblé dans la carte
+      return etat.an1999
+        ? { cpu: n * 0.0006, carte: peinture + n * (0.0006 + (etat.lumiere ? 0.0002 : 0)) }
+        : { cpu: n * (0.004 + (etat.lumiere ? 0.005 : 0)), carte: peinture + n * 0.0005 };
+    };
+
+    // --- La chaîne : le jeu, puis six postes. En 1999, les trois premiers passent du processeur à la carte.
+    const CW = 1000, CH = 196;
+    const chaine = M.canvas(root, CW, CH, false); chaine.style.width = CW + "px";
+    const cc = chaine.getContext("2d");
+    const POSTES = ["Le jeu", "Placer les\nsommets", "Éclairer les\nsommets", "Projeter\nà l'écran", "Remplir les\ntriangles", "Plaquer la\ntexture", "Brouillard,\ntransparence"];
+    const X0 = 8, PW = (CW - 2 * X0) / POSTES.length, ESP = 26, Y = 150;
+    const frontiere = () => X0 + (etat.an1999 ? 1 : 4) * PW;
+    let jetons = [];
+    function avancer(dt) {
+      const c = couts(), f = frontiere(), vit = (ms) => 1400 / Math.max(ms, 4);   // un poste lent fait traîner la file
+      jetons.sort((a, b) => b - a);
+      for (let k = 0; k < jetons.length; k++) {
+        let x = jetons[k] + vit(jetons[k] < f ? c.cpu : c.carte) * dt;
+        if (k > 0) x = Math.min(x, jetons[k - 1] - ESP);
+        jetons[k] = Math.max(jetons[k], x);
+      }
+      jetons = jetons.filter((x) => x < CW - 16);
+      if (!jetons.length || Math.min(...jetons) > X0 + 4 + ESP) jetons.push(X0 + 14);
+    }
+    function dessinerChaine() {
+      const f = frontiere(), c = couts();
+      cc.clearRect(0, 0, CW, CH);
+      cc.fillStyle = "rgba(27, 117, 150, 0.45)"; cc.fillRect(X0, 6, f - X0 - 2, CH - 12);
+      cc.fillStyle = "rgba(220, 69, 38, 0.38)"; cc.fillRect(f + 2, 6, CW - X0 - f - 2, CH - 12);
+      cc.textAlign = "center"; cc.textBaseline = "middle";
+      cc.font = "700 19px Fredoka, sans-serif";
+      cc.fillStyle = "#bfe6f4"; cc.fillText("PROCESSEUR", (X0 + f) / 2, 24);
+      cc.fillStyle = "#ffc9b8"; cc.fillText("CARTE 3D", (f + CW - X0) / 2, 24);
+      cc.font = "700 19px 'Nunito Sans', sans-serif";
+      POSTES.forEach((nom, i) => {
+        const x = X0 + i * PW + 6, w = PW - 12;
+        cc.fillStyle = "#fbf5e6"; cc.strokeStyle = "#2a1f14"; cc.lineWidth = 3;
+        cc.beginPath(); cc.roundRect(x, 42, w, 70, 8); cc.fill(); cc.stroke();
+        cc.fillStyle = "#2a1f14";
+        nom.split("\n").forEach((ligne, j, t) => cc.fillText(ligne, x + w / 2, 77 + (j - (t.length - 1) / 2) * 23));
+      });
+      // Le tapis, et les triangles qui avancent dessus.
+      cc.strokeStyle = "rgba(232, 238, 246, 0.5)"; cc.lineWidth = 3; cc.setLineDash([10, 8]);
+      cc.beginPath(); cc.moveTo(X0 + 6, Y + 14); cc.lineTo(CW - X0 - 6, Y + 14); cc.stroke(); cc.setLineDash([]);
+      cc.fillStyle = "#f2b824"; cc.strokeStyle = "#2a1f14"; cc.lineWidth = 2;
+      for (const x of jetons) { cc.beginPath(); cc.moveTo(x, Y - 12); cc.lineTo(x - 10, Y + 10); cc.lineTo(x + 10, Y + 10); cc.closePath(); cc.fill(); cc.stroke(); }
+      if (c.cpu > c.carte * 1.6) {
+        cc.font = "italic 700 18px 'Nunito Sans', sans-serif"; cc.fillStyle = "#ffe3d9";
+        cc.fillText("la carte attend…", (f + CW - X0) / 2, CH - 18);
+      }
+    }
+
+    // --- En dessous : la boule (plus de triangles = lumière plus douce) et les jauges.
+    const haut = M.rang(root); haut.style.flexWrap = "nowrap"; haut.style.gap = "34px";
     const W = 320, H = 180;
-    const cv = M.canvas(root, W, H, true); cv.style.width = "1040px";
+    const cv = M.canvas(haut, W, H, true); cv.style.width = "500px";
     const ctx = cv.getContext("2d"), img = ctx.createImageData(W, H);
-    const etat = { textures: true, lumiere: true, brouillard: true };
     const L = [0.48, 0.74, 0.47], BROUILLARD = [30, 34, 58];
     const eclat = (nx, ny, nz) => Math.max(0, nx * L[0] + ny * L[1] + nz * L[2]);
-
     function rendre() {
+      // La boule est découpée en US × VS facettes ; la lumière n'est calculée qu'aux coins, puis mélangée.
+      const US = Math.round(6 + 30 * (etat.triangles - 500) / 19500), VS = Math.max(3, Math.round(US / 2));
       for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {
         let dx = (i / W - 0.5) * 1.78, dy = (0.5 - j / H) - 0.1, dz = -1;
         const n = Math.hypot(dx, dy, dz); dx /= n; dy /= n; dz /= n;
         const ox = 0, oy = 1.25, oz = 0;
-        let r = 14, g = 18, b = 38, dist = 60;
-        // Une boule…
+        let r = 14, g = 18, b = 38, dist = 60, touche = false;
         const cx = 0.35, cy = 1.05, cz = -4.6, R = 1.05;
         const bx = ox - cx, by = oy - cy, bz = oz - cz;
         const B = bx * dx + by * dy + bz * dz, C = bx * bx + by * by + bz * bz - R * R, D = B * B - C;
-        let touche = false;
         if (D > 0) {
           const t = -B - Math.sqrt(D);
           if (t > 0) {
             touche = true; dist = t;
             const nx = (ox + dx * t - cx) / R, ny = (oy + dy * t - cy) / R, nz = (oz + dz * t - cz) / R;
-            // Éclairage « par sommet » : calculé sur une grille grossière de la boule, puis interpolé.
-            const u = (Math.atan2(nz, nx) / 6.2831853 + 0.5) * 12, v = Math.acos(M.clamp(ny, -1, 1)) / 3.14159265 * 6;
-            const u0 = Math.floor(u), v0 = Math.floor(v), fu = u - u0, fv = v - v0;
-            const s = (uu, vv) => { const a = (uu / 12 - 0.5) * 6.2831853, p = vv / 6 * 3.14159265; return eclat(Math.sin(p) * Math.cos(a), Math.cos(p), Math.sin(p) * Math.sin(a)); };
+            const a01 = Math.atan2(nz, nx) / 6.2831853 + 0.5, p01 = Math.acos(M.clamp(ny, -1, 1)) / 3.14159265;
+            const u = a01 * US, v = p01 * VS, u0 = Math.floor(u), v0 = Math.floor(v), fu = u - u0, fv = v - v0;
+            const s = (uu, vv) => { const a = (uu / US - 0.5) * 6.2831853, p = vv / VS * 3.14159265; return eclat(Math.sin(p) * Math.cos(a), Math.cos(p), Math.sin(p) * Math.sin(a)); };
             const lum = etat.lumiere ? 0.18 + 0.9 * M.mix(M.mix(s(u0, v0), s(u0 + 1, v0), fu), M.mix(s(u0, v0 + 1), s(u0 + 1, v0 + 1), fu), fv) : 1;
-            const raye = etat.textures ? (Math.floor(u * 1) + Math.floor(v)) % 2 : 0;
+            const raye = etat.textures ? (Math.floor(a01 * 12) + Math.floor(p01 * 6)) % 2 : 0;
             r = (raye ? 235 : 215) * lum; g = (raye ? 190 : 70) * lum; b = (raye ? 60 : 50) * lum;
           }
         }
-        // …posée sur un sol.
         if (!touche && dy < 0) {
           const t = -oy / dy; dist = t;
           const px = ox + dx * t, pz = oz + dz * t;
@@ -83,15 +137,48 @@
       }
       ctx.putImageData(img, 0, 0);
     }
-    const rang = M.rang(root); rang.style.gap = "10px"; rang.style.flexWrap = "nowrap";
-    M.toggle(rang, "Textures", true, (v) => { etat.textures = v; rendre(); });
-    M.toggle(rang, "Lumière", true, (v) => { etat.lumiere = v; rendre(); });
-    M.toggle(rang, "Brouillard", true, (v) => { etat.brouillard = v; rendre(); });
-    for (const absent of ["Reflets", "Relief"]) { const b = M.toggle(rang, absent, false, () => {}); b.disabled = true; }
-    const lecture = M.lecture(root);
-    lecture.innerHTML = "Un effet = un <b>interrupteur</b> prévu par le fabricant. Sinon, pas d'effet.";
-    rendre();
-    return {};
+    const jauges = M.el("div", "jauges", haut);
+    const jauge = (classe) => {
+      const box = M.el("div", "jauge " + classe, jauges), nom = M.el("div", "nom", box);
+      const piste = M.el("div", "piste", box); M.el("span", "seuil", piste, "30 img/s");
+      return { box, nom, rempli: M.el("div", "rempli", piste) };
+    };
+    const jCpu = jauge("cpu"), jCarte = jauge("carte");
+    const ips = M.el("div", "ips", jauges);
+
+    // --- Les commandes : ce que règle le processeur, ce que règle la carte.
+    const r1 = M.rang(root); r1.style.justifyContent = "flex-start";
+    M.el("span", "tag cpu", r1, "Processeur");
+    M.toggle(r1, "Lumière", true, (v) => { etat.lumiere = v; rendre(); maj(); });
+    M.slider(r1, "Triangles par image :", 500, 20000, 500, etat.triangles, (v) => M.fr(v), (v) => { etat.triangles = v; rendre(); maj(); });
+    const r2 = M.rang(root); r2.style.flexWrap = "nowrap"; r2.style.justifyContent = "flex-start";
+    M.el("span", "tag carte", r2, "Carte 3D");
+    M.toggle(r2, "Textures", true, (v) => { etat.textures = v; rendre(); maj(); });
+    M.toggle(r2, "Brouillard", true, (v) => { etat.brouillard = v; rendre(); maj(); });
+    for (const absent of ["Reflets", "Relief"]) { const b = M.toggle(r2, absent, false, () => {}); b.disabled = true; }
+    const r3 = M.rang(root); r3.style.flexWrap = "nowrap";
+    const lecture = M.lecture(r3);
+    M.toggle(r3, "Et en 1999 ?", false, (v) => { etat.an1999 = v; maj(); });
+
+    function maj() {
+      const c = couts(), img_s = 1000 / Math.max(c.cpu, c.carte), cpuLent = c.cpu >= c.carte;
+      for (const [j, ms, nom] of [[jCpu, c.cpu, "Processeur"], [jCarte, c.carte, "Carte 3D"]]) {
+        j.nom.innerHTML = `${nom} : <b>${Math.round(ms)} ms</b> par image`;
+        j.rempli.style.width = Math.min(100, ms) + "%";
+        j.box.classList.toggle("goulot", ms === Math.max(c.cpu, c.carte) && img_s < 30);
+      }
+      ips.textContent = `→ ${M.fr(Math.round(Math.min(img_s, 999)))} images par seconde`;
+      ips.classList.toggle("lent", img_s < 30);
+      lecture.innerHTML = etat.an1999
+        ? (img_s >= 30 ? "<b>1999</b> : sommets et lumière passent sur la carte. Le processeur respire."
+                   : "<b>1999</b> : la carte calcule les sommets. C’est elle, maintenant, qui limite.")
+        : img_s >= 30 ? "Le processeur <b>calcule</b>, la carte <b>peint</b>. Ajoutez des triangles…"
+        : cpuLent ? "Le <b>processeur</b> s’essouffle : la carte attend."
+        : "Cette fois, c’est la <b>carte</b> qui limite.";
+    }
+    rendre(); maj(); dessinerChaine();
+    const anim = M.loop((_, dt) => { avancer(dt); dessinerChaine(); });
+    return { start: anim.start, stop: anim.stop };
   });
 
   // ------------------------------------------------------------------ La course : CPU contre GPU
@@ -151,7 +238,7 @@
       { nom: "Vagues", code: 'couleur = vec3(<span class="n">0.5</span> + <span class="n">0.5</span> * sin(<span class="n">x</span> * <span class="n">20</span> + temps));', f: (x, y, t) => { const v = 0.5 + 0.5 * Math.sin(x * 20 + t * 3); return [v, v * 0.8, 1 - v * 0.6]; } },
       { nom: "Damier", code: 'couleur = (floor(<span class="n">x</span> * <span class="n">8</span>) + floor(<span class="n">y</span> * <span class="n">4.5</span>)) % <span class="n">2</span>\n          ? clair : sombre;', f: (x, y) => (Math.floor(x * 8) + Math.floor(y * 4.5)) % 2 ? [0.95, 0.78, 0.25] : [0.16, 0.12, 0.1] },
     ];
-    let prog = 0, cols = 32, survol = null, temps = 0;
+    let prog = 1, cols = 32, survol = null, temps = 0;   // part du disque
     const rang = M.rang(root); rang.style.alignItems = "flex-start"; rang.style.flexWrap = "nowrap";
     const cv = M.canvas(rang, 640, 360, true); cv.style.width = "640px";
     const ctx = cv.getContext("2d");
@@ -184,7 +271,7 @@
     M.drag(cv, (x, y) => { survol = { x, y }; }, true);
     cv.addEventListener("pointerleave", () => { survol = null; });
     const bas = M.rang(root);
-    M.choice(bas, PROGRAMMES.map((p) => p.nom), 0, (i) => { prog = i; majCode(); });
+    M.choice(bas, PROGRAMMES.map((p) => p.nom), prog, (i) => { prog = i; majCode(); });
     M.slider(bas, "Pixels en largeur :", 8, 160, 8, cols, null, (v) => { cols = v; });
     majCode();
     const anim = M.loop((t) => { temps = t; dessiner(); });

@@ -33,7 +33,9 @@ Attention : après un clic sur un bouton de maquette, `Espace` actionne ce bouto
 
 **Démo (Florian)** : `→` étape suivante · `←` précédente · `1`–`5` presets (1996, 2001, 2006, 2016, 2026) · `F1`–`F4` caméras (principale, flaque, plafond, hologramme) · clic droit maintenu : vue libre · `Tab` le Lab (code des shaders) · `Échap` aide · `F9` images par seconde.
 
-> **Le piège de la partie 1.** Dans la démo, la frise fait arriver Perlin *avant* les normal maps. Dans le talk, on garde Perlin pour la fin de la partie. Entre l'hologramme et la fin de la partie 1, Florian utilise donc **les lettres** (`N`, `M`, `P`, `P`, `C`) et **pas `→`**. Le preset `3`, au début de la partie 2, remet tout d'aplomb.
+> **Le piège de la partie 1.** Dans la démo, la frise fait arriver Perlin *avant* les normal maps. Dans le talk, on garde Perlin pour la fin de la partie. De la slide 9 à la fin de la partie 1, Florian utilise donc **les lettres** (`N`, `M`, `P`, `P`, `C`) et **pas `→`**. Même chose en slide 7 pour l'hologramme (`H`), que la frise ne montre qu'après la haute résolution et l'éclairage par pixel de la slide 8. Le preset `3`, au début de la partie 2, remet tout d'aplomb.
+
+> **Le piège de la partie 2.** Dans la démo, `→` recalcule tous les effets d'après la frise : après le PBR montré à la lettre, un `→` le couperait. Toute la partie 2 se fait donc **aux lettres** : `A` (PBR), `G` (glow), `O` puis `D`, `D`, `D` (SSAO), `E` (SSR). Le preset `4`, au début de la slide 18, remet tout d'aplomb ; ensuite `→` redevient la règle.
 
 ## Minutage
 
@@ -41,13 +43,15 @@ Attention : après un clic sur un bouton de maquette, `Espace` actionne ce bouto
 |---|---|---|---|
 | Intro | 1 à 3 | 1 min 40 | 01:40 |
 | 1996-2006 | 4 à 11 | 9 min | 10:40 |
-| 2006-2016 | 12 à 15 | 7 min | 17:40 |
-| 2016-2026 | 16 à 20 | 9 min | 26:40 |
+| 2006-2016 | 12 à 16 | 8 min 45 | 19:25 |
+| 2016-2026 | 17 à 20 | 7 min 15 | 26:40 |
 | Conclusion | 21 à 23 | 1 min 50 | 28:30 |
 
 Les durées par slide ci-dessous **comprennent** le passage de Florian sur le terrain.
 
 Depuis le 19/11, le compute shader n'est plus présenté en partie 2 : il est **évoqué à la fin**, en slide 22 (30 s au lieu de 2 min). Le total tombe à **28 min 30** : 1 min 30 de marge.
+
+Depuis le 21/11, la partie 2 suit l'ordre des notions plutôt que celui des années : **PBR** d'abord (on reste dans les textures après normal map et Perlin), puis HDR, SSAO, et le **SSR** pour finir la décennie sur la limite des tricheries.
 
 ---
 
@@ -75,27 +79,34 @@ Depuis le 19/11, le compute shader n'est plus présenté en partie 2 : il est **
 ### Slide 4 · Ouverture — 15 s (→ 01:55)
 - **Sébastien** : « 1996. Quake sort, et les premières cartes 3D arrivent dans les PC. »
 
-### Slide 5 · Une carte graphique à interrupteurs — 1 min 15 (→ 03:10)
-- **Maquette n° 2, le pupitre.** Couper puis rallumer « Textures », « Lumière », « Brouillard ». Montrer les deux interrupteurs grisés.
-- **Sébastien** : « La carte de 1996, c'est une chaîne de montage. On ne la programme pas : on a un pupitre, avec quelques interrupteurs. Textures, oui ou non. Lumière, oui ou non. Brouillard… Et si je veux des reflets ? *(il clique sur l'interrupteur grisé)* Pas d'interrupteur, pas de reflets. Un effet que le fabricant n'a pas prévu n'existe pas. »
+### Slide 5 · La carte 3D ne sait que peindre — 1 min 15 (→ 03:10)
+- **Maquette n° 2, la chaîne de montage.** En haut, la chaîne : la zone bleue (processeur) place et éclaire les sommets, la zone rouge (carte) remplit les triangles. Dans l'ordre :
+  1. Montrer les deux zones du doigt.
+  2. Couper puis rallumer « Textures » et « Brouillard » (côté carte). Cliquer sur « Reflets », grisé : rien.
+  3. Pousser le curseur « Triangles par image » à fond : la jauge du processeur passe au rouge, on tombe à 6 images par seconde, et « la carte attend… » s'affiche sur la chaîne.
+  4. *Si on a le temps (+15 s)* : « Et en 1999 ? ». Les postes « Placer » et « Éclairer » passent côté carte, le processeur respire, on remonte à 33 images par seconde.
+- **Sébastien** : « En 1996, la carte 3D, c'est un pinceau. Elle sait remplir un triangle, poser une texture, ajouter du brouillard : des interrupteurs, oui ou non. Et si je veux des reflets ? *(clic sur l'interrupteur grisé)* Pas d'interrupteur, pas de reflets. Mais qui décide où sont les triangles ? Qui calcule la lumière ? Le **processeur**, sommet par sommet. Et la lumière, il ne la calcule qu'aux coins : la carte se contente de mélanger. *(il pousse le curseur)* Et quand j'ajoute des triangles… c'est lui qui s'essouffle. La carte, elle, attend. »
+- *Optionnel* : « Il faudra attendre 1999, la GeForce 256, pour que la carte calcule elle-même les sommets et la lumière. *(clic sur « Et en 1999 ? »)* »
+- Les millisecondes et les images par seconde de la maquette sont des **ordres de grandeur** pour l'image, pas des mesures d'époque. Ne pas les citer comme des chiffres.
 - **Relais** : « Fred, ça donne quoi, chez toi ? »
-- **Florian (terrain)** : preset `1`. Couper et rallumer le brouillard (`B`), puis les lightmaps (`L`). « Gros pixels, brouillard pour cacher le fond, et les ombres ? Elles sont **peintes** dans les murs, une fois pour toutes. Rien ne bouge. »
+- **Florian (terrain)** : preset `1`. Couper et rallumer le brouillard (`B`), puis les lightmaps (`L`). `F9` pour afficher les images par seconde, si on veut. « Gros pixels, brouillard pour cacher le fond, et les ombres ? Elles sont **peintes** dans les murs, une fois pour toutes. Rien ne bouge. »
 
 ### Slide 6 · Un chirurgien, ou une armée ? — 45 s (→ 03:55)
 - **Maquette n° 3, la course.** Elle attend : Sébastien clique « Départ ! » au moment de « Regardez qui gagne ». Un nouveau clic la relance.
 - **Sébastien** : « Pourquoi une carte à part ? Parce qu'une image, c'est deux millions de pixels, soixante fois par seconde. Le processeur, c'est un chirurgien : très malin, mais il fait une chose à la fois. La carte graphique, c'est une armée de peintres pas très malins… mais ils sont des milliers. Regardez qui gagne. » *(il clique « Départ ! »)*
 - **Florian** : rien à montrer, il enchaîne d'une phrase. « Et tout l'enjeu des trente ans qui suivent, c'est : qu'est-ce qu'on fait faire à cette armée ? »
 
-### Slide 7 · Un programme pour un pixel — 1 min 10 (→ 05:05)
-- **Maquette n° 4, l'écran quadrillé.** Survoler des pixels (les coordonnées et la couleur s'affichent). Passer de « Dégradé » à « Disque », « Vagues », « Damier ». Pousser le curseur du nombre de pixels.
-- **Sébastien** : « 2001, la GeForce 3. Révolution : on peut envoyer un **programme** à la carte. Et ce programme est ridiculement simple. Il s'exécute pour **un** pixel. On lui dit : tu es là. Il répond : je suis de cette couleur. C'est tout. Il ne connaît même pas ses voisins. Mais on le lance sur tous les pixels à la fois. Je change une ligne… et toute l'image change. Ce programme, c'est un shader. »
+### Slide 7 · Du triangle au pixel — 1 min (→ 04:55)
+- **Maquette n° 4, le triangle.** Cliquer « 1 · Sommets » et déplacer un sommet, puis « 2 · Rastérisation », puis « 3 · Couleur par pixel ».
+- **Sébastien** : « 2001, la GeForce 3. Révolution : la carte devient **programmable**. On peut lui envoyer des programmes, deux exactement. Une scène 3D, ce ne sont que des triangles. Le premier programme, le *vertex shader*, décide où va chaque sommet. Ensuite la carte regarde quels pixels le triangle recouvre. Et pour chacun de ces pixels, le deuxième programme, le *fragment shader*, choisit la couleur. Trois sommets… et des centaines de pixels. »
 - **Relais** : « Fred, tu passes en 2001 ? »
-- **Florian (terrain)** : `→` (haute résolution, plus de brouillard), puis `→` (éclairage par pixel). « Premier effet : on calcule la lumière pour **chaque pixel**, plus seulement aux coins des triangles. Regardez les murs : des reflets apparaissent. »
+- **Florian (terrain)** : `H` (l'hologramme, **lettre et pas `→`** : la frise commence par la haute résolution), caméra `F4`. « Le vertex shader, le voilà : ce prisme tourne, respire, se détraque. Sa géométrie n'a pas changé d'un millimètre : c'est le programme qui déplace les sommets, à chaque image. » Revenir en `F1`.
 
-### Slide 8 · Du triangle au pixel — 1 min (→ 06:05)
-- **Maquette n° 5, le triangle.** Cliquer « 1 · Sommets » et déplacer un sommet, puis « 2 · Rastérisation », puis « 3 · Couleur par pixel ».
-- **Sébastien** : « En réalité, il y a deux programmes. Une scène 3D, ce ne sont que des triangles. Le premier programme, le *vertex shader*, décide où va chaque sommet. Ensuite la carte regarde quels pixels le triangle recouvre. Et pour chacun de ces pixels, le deuxième programme choisit la couleur. Trois sommets… et des centaines de pixels. »
-- **Florian (terrain)** : `→` (l'hologramme), caméra `F4`. « Le vertex shader, le voilà : ce prisme tourne, respire, se détraque. Sa géométrie n'a pas changé d'un millimètre : c'est le programme qui déplace les sommets, à chaque image. » Revenir en `F1`.
+### Slide 8 · Un programme pour un pixel — 1 min 10 (→ 06:05)
+- **Maquette n° 5, l'écran quadrillé.** Elle s'ouvre sur « Disque ». Survoler des pixels (les coordonnées et la couleur s'affichent). Passer à « Dégradé », « Vagues », « Damier ». Pousser le curseur du nombre de pixels.
+- **Sébastien** : « Zoom sur le deuxième programme, le fragment shader. Il est ridiculement simple. Il s'exécute pour **un** pixel. On lui dit : tu es là. Il répond : je suis de cette couleur. C'est tout. Il ne connaît même pas ses voisins. Mais on le lance sur tous les pixels à la fois. Je change une ligne… et toute l'image change. »
+- **Relais** : « Fred, et chez toi, ça change quoi ? »
+- **Florian (terrain)** : `→` (haute résolution, plus de brouillard), puis `→` (éclairage par pixel). « Premier effet : on calcule la lumière pour **chaque pixel**, plus seulement aux coins des triangles. Regardez les murs : des reflets apparaissent. » Puis `→` : l'hologramme revient (le premier `→` l'avait coupé, la frise le rallume ici). On est alors au même point de la frise qu'avant.
 
 ### Slide 9 · Du relief sans un triangle de plus — 1 min 35 (→ 07:40)
 - **Maquette n° 6, la lampe et le mur.** Promener la lampe. Basculer « Par sommet (1996) » puis « Par pixel (2001) ». Couper et rallumer « Normal map ». Montrer la petite image violette à droite.
@@ -122,7 +133,7 @@ C'est le moment clé de la partie. Prendre son temps.
 
 ---
 
-## Partie 2 — 2006-2016 : la course au réalisme — 7 min
+## Partie 2 — 2006-2016 : la course au réalisme — 8 min 45
 
 **Message :** les shaders deviennent de vrais programmes, et la carte graphique un calculateur à tout faire.
 
@@ -130,49 +141,51 @@ C'est le moment clé de la partie. Prendre son temps.
 - **Sébastien** : « 2006. Les cartes changent d'architecture : fini les circuits spécialisés, tout devient programmable. Les shaders peuvent enfin être longs, compliqués… ambitieux. »
 - **Florian (terrain)** : preset `3`. Il remet la scène dans l'état de 2006.
 
-### Slide 13 · Un shader sur l'image entière — 1 min 50 (→ 12:45)
-- **Maquette n° 8, la table de mixage.** Monter l'intensité des néons. Couper « Tonemapping » (tout crame), le remettre. Couper « Glow », le remettre.
-- **Sébastien** : « Première idée de la décennie : on calcule l'image, et **ensuite** on la retouche, comme une photo. Un shader qui ne dessine aucun objet : il travaille sur l'image entière. Dans cette image, un néon ne vaut pas "blanc". Il vaut 4, 5, 8. Bien plus que ce que l'écran sait afficher. Si je ne fais rien *(coupe le tonemapping)* : tout est cramé. Alors on ramène tout ça dans les clous. Et ce qui dépasse, on le floute et on le rajoute par-dessus : c'est le glow. Le néon bave. »
-- **Relais** : « Fred, ça brûle ? »
-- **Florian (terrain)** : `→`. « Ah oui. » `G` deux fois pour l'avant / après. « Avant : des tubes de couleur. Après : de la lumière. »
+### Slide 13 · Décrire la matière, pas la couleur — 2 min 30 (→ 13:25)
+- **Maquette n° 8, la boule témoin.** Cliquer « Plastique », « Caoutchouc », « Métal poli », « Métal brossé ». Puis bouger les deux curseurs à la main, changer la couleur (or, cuivre).
+- **Sébastien** : « On reste dans les textures, et c'est un changement de métier. Jusque-là, un artiste réglait des couleurs et une "brillance" jusqu'à ce que ça rende bien. Et quand on changeait l'éclairage, tout était à refaire. À partir de 2012, on décrit la **matière**. Deux questions : est-ce que c'est du métal ? Est-ce que c'est rugueux ? Deux curseurs. Et les mêmes formules de physique pour tout. Du plastique. Du caoutchouc. Du métal poli : il prend la couleur de ce qu'il reflète. »
+- **Relais** : « Fred, ton atrium, il est en quoi ? »
+- **Florian (terrain)** : **lettres, pas `→`** (voir « Le piège de la partie 2 »). `A` : « Les matières. Les volets : du vrai métal, usé, avec des traces. » `A` deux fois pour l'avant / après.
 
-### Slide 14 · L'ombre des recoins, à pile ou face — 2 min 25 (→ 15:10)
+### Slide 14 · Un shader sur l'image entière — 1 min 50 (→ 15:15)
+- **Maquette n° 9, la table de mixage.** Monter l'intensité des néons. Couper « Tonemapping » (tout crame), le remettre. Couper « Glow », le remettre.
+- **Sébastien** : « Autre idée de la décennie : on calcule l'image, et **ensuite** on la retouche, comme une photo. Un shader qui ne dessine aucun objet : il travaille sur l'image entière. Dans cette image, un néon ne vaut pas "blanc". Il vaut 4, 5, 8. Bien plus que ce que l'écran sait afficher. Si je ne fais rien *(coupe le tonemapping)* : tout est cramé. Alors on ramène tout ça dans les clous. Et ce qui dépasse, on le floute et on le rajoute par-dessus : c'est le glow. Le néon bave. »
+- **Relais** : « Fred, ça brûle ? »
+- **Florian (terrain)** : `G`. « Ah oui. » `G` deux fois pour l'avant / après. « Avant : des tubes de couleur. Après : de la lumière. »
+
+### Slide 15 · L'ombre des recoins, à pile ou face — 2 min 25 (→ 17:40)
 Le **pivot du bruit**. Deuxième moment clé.
-- **Maquette n° 9, les fléchettes.** Promener le point jaune le long du décor : en terrain plat, dans le coin du mur, au fond du fossé. Lire le compte à voix haute. Puis descendre le curseur à 2 fléchettes : la bande du bas grésille. Monter à 128 : propre. Revenir à 8, activer « Flou ».
+- **Maquette n° 10, les fléchettes.** Promener le point jaune le long du décor : en terrain plat, dans le coin du mur, au fond du fossé. Lire le compte à voix haute. Puis descendre le curseur à 2 fléchettes : la bande du bas grésille. Monter à 128 : propre. Revenir à 8, activer « Flou ».
 - **Sébastien** : « Les recoins sont plus sombres que le reste : la lumière y entre mal. Comment le calculer vite ? En trichant. Pour chaque pixel, je lance quelques fléchettes au hasard autour de lui. Si elles tombent dans le vide : c'est dégagé. Si elles tombent dans le décor : je suis dans un coin, j'assombris. *(dans le fossé)* Six sur huit : c'est sombre. »
 - **Sébastien (le pivot)** : « Mais regardez la bande du bas. Avec huit fléchettes, deux pixels voisins n'ont pas le même tirage. Ça grésille. Ça fait… du **bruit**. Et là, personne ne l'a invité. Alors on floute. »
 - **Relais** : « Fred, tu peux nous le montrer, ce bruit ? »
-- **Florian (terrain)** : `→` : « L'effet, dans la scène : les coins se creusent. » `→` : « Et voilà ce que la carte calcule vraiment, avant le flou. Du grain partout. » `→` : « La même chose, floutée. » `→` : « Et on revient à l'image. »
+- **Florian (terrain)** : `O` : « L'effet, dans la scène : les coins se creusent. » `D` : « Et voilà ce que la carte calcule vraiment, avant le flou. Du grain partout. » `D` : « La même chose, floutée. » `D` : « Et on revient à l'image. »
 - **Florian (la phrase à ne pas rater)** : « C'est la première fois que le bruit **change de camp**. Tout à l'heure on l'ajoutait. Là, on le subit. »
 
-### Slide 15 · Décrire la matière, pas la couleur — 2 min 30 (→ 17:40)
-- **Maquette n° 10, la boule témoin.** Cliquer « Plastique », « Caoutchouc », « Métal poli », « Métal brossé ». Puis bouger les deux curseurs à la main, changer la couleur (or, cuivre).
-- **Sébastien** : « Dernière idée de la décennie, et c'est un changement de métier. Jusque-là, un artiste réglait des couleurs et une "brillance" jusqu'à ce que ça rende bien. Et quand on changeait l'éclairage, tout était à refaire. À partir de 2012, on décrit la **matière**. Deux questions : est-ce que c'est du métal ? Est-ce que c'est rugueux ? Deux curseurs. Et les mêmes formules de physique pour tout. Du plastique. Du caoutchouc. Du métal poli : il prend la couleur de ce qu'il reflète. »
-- **Relais** : « Fred, ton atrium, il est en quoi ? »
-- **Florian (terrain)** : **lettres, pas `→`** (sinon la frise passe d'abord par les lumières, les drones et la pluie). `E` : « D'abord les reflets. La flaque reflète enfin la **vraie** scène, pas une photo. » (caméra `F2` un instant, puis `F1`). `A` : « Et maintenant les matières. Les volets : du vrai métal, usé, avec des traces. » `A` deux fois pour l'avant / après.
-
----
-
-## Partie 3 — 2016-2026 : la lumière simulée — 9 min
-
-**Message :** on arrête de tricher avec la lumière, on la simule. Et le bruit revient sans qu'on l'ait invité.
-
-### Slide 16 · Ouverture — 15 s (→ 17:55)
-- **Sébastien** : « 2016. L'image est belle. Mais tout ce qu'on vient de voir repose sur des tricheries. Et les tricheries ont des limites. »
-- **Florian (terrain)** : rien. À savoir : le preset `4` de la slide suivante rallume tout ce que la frise contient jusqu'à 2016, y compris les lumières, la pluie et **les drones**. On n'en parle pas : on y revient à la slide 22.
-
-### Slide 17 · Ce qui n'est pas à l'écran n'existe pas — 1 min 45 (→ 19:40)
+### Slide 16 · Ce qui n'est pas à l'écran n'existe pas — 1 min 45 (→ 19:25)
+On finit la décennie sur le mur des tricheries : la partie 3 commence par « on arrête de tricher ».
+- **Florian (terrain), d'abord** : `E` : « 2011 : la flaque reflète enfin la **vraie** scène, pas une photo. »
 - **Maquette n° 11, la coupe.** Vue de profil : la caméra, le sol mouillé, l'enseigne sur le mur. Pencher la caméra lentement : le trait vert devient rouge pointillé, le reflet au sol se coupe puis disparaît.
 - **Sébastien** : « Le reflet de la flaque, comment la carte le trouve ? Elle ne connaît pas la scène. Elle ne connaît que **l'image** qu'elle vient de calculer. Alors elle cherche le reflet dedans. Tant que l'enseigne est à l'écran, tout va bien. Maintenant je baisse la tête… l'enseigne sort du cadre… et son reflet s'efface. La carte ne peut pas inventer ce qu'elle ne voit pas. »
 - **Relais** : « Fred, vérifie-moi ça. »
-- **Florian (terrain)** : preset `4`, caméra `F2`. Clic droit maintenu, baisser lentement le regard vers la flaque. « Je baisse les yeux… et le reflet de l'enseigne s'efface par le haut. Vingt ans de tricheries, et voilà le mur. »
+- **Florian (terrain)** : caméra `F2`. Clic droit maintenu, baisser lentement le regard vers la flaque. « Je baisse les yeux… et le reflet de l'enseigne s'efface par le haut. Vingt ans de tricheries, et voilà le mur. » Revenir en `F1`.
+
+---
+
+## Partie 3 — 2016-2026 : la lumière simulée — 7 min 15
+
+**Message :** on arrête de tricher avec la lumière, on la simule. Et le bruit revient sans qu'on l'ait invité.
+
+### Slide 17 · Ouverture — 15 s (→ 19:40)
+- **Sébastien** : « 2016. L'image est belle, mais on vient de toucher le mur : tout repose sur des tricheries. Alors on arrête de tricher. On simule la lumière. »
+- **Florian (terrain)** : rien. À savoir : le preset `4` de la slide suivante remet la frise d'aplomb et rallume tout ce que la frise contient jusqu'à 2016, y compris les lumières, la pluie et **les drones**. On n'en parle pas : on y revient à la slide 22.
 
 ### Slide 18 · Lancer des rayons — 2 min 40 (→ 22:20)
 - **Maquette n° 12, le billard.** Au départ, zéro rebond. Déplacer la lampe : les pixels de l'écran s'éclairent et s'éteignent, les traits pointillés rouges sont les rayons bloqués (les ombres). Passer à 1 rebond, puis 2. Augmenter le nombre de pixels : le compteur de rayons s'envole.
 - **Sébastien** : « La solution, on la connaît depuis les années 80, mais elle était hors de prix : refaire le trajet de la lumière. À l'envers. De l'œil vers la scène. Un rayon par pixel. Il touche un objet, et il pose une question : "est-ce que je vois la lampe ?" Oui : je suis éclairé. Non : je suis à l'ombre. *(il déplace la lampe)* Les ombres sont justes, toutes seules. Et si le rayon rebondit, comme une boule de billard, j'ai les reflets, et la lumière qui passe d'un mur à l'autre. Un seul mécanisme pour tout. »
 - **Sébastien** : « 2018 : les premières cartes capables de le faire en temps réel. 2025 : Doom The Dark Ages ne démarre même plus sans. »
 - **Relais** : « Fred, chez toi, la lumière rebondit ? »
-- **Florian (terrain)** : `→` (TAA) : « On lisse les contours en accumulant les images. Retenez ce mot, accumuler. » `→` (brume) : « L'air lui-même s'éclaire. » `→` (illumination globale), caméra `F3` : « Et maintenant, levez la tête. La lumière tombe par la verrière sur le terrain orange… et le plafond, vingt mètres plus haut, devient **orange**. La lumière a rebondi. » `S` deux fois pour l'avant / après. Revenir en `F1`.
+- **Florian (terrain)** : preset `4`, puis `→` (TAA) : « On lisse les contours en accumulant les images. Retenez ce mot, accumuler. » `→` (brume) : « L'air lui-même s'éclaire. » `→` (illumination globale), caméra `F3` : « Et maintenant, levez la tête. La lumière tombe par la verrière sur le terrain orange… et le plafond, vingt mètres plus haut, devient **orange**. La lumière a rebondi. » `S` deux fois pour l'avant / après. Revenir en `F1`.
 
 ### Slide 19 · Un rayon par pixel : du bruit — 3 min 05 (→ 25:25)
 Troisième moment clé : on referme la boucle.
@@ -215,12 +228,13 @@ On n'a pas le temps d'en faire une notion : on l'évoque, d'une phrase chacun.
 Le chrono (`T`) passe au rouge quand on a plus de 20 secondes de retard sur la slide en cours. Dans l'ordre, ce qu'on coupe :
 
 1. **Les passages par le Lab** (`Tab`) : slide 10 et slide 22. Gain : 40 s chacun. Ils sont déjà hors minutage.
-2. **Slide 6** (CPU / GPU) : laisser la course tourner et dire une seule phrase. Gain : 25 s.
-3. **Slide 8** (triangle) : sauter la maquette, garder l'hologramme de Florian. Gain : 30 s.
-4. **Slide 20** (boîte à outils) : la passer en dix secondes, la slide 21 redit l'essentiel. Gain : 1 min.
-5. **Slide 22** (compute shader) : la passer sans un mot, droit au merci. Gain : 30 s.
+2. **Slide 5** : ne pas cliquer « Et en 1999 ? ». Gain : 15 s.
+3. **Slide 6** (CPU / GPU) : laisser la course tourner et dire une seule phrase. Gain : 25 s.
+4. **Slide 7** (triangle) : sauter la maquette, garder l'hologramme de Florian. Gain : 30 s.
+5. **Slide 20** (boîte à outils) : la passer en dix secondes, la slide 21 redit l'essentiel. Gain : 1 min.
+6. **Slide 22** (compute shader) : la passer sans un mot, droit au merci. Gain : 30 s.
 
-Ne jamais couper : la slide 10 (Perlin), le tampon SSAO brut de la slide 14, le bake bruité de la slide 19. Ce sont les trois temps du titre.
+Ne jamais couper : la slide 10 (Perlin), le tampon SSAO brut de la slide 15, le bake bruité de la slide 19. Ce sont les trois temps du titre.
 
 ## Pour les questions
 
@@ -235,6 +249,8 @@ Ne jamais couper : la slide 10 (Perlin), le tampon SSAO brut de la slide 14, le 
 
 Vérifiées le 16/11/2026 (recherche web) : bruit de Perlin 1983, Tron, Oscar technique 1997 · GeForce 3, 2001 · GeForce 8800 GTX, novembre 2006 · SSAO de Crysis, 2007 · CUDA, 2007 · compute shaders de DirectX 11, octobre 2009 · modèle de Disney (Burley), 2012 · GeForce RTX, août 2018 · Doom The Dark Ages, 2025, lancer de rayons obligatoire · RenderMan, 1988.
 
-Non revérifiées ce jour-là, mais communément admises : Quake et la 3dfx Voodoo (1996), Doom 3 (2004).
+Vérifiées le 21/11/2026 (Wikipédia) : 3dfx Voodoo Graphics, première carte en octobre 1996 · GeForce 256, octobre 1999, transformation et éclairage calculés par la carte (« les PC faisaient la T&L en logiciel jusqu'en 1999 »).
+
+Non revérifiées, mais communément admises : Quake (1996), Doom 3 (2004).
 
 À ne pas dire : « le premier jeu en ray tracing date de 2018 » (trop précis pour ce qu'on a vérifié). Dire « les premières cartes grand public capables de le faire ».
