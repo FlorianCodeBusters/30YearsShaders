@@ -1,0 +1,675 @@
+<title>Fiche Shaders 2016-2026</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Mise en page : une colonne de lecture, chaque effet = texte à gauche, figure interactive à droite. */
+:root {
+  --bg: #f2f3f7;
+  --surface: #ffffff;
+  --ink: #15171f;
+  --muted: #565c6e;
+  --line: #d9dce6;
+  --pink: #c81e68;
+  --cyan: #0a7f98;
+  --code: #e8eaf2;
+  --soft-pink: #fbe3ee;
+  --soft-cyan: #dff2f6;
+  --warn: #8a5a00;
+  --warn-bg: #fff1d0;
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1016; --surface: #171a23; --ink: #e7e9f1; --muted: #9ba2b5; --line: #2a2f3e;
+    --pink: #ff5fa2; --cyan: #4fd3ec; --code: #1f2330; --soft-pink: #34172a; --soft-cyan: #102a31;
+    --warn: #f3c969; --warn-bg: #3a2c0c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1016; --surface: #171a23; --ink: #e7e9f1; --muted: #9ba2b5; --line: #2a2f3e;
+  --pink: #ff5fa2; --cyan: #4fd3ec; --code: #1f2330; --soft-pink: #34172a; --soft-cyan: #102a31;
+  --warn: #f3c969; --warn-bg: #3a2c0c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+.wrap { max-width: 1080px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3.2rem); letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: -0.01em; }
+h3 { font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-family: var(--font-body); font-weight: 600; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em; background: var(--code); padding: 0.1em 0.38em; border-radius: 4px; }
+a { color: var(--cyan); }
+header.top { padding-block: 56px 28px; display: grid; gap: 16px; }
+.kicker { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pink); }
+.lede { max-width: 62ch; color: var(--muted); font-size: 1.1rem; }
+.index { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.index a { text-decoration: none; font-size: 0.85rem; padding: 4px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); }
+.index a:hover { border-color: var(--pink); color: var(--pink); }
+section.effect { padding-block: 44px; border-top: 1px solid var(--line); display: grid; gap: 22px; }
+.head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.year { font-family: var(--font-mono); font-weight: 600; color: var(--bg); background: var(--ink); padding: 2px 10px; border-radius: 4px; font-size: 0.9rem; }
+.key { font-family: var(--font-mono); font-size: 0.8rem; border: 1px solid var(--muted); border-bottom-width: 3px; border-radius: 5px; padding: 1px 8px; color: var(--muted); }
+.lead { font-size: 1.15rem; max-width: 60ch; }
+.split { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+@media (max-width: 820px) { .split { grid-template-columns: minmax(0, 1fr); } }
+.text { display: grid; gap: 14px; min-width: 0; }
+.text ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.text h3 { margin-top: 6px; }
+.fig { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 10px; min-width: 0; margin: 0; }
+.fig figcaption, .cap { font-size: 0.85rem; color: var(--muted); }
+.fig svg { width: 100%; height: auto; display: block; }
+canvas { width: 100%; display: block; border-radius: 6px; background: #000; touch-action: none; }
+canvas.px { image-rendering: pixelated; }
+.row { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; font-size: 0.88rem; }
+.row label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.row input[type=range] { accent-color: var(--pink); flex: 1 1 140px; min-width: 100px; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.trio { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.pair div, .trio div { display: grid; gap: 4px; font-size: 0.78rem; color: var(--muted); }
+.stat { font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink); background: var(--code); padding: 6px 10px; border-radius: 6px; min-height: 2.4em; }
+.tip { border-left: 3px solid var(--pink); background: var(--soft-pink); padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+.tip b { color: var(--pink); }
+.godot { border-left: 3px solid var(--cyan); background: var(--soft-cyan); padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+.godot b { color: var(--cyan); }
+.vf { font-size: 0.68rem; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--warn); background: var(--warn-bg); padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
+.timeline { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.timeline div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 0.86rem; }
+.timeline b { display: block; font-family: var(--font-mono); color: var(--pink); font-size: 0.95rem; }
+footer { padding-block: 36px 60px; border-top: 1px solid var(--line); display: grid; gap: 16px; }
+svg .t { fill: var(--ink); font-family: var(--font-body); font-size: 12px; }
+svg .m { fill: var(--muted); font-family: var(--font-body); font-size: 11px; }
+svg .mono { fill: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+svg .box { fill: var(--surface); stroke: var(--muted); stroke-width: 1.5; }
+svg .prog { fill: var(--soft-pink); stroke: var(--pink); stroke-width: 2; }
+svg .gpu { fill: var(--soft-cyan); stroke: var(--cyan); stroke-width: 2; }
+svg .ln { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+svg .ac { stroke: var(--pink); stroke-width: 2; fill: none; }
+svg .cy { stroke: var(--cyan); stroke-width: 2; fill: none; }
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="kicker">Buster Conf · talk « 30 ans de poudre de Perlin »</div>
+  <h1>Partie 3 : 2016 → 2026<br>la lumière simulée</h1>
+  <p class="lede">On arrête de tricher avec la lumière, on la simule. Et l'accumulation, les débruiteurs et l'IA comblent l'écart de puissance. La fiche suit la frise de la démo, effet par effet, avec le code Godot. Les repères « à vérifier » signalent ce qu'il faut recouper avant une slide.</p>
+  <nav class="index" aria-label="Sommaire">
+    <a href="#rayons">Rastériser ou lancer des rayons</a><a href="#taa">TAA</a><a href="#fog">Brouillard volumétrique</a><a href="#gi">SDFGI + SSIL</a>
+    <a href="#fsr">FSR 2</a><a href="#rt">Lancer de rayons</a><a href="#bruit">Le fil du bruit</a><a href="#qa">Questions</a>
+  </nav>
+</header>
+
+<section class="effect" id="rayons" style="border-top:none">
+  <div class="head"><span class="year">2018 → 2026</span><h2>Rastériser ou lancer des rayons</h2></div>
+  <p class="lead">Jusqu'ici, on a projeté des triangles sur l'écran. Le lancer de rayons fait l'inverse : pour chaque pixel, il demande à la scène ce qu'on y voit.</p>
+  <figure class="fig">
+    <svg viewBox="0 0 760 210" role="img" aria-label="Rastérisation : du triangle vers les pixels. Lancer de rayons : du pixel vers la scène">
+      <text class="mono" x="0" y="14">RASTÉRISATION · pour chaque triangle, quels pixels ?</text>
+      <g>
+        <path class="ln" d="M60 60H300V190H60Z"/>
+        <path class="ln" style="stroke-dasharray:3 3" d="M120 60V190M180 60V190M240 60V190M60 105H300M60 150H300"/>
+        <path class="prog" d="M110 80L270 100L170 170Z"/>
+        <text class="m" x="60" y="52">écran (pixels)</text>
+        <path class="ac" d="M10 120H60"/><text class="m" x="0" y="140">triangle</text>
+        <text class="m" x="0" y="205">rapide, mais la lumière est une triche par effet (SSAO, SSR…)</text>
+      </g>
+      <text class="mono" x="400" y="14">LANCER DE RAYONS · pour chaque pixel, que voit-il ?</text>
+      <g>
+        <circle cx="410" cy="120" r="5" style="fill:var(--ink)"/><text class="m" x="400" y="142">œil</text>
+        <path class="ln" d="M500 60V190"/><text class="m" x="470" y="52">écran</text>
+        <path class="cy" d="M410 120L500 80L690 40"/>
+        <path class="cy" d="M410 120L500 120L650 120"/>
+        <path class="cy" d="M410 120L500 160L640 190"/>
+        <circle cx="660" cy="120" r="26" class="prog"/>
+        <path class="ac" d="M638 120L560 60"/><circle cx="545" cy="52" r="6" style="fill:#f2c230"/>
+        <text class="m" x="520" y="40">lumière : le rayon rebondit jusqu'à elle</text>
+        <text class="m" x="400" y="205">on simule la lumière, mais chaque pixel est un tirage : du bruit</text>
+      </g>
+    </svg>
+  </figure>
+  <div class="split">
+    <div class="text">
+      <h3>Ce qui change avec le matériel dédié</h3>
+      <ul>
+        <li>Les cartes <b>RTX</b> (NVIDIA, 2018) ont des unités qui accélèrent l'intersection « rayon contre triangles ». DirectX Raytracing (DXR) et Vulkan en exposent l'accès.</li>
+        <li>De <b>nouveaux types de shaders</b> apparaissent : <em>ray generation</em> (lance les rayons), <em>closest hit</em> (que faire quand on touche), <em>miss</em> (le rayon part dans le ciel), plus <em>any hit</em> et <em>intersection</em>.</li>
+        <li>Le <b>coût</b> : on ne peut lancer qu'un ou deux rayons par pixel et par image. L'image est donc <b>bruitée</b>. On l'efface avec des débruiteurs, de l'accumulation dans le temps et de l'IA (DLSS, <em>Ray Reconstruction</em>).</li>
+        <li>Aujourd'hui : du <b>path tracing</b> dans certains jeux, et du ray tracing <b>obligatoire</b> dans <em>Doom: The Dark Ages</em> (2025).</li>
+      </ul>
+      <h3>Dans la démo : pas de ray tracing matériel</h3>
+      <p>Godot n'a pas de ray tracing matériel en temps réel. La Partie 3 s'appuie donc sur quatre choses : le <b>TAA</b>, le <b>brouillard volumétrique</b>, la <b>GI temps réel (SDFGI + SSIL)</b> et un vrai <b>path tracer précalculé</b> (<code>LightmapGI</code>), échangé en direct entre sa version bruitée et sa version débruitée.</p>
+      <div class="tip"><b>À l'oral.</b> Le fil des captures : Quake (1996) → Doom 3 (2004) → Doom (2016) → Doom: The Dark Ages (2025). Même lignée, id Software, un tournant à chaque fois.</div>
+    </div>
+    <div class="timeline" style="grid-template-columns:1fr 1fr">
+      <div><b>2018</b>Cartes RTX, DXR. <em>Battlefield V</em> avec des reflets par rayons.</div>
+      <div><b>2019</b><em>Quake II RTX</em> : la lignée id Software repasse au lancer de rayons.</div>
+      <div><b>2020</b>Consoles avec ray tracing, DLSS 2. Le moteur Lumen d'Unreal 5 est annoncé.</div>
+      <div><b>2022</b>FSR 2 (AMD), XeSS (Intel).</div>
+      <div><b>2023</b><em>Cyberpunk 2077</em> en path tracing, DLSS 3.5 (Ray Reconstruction). WebGPU dans les navigateurs.</div>
+      <div><b>2025</b><em>Doom: The Dark Ages</em> : ray tracing obligatoire.</div>
+    </div>
+  </div>
+  <p class="cap"><span class="vf">à vérifier</span> toutes les dates de ce bloc avant de les mettre sur une slide.</p>
+</section>
+
+<section class="effect" id="taa">
+  <div class="head"><span class="year">2016</span><h2>TAA : l'anti-aliasing temporel</h2><span class="key">J</span></div>
+  <p class="lead">La caméra tremble d'une fraction de pixel à chaque image, et on accumule les images précédentes. Les escaliers disparaissent.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Comment ça marche</h3>
+      <ul>
+        <li>Un contour oblique, échantillonné au centre des pixels, donne des <b>escaliers</b> (<em>aliasing</em>) : chaque pixel est soit dedans, soit dehors.</li>
+        <li>Chaque image, on décale légèrement la grille d'échantillonnage (<em>jitter</em>, souvent une suite de Halton). Le même pixel voit un point un peu différent à chaque image.</li>
+        <li>On <b>mélange</b> l'image courante à l'historique (une moyenne qui oublie lentement). Au bout de quelques images, un pixel de bord vaut la proportion réelle de recouvrement : un contour doux.</li>
+        <li>Les vecteurs de mouvement permettent de savoir où était un pixel à l'image d'avant. Sans eux, un objet qui bouge laisse une <b>traînée</b> (<em>ghosting</em>).</li>
+      </ul>
+      <h3>Histoire</h3>
+      <p>Avant : le MSAA (des échantillons supplémentaires sur les bords des triangles), puis le FXAA (un flou intelligent, 2009). Le TAA devient la norme avec Unreal Engine 4 (Brian Karis, SIGGRAPH 2014) <span class="vf">à vérifier</span>. C'est aussi une première façon de <b>supprimer du bruit avec le temps</b> : c'est ce que fera tout le ray tracing.</p>
+      <div class="godot"><b>Dans Godot.</b> <code>features/2016/taa.gd</code> : <code>viewport.use_taa = true</code>, <b>sauf si FSR 2 est actif</b> (FSR 2 fait déjà son propre anti-aliasing temporel : les deux ne se cumulent pas). Piège : les drones n'ont pas de vecteurs de mouvement, ils laissent une légère traînée avec le TAA ou FSR 2.</div>
+    </div>
+    <figure class="fig">
+      <div class="pair">
+        <div>Une image (escaliers)<canvas id="taaA" class="px" width="36" height="22"></canvas></div>
+        <div>Images accumulées<canvas id="taaB" class="px" width="36" height="22"></canvas></div>
+      </div>
+      <div class="row"><label for="taaN">Images accumulées : <b id="taaNVal">8</b></label><input id="taaN" type="range" min="1" max="32" value="8"></div>
+      <figcaption>Une grille de 36 × 22 pixels, très agrandie : un disque et une ligne fine. À droite, la moyenne de N images dont la grille est décalée à chaque fois. Les marches se lissent sans qu'on ait ajouté un seul pixel.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="effect" id="fog">
+  <div class="head"><span class="year">2016</span><h2>Brouillard volumétrique</h2><span class="key">F</span></div>
+  <p class="lead">L'air lui-même est éclairé. Les néons et le projecteur dessinent des halos et des faisceaux dans la brume.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Comment ça marche</h3>
+      <ul>
+        <li>Le brouillard de 1996 colorait un objet selon sa distance. Ici, la brume est une <b>matière</b> : en chaque point du volume, une lumière peut y être renvoyée vers l'œil (<em>in-scattering</em>).</li>
+        <li>Pour chaque pixel, on <b>avance un point le long du regard</b> et on additionne, à chaque pas, la lumière qui arrive à cet endroit, multipliée par la densité de la brume.</li>
+        <li>Faire ce calcul pour chaque pixel serait trop cher. Godot et les autres moteurs découpent le champ de la caméra en un volume 3D de petites cases (des <em>froxels</em>), calculent la lumière dans ces cases, puis lisent le résultat <span class="vf">à vérifier</span>.</li>
+        <li>L'<b>anisotropie</b> règle la direction où la brume renvoie la lumière : proche de 0, dans tous les sens ; positive, surtout vers l'avant (les gouttelettes renvoient bien la lumière vers l'observateur qui regarde la lampe). La fonction classique est celle de <b>Henyey-Greenstein</b>.</li>
+      </ul>
+      <h3>Histoire</h3>
+      <p>Les « rayons de lumière » en espace écran datent de la fin des années 2000. Le volume en froxels est présenté par Ubisoft (<em>Assassin's Creed 4</em>, 2014, Bart Wronski) puis perfectionné par Frostbite (Sébastien Hillaire, 2015) <span class="vf">à vérifier</span>.</p>
+      <div class="godot"><b>Dans Godot.</b> <code>features/2016/volumetric_fog.gd</code> : <code>density = 0.014</code>, <code>anisotropy = 0.55</code>, portée 48 m, albédo bleuté. Deux injections importantes : <code>ambient_inject = 0.15</code> et <code>gi_inject = 0.4</code> (la lumière indirecte éclaire aussi la brume). La lanterne de 2004 envoie sa lumière dans la brume (<code>light_volumetric_fog_energy</code>).</div>
+    </div>
+    <div style="display:grid;gap:14px;min-width:0">
+      <figure class="fig">
+        <canvas id="fogCanvas" width="160" height="100" class="px" aria-label="Faisceau d'un projecteur dans une brume de densité réglable"></canvas>
+        <div class="row"><label for="fogD">Densité : <b id="fogDVal">0.014</b></label><input id="fogD" type="range" min="0" max="0.04" step="0.001" value="0.014"></div>
+        <div class="row"><label for="fogG">Anisotropie : <b id="fogGVal">0.55</b></label><input id="fogG" type="range" min="-0.8" max="0.9" step="0.05" value="0.55"></div>
+        <figcaption>Un projecteur au fond, braqué vers le sol, vu depuis la caméra. Le calcul fait avancer le regard dans la brume, pas à pas. Mets la densité à 0 : plus de faisceau. Mets l'anisotropie à négatif : la lampe qu'on regarde s'éteint.</figcaption>
+      </figure>
+      <figure class="fig">
+        <svg viewBox="0 0 160 160" role="img" aria-label="Lobe de diffusion de Henyey-Greenstein">
+          <path class="ln" d="M10 80H150M80 10V150"/>
+          <path id="hgPath" class="ac" d="M80 80"/>
+          <text class="m" x="104" y="76">avant →</text><text class="m" x="12" y="76">← arrière</text>
+          <text class="m" x="6" y="14">où la brume renvoie la lumière</text>
+        </svg>
+        <figcaption>Le lobe de diffusion pour l'anisotropie choisie. La lumière arrive de la gauche et continue vers la droite.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="effect" id="gi">
+  <div class="head"><span class="year">2020</span><h2>Illumination globale : SDFGI et SSIL</h2><span class="key">S</span></div>
+  <p class="lead">La lumière rebondit. Le clair de lune qui tombe dans l'atrium éclaire les murs en face, et les néons éclairent enfin pour de vrai, sans fausses lumières.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Pourquoi c'est difficile</h3>
+      <p>La lumière directe, c'est « la lampe voit-elle ce point ? ». L'<b>illumination globale</b> demande aussi « quelle lumière vient des <em>autres surfaces</em> ? » : un sol orange éclairé renvoie du orange sur le plafond. Chaque surface devient une source. En 2016, on la précalculait (lightmaps). En 2020, on la calcule en temps réel avec des approximations.</p>
+      <h3>SDFGI : la scène devient une fonction</h3>
+      <ul>
+        <li>Une <b>SDF</b> (<em>signed distance field</em>) répond à une seule question : « à quelle distance est la surface la plus proche de ce point ? ».</li>
+        <li>Godot en construit une version en voxels autour de la caméra, en plusieurs <b>cascades</b> (4 ici, la plus fine à cases de 20 cm). Il y accroche des sondes de lumière.</li>
+        <li>Un rayon peut alors avancer <b>à grands pas</b> (la distance libre) sans rien rater : c'est le <em>sphere tracing</em>, la figure de droite. C'est ce qui rend les rebonds abordables.</li>
+        <li>Le sol des rebonds se « nourrit » des images précédentes (<code>bounce_feedback</code>), ce qui économise des calculs mais ajoute de la latence.</li>
+      </ul>
+      <h3>SSIL : l'occlusion ambiante qui rapporte la couleur</h3>
+      <p>Le SSIL (<em>screen-space indirect lighting</em>) est un cousin du SSAO : on regarde les pixels voisins, et au lieu de seulement assombrir, on rapporte leur couleur. Il corrige les détails fins que la SDFGI ne voit pas, avec la même limite : ce qui n'est pas à l'écran n'existe pas.</p>
+      <h3>Histoire</h3>
+      <p>Le <em>Cornell box</em> (1984) est le décor historique pour tester la GI. Côté temps réel : <em>light propagation volumes</em> (Crytek, 2009), <em>voxel cone tracing</em> (Crassin, 2011), les sondes irradiantes (DDGI, 2019), puis les SDF de <em>Dreams</em> (2015, Alex Evans) et de Lumen (Unreal 5, 2021-2022). SDFGI vient de Juan Linietsky pour Godot 4 <span class="vf">à vérifier</span>.</p>
+      <div class="godot"><b>Dans Godot.</b> <code>features/2016/sdfgi.gd</code> : <code>sdfgi_cascades = 4</code>, <code>sdfgi_min_cell_size = 0.2</code>, <code>use_occlusion</code>, lecture de la lumière du ciel, <code>y_scale = 100 %</code> (atrium tout en hauteur) ; SSIL de rayon 4 m. <b>Désactivée quand un bake LightmapGI est actif</b> : la lumière indirecte vient alors du bake. <code>update_neon_lights()</code> éteint les lumières d'appoint : les néons éclairent par la GI.</div>
+    </div>
+    <div style="display:grid;gap:14px;min-width:0">
+      <figure class="fig">
+        <svg viewBox="0 0 330 250" role="img" aria-label="Coupe de l'atrium : le clair de lune entre par la verrière, éclaire le terrain orange, et l'orange remonte sur le plafond">
+          <path class="ln" d="M20 20H120M210 20H310V200H20V20" />
+          <rect x="120" y="14" width="90" height="10" rx="2" style="fill:var(--cyan);opacity:.35"/>
+          <text class="m" x="122" y="12">verrière</text>
+          <path d="M150 24L130 190M180 24L200 190" class="cy" style="stroke-dasharray:4 3"/>
+          <circle cx="165" cy="3" r="3" style="fill:#f2c230"/>
+          <text class="m" x="176" y="8">clair de lune</text>
+          <rect x="110" y="190" width="110" height="10" style="fill:#f08a24"/>
+          <text class="t" x="165" y="220" text-anchor="middle">terrain orange</text>
+          <path class="ac" d="M130 188L70 40M200 188L260 40M165 188L165 40" style="stroke-dasharray:2 4"/>
+          <rect x="30" y="20" width="85" height="8" style="fill:#f08a24;opacity:.65"/>
+          <rect x="215" y="20" width="85" height="8" style="fill:#f08a24;opacity:.65"/>
+          <text class="m" x="30" y="48">plafond orangé</text>
+          <text class="m" x="215" y="48">avec la GI</text>
+          <text class="m" x="20" y="242">sans GI : seul le terrain est éclairé, le plafond reste sombre</text>
+        </svg>
+        <figcaption>La mise en scène de la démo (<b>F3</b>, vers le ciel, est le plan le plus parlant). Le plafond autour de la verrière est 19 m plus haut que le terrain.</figcaption>
+      </figure>
+      <figure class="fig">
+        <canvas id="sdfCanvas" width="320" height="200" aria-label="Sphere tracing : un rayon avance à grands pas dans un champ de distances"></canvas>
+        <div class="row"><label for="sdfA">Angle du rayon : <b id="sdfAVal">-8</b>°</label><input id="sdfA" type="range" min="-30" max="25" step="1" value="-8"></div>
+        <div class="stat" id="sdfStat"></div>
+        <figcaption>Chaque cercle est la « distance libre » en un point : le rayon peut sauter jusqu'à son bord sans rien toucher. Près d'un obstacle les sauts rétrécissent. C'est le principe du shader <code>2020_champ_de_distances.gdshader</code> du Lab.</figcaption>
+      </figure>
+    </div>
+  </div>
+  <div class="split">
+    <div class="text">
+      <h3>Pièges de la mise en scène</h3>
+      <ul>
+        <li><b>Le toit fait 1,5 m d'épaisseur.</b> La SDFGI travaille avec des cases de 40 à 80 cm à cette hauteur : avec 30 cm de dalle, la lune « traversait » le toit dans sa représentation et tout l'atrium surexposait.</li>
+        <li><b>Seules les grandes enseignes éclairent par la GI.</b> Les petites sources blanches (<code>Neon_06</code>, <code>10</code>, <code>11</code>, <code>13</code>, <code>15</code>) sont exclues, sinon leur blanc noie le rebond orange.</li>
+        <li>Pour voir ce que la SDFGI perçoit : lancer Godot avec <code>--debug-draw=16</code> en mode capture.</li>
+      </ul>
+    </div>
+    <div class="text">
+      <h3>Ce que montre le Lab</h3>
+      <p>Le shader du Lab est court : une fonction <code>scene(p)</code> qui renvoie la distance au plus proche (sol, boule, cube arrondi, anneau), la <b>normale</b> comme direction où la distance augmente le plus vite, une <b>ombre douce</b> (<code>min(k × distance ÷ parcouru)</code> : plus le rayon frôle un objet, plus il s'assombrit) et une <b>occlusion presque gratuite</b> (la distance libre juste au-dessus de la surface). Un interrupteur (<code>montrer_les_pas</code>) colore selon le nombre de pas.</p>
+    </div>
+  </div>
+</section>
+
+<section class="effect" id="fsr">
+  <div class="head"><span class="year">2022</span><h2>FSR 2 : l'upscaling temporel</h2><span class="key">Z</span></div>
+  <p class="lead">On calcule l'image en plus petit (67 %), puis on la reconstruit en pleine définition à partir des images précédentes. On achète de la puissance avec de l'accumulation dans le temps.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Comment ça marche</h3>
+      <ul>
+        <li>À 67 % par côté, on ne calcule que <b>45 % des pixels</b> (0,67² ≈ 0,45). C'est presque deux fois moins de travail.</li>
+        <li>Agrandir simplement cette image la rendrait floue (interpolation). FSR 2 fait mieux : chaque image est rendue avec un léger décalage (comme le TAA), et il <b>replace chaque échantillon à sa vraie position</b> dans une image plus grande.</li>
+        <li>Il s'aide des <b>vecteurs de mouvement</b> et de la profondeur pour savoir quels échantillons des images précédentes sont encore valables, et rejette les autres.</li>
+        <li>Même famille que le TAA : c'est un TAA qui, en plus, remonte la définition.</li>
+      </ul>
+      <h3>Histoire</h3>
+      <p>NVIDIA lance le DLSS en 2018, puis sa version temporelle (DLSS 2) en 2020 : un réseau de neurones fait la reconstruction. AMD répond avec FSR 1 (2021, spatial) puis <b>FSR 2</b> (2022, temporel, <em>sans IA</em>, ouvert et utilisable sur toutes les cartes). Intel sort XeSS la même année. DLSS 3.5 ajoute la <em>Ray Reconstruction</em> en 2023 : l'IA débruite le path tracing <span class="vf">à vérifier</span>.</p>
+      <div class="godot"><b>Dans Godot.</b> <code>features/2016/fsr2.gd</code> : FSR 2 coupe le TAA (<code>ctx.manager.refresh("taa")</code>) puis appelle <code>ctx.update_scaling()</code>, qui arbitre aussi avec le rendu 640×480 de 1996. C'est le <b>preset 2026</b>. Pour la machine de présentation : les presets 2016 et 2026 demandent une carte dédiée en 1080p (mesuré à 9-20 images par seconde sur un portable à GPU intégré) : leviers <b>F7</b> (qualité « portable »), <b>Z</b> (FSR 2) et le nombre de lumières d'appoint.</div>
+      <div class="tip"><b>À l'oral.</b> « Même idée que le DLSS : acheter de la puissance avec de l'accumulation temporelle. Le TAA lissait les bords, FSR 2 lisse et agrandit. »</div>
+    </div>
+    <figure class="fig">
+      <div class="trio">
+        <div>Calculé (petit)<canvas id="fsrA" class="px" width="96" height="60"></canvas></div>
+        <div>Agrandi simple<canvas id="fsrB" class="px" width="96" height="60"></canvas></div>
+        <div>Reconstruit<canvas id="fsrC" class="px" width="96" height="60"></canvas></div>
+      </div>
+      <div class="row"><label for="fsrN">Images accumulées : <b id="fsrNVal">12</b></label><input id="fsrN" type="range" min="1" max="32" value="12"></div>
+      <div class="stat" id="fsrStat"></div>
+      <figcaption>Image cible : 96 × 60. On ne calcule qu'une grille 64 × 40 (facteur 1,5, comme FSR 2 en mode « qualité »). Au centre, l'agrandissement simple : flou, rayures perdues. À droite, les échantillons de N images, décalés, replacés à leur vraie position : les rayures reviennent.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="effect" id="rt">
+  <div class="head"><span class="year">2018 → 2026</span><h2>Lancer de rayons : le bake bruité, puis débruité</h2><span class="key">K</span></div>
+  <p class="lead">Godot n'a pas de ray tracing matériel en temps réel, mais son <code>LightmapGI</code> est un vrai path tracer. On montre son résultat brut, plein de bruit, puis le même, débruité.</p>
+  <div class="split">
+    <div class="text">
+      <h3>Comment ça marche : le path tracing</h3>
+      <ul>
+        <li>Pour chaque point, on lance un rayon. Il touche une surface, <b>rebondit dans une direction au hasard</b>, et ainsi de suite jusqu'à trouver une lumière (ou le ciel).</li>
+        <li>Chaque surface touchée <b>teinte</b> la lumière qui passe (<code>filtre *= couleur</code>) et l'émission d'un néon est ajoutée quand on le touche.</li>
+        <li>Avec <b>1 rayon par pixel</b>, deux pixels voisins tirent des hasards différents : l'image est bruitée. Ce n'est pas un défaut de calcul, c'est une <b>erreur statistique</b>.</li>
+        <li>Trois remèdes : <b>plus de rayons</b> (le bruit baisse comme 1 ÷ √N : quatre fois plus de rayons pour deux fois moins de bruit), <b>accumuler</b> les images dans le temps, ou <b>débruiter</b> (un filtre, ou une IA, qui s'aide de la normale et de l'albédo).</li>
+      </ul>
+      <h3>Histoire</h3>
+      <p>Le lancer de rayons vient d'Appel (1968) et de Whitted (1980). Kajiya décrit l'équation de rendu et le <b>path tracing</b> en 1986. Les studios d'animation l'adoptent peu à peu (Pixar, <em>Cars</em> en 2006 pour le lancer de rayons ; Disney avec Hyperion, 2013). Pour les débruiteurs : SVGF (2017), Open Image Denoise (Intel, 2019), puis l'IA (DLSS Ray Reconstruction, 2023) <span class="vf">à vérifier</span>.</p>
+      <div class="godot"><b>Dans Godot.</b> <code>features/2016/rt_bake.gd</code> échange deux fichiers de <code>bakes/</code> par <code>ctx.update_lightmap()</code>. <b>Bruité</b> : <code>lm_2026_bruite.lmbake</code>, un texel tous les 10 cm, qualité basse, <b>sans débruiteur</b>. <b>Débruité</b> : <code>lm_2026_debruite.lmbake</code>, mêmes réglages <b>avec</b> le débruiteur (JNLM, réglé fort). Dans les bakes, ce sont la lune et les grandes enseignes qui éclairent ; leur émission est multipliée par 6 pendant le calcul (<code>NEON_BOOST</code>), sinon des tubes si fins laissent l'atrium dans le noir. Les fausses lumières sont éteintes. Recalcul : menu <i>Projet → Outils → « Démo : recalculer les 3 lightmaps »</i> (environ 1 min 30), à refaire si la géométrie, les néons ou la lune changent.</div>
+      <div class="tip"><b>À l'oral.</b> Dis qu'il s'agit d'un <b>bake précalculé</b>, échangé en direct, pas de temps réel. Le sujet de la slide n'est pas la vitesse : c'est le <b>bruit</b>. Les néons, petites sources très lumineuses, sont très bruités : c'est ce qui rend l'avant / après aussi lisible.</div>
+    </div>
+    <figure class="fig">
+      <canvas id="ptCanvas" class="px" width="128" height="80" aria-label="Petit path tracer : trois boules, deux néons, un sol"></canvas>
+      <div class="row"><label for="ptN">Rayons par pixel : <b id="ptNVal">1</b></label><input id="ptN" type="range" min="1" max="32" value="1"></div>
+      <div class="row">
+        <label><input type="checkbox" id="ptAcc"> accumuler les images</label>
+        <label><input type="checkbox" id="ptDen"> débruiter</label>
+        <span class="mono" id="ptFrames"></span>
+      </div>
+      <figcaption>La même scène que le shader <code>2018_path_tracing.gdshader</code> du Lab (trois boules, deux boules-néons rose et cyan, un sol), calculée ici sur le processeur. Passe de 1 à 32 rayons, ou coche « accumuler » : le bruit s'efface. Le « débruitage » est un simple filtre qui garde les contours ; les vrais utilisent aussi la normale et l'albédo.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="effect" id="bruit">
+  <div class="head"><span class="year">1983 → 2026</span><h2>Le fil rouge : le bruit</h2></div>
+  <p class="lead">En 30 ans, on est passés d'ajouter du bruit pour faire réaliste… à se battre pour l'enlever.</p>
+  <figure class="fig">
+    <svg viewBox="0 0 760 170" role="img" aria-label="Le bruit à travers trois époques : on l'ajoute, on le subit, on le produit et on l'enlève">
+      <rect class="prog" x="0" y="20" width="240" height="110" rx="10"/>
+      <text class="mono" x="14" y="42">2001 → 2006</text>
+      <text class="t" x="14" y="68" style="font-size:16px;font-weight:600">On l'ajoute</text>
+      <text class="m" x="14" y="90">Perlin : du hasard doux</text><text class="m" x="14" y="106">pour faire vrai (eau, néon).</text>
+      <rect class="box" x="260" y="20" width="240" height="110" rx="10"/>
+      <text class="mono" x="274" y="42">2007</text>
+      <text class="t" x="274" y="68" style="font-size:16px;font-weight:600">On le subit</text>
+      <text class="m" x="274" y="90">SSAO : des échantillons au hasard,</text><text class="m" x="274" y="106">on floute pour le cacher.</text>
+      <rect class="gpu" x="520" y="20" width="240" height="110" rx="10"/>
+      <text class="mono" x="534" y="42">2018 → 2026</text>
+      <text class="t" x="534" y="68" style="font-size:16px;font-weight:600">Il est produit, on l'enlève</text>
+      <text class="m" x="534" y="90">Ray tracing : un rayon par pixel,</text><text class="m" x="534" y="106">TAA, accumulation, débruiteur, IA.</text>
+      <path class="ln" d="M240 75h20M500 75h20"/>
+    </svg>
+  </figure>
+  <div class="split">
+    <div class="text">
+      <h3>Passages de relais, mot pour mot depuis le plan</h3>
+      <ul>
+        <li>Perlin : « du hasard <em>doux</em>, chaque point ressemble à ses voisins ». On l'ajoute pour faire vrai.</li>
+        <li>SSAO : « première fois que le bruit change de camp ».</li>
+        <li>Ray tracing : « on arrête de tricher avec la lumière, on la simule », et le bruit devient le prix à payer.</li>
+        <li>Fin du talk : la même scène en 1996, puis en 2026. « Tout ce que vous avez vu ce soir est un shader, y compris la version 1996, qu'on a simulée. »</li>
+      </ul>
+    </div>
+    <div class="text">
+      <h3>La précision à garder pour les questions</h3>
+      <p><b>Ce ne sont pas les mêmes bruits.</b> Perlin est une fonction déterministe et lisse. Le bruit du ray tracing est une erreur statistique. Le jeu de mots repose sur le fait que les deux sont « du hasard ». Le « 15/15 » du plan est une image : la bascule s'amorce vers 2007-2014 (SSAO, anti-aliasing temporel) et explose en 2018 avec RTX.</p>
+    </div>
+  </div>
+</section>
+
+<section class="effect" id="qa">
+  <div class="head"><h2>Questions probables du public</h2></div>
+  <div class="split">
+    <div class="text">
+      <ul>
+        <li><b>« Godot fait du ray tracing ? »</b> Pas en matériel, pas en temps réel. Son lightmapper est un path tracer (calculé à l'avance sur le GPU), et la SDFGI approche la lumière indirecte avec des champs de distances.</li>
+        <li><b>« Votre bake, ce n'est pas du temps réel. »</b> Exact, et c'est dit : il est précalculé et échangé en direct. La slide parle de <em>bruit</em>, pas de vitesse.</li>
+        <li><b>« FSR 2 ou DLSS ? »</b> Même principe temporel. DLSS utilise un réseau de neurones sur cartes NVIDIA, FSR 2 un algorithme classique, ouvert, qui marche partout.</li>
+        <li><b>« Pourquoi un toit de 1,5 m ? »</b> Parce que les voxels de la SDFGI font 40 à 80 cm à cette hauteur : une dalle fine « fuit ».</li>
+        <li><b>« La démo tourne comment ? »</b> Sur un portable à GPU intégré, 9 à 20 images par seconde en 2016 et 2026 : à tester sur la machine de présentation.</li>
+      </ul>
+    </div>
+    <div class="text">
+      <h3>Dates et faits à vérifier avant une slide</h3>
+      <ul>
+        <li>RTX 2018, <em>Battlefield V</em>, <em>Quake II RTX</em> 2019, consoles et DLSS 2 en 2020.</li>
+        <li>FSR 2 et XeSS (2022), <em>Cyberpunk 2077</em> path tracing et DLSS 3.5 (2023).</li>
+        <li><em>Doom: The Dark Ages</em> (2025) et ray tracing obligatoire.</li>
+        <li>TAA : Karis 2014. Froxels : Wronski 2014, Hillaire 2015.</li>
+        <li>GI : Cornell box 1984, Crassin 2011, DDGI 2019, Dreams 2015, Lumen 2021-2022, SDFGI.</li>
+        <li>Appel 1968, Whitted 1980, Kajiya 1986, Hyperion 2013, SVGF 2017, OIDN 2019.</li>
+      </ul>
+      <p class="cap">Tout ce qui concerne le code vient de <code>Demo-Godot/</code>, lu le 18/11/2026. Non relus : <code>DemoContext.update_lightmap()</code> et <code>update_scaling()</code>, <code>core/quality.gd</code> et le plugin <code>addons/demo_bakes</code> (le détail des bakes vient du README).</p>
+    </div>
+  </div>
+</section>
+</div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var T = 0, anims = [];
+  function fract(x) { return x - Math.floor(x); }
+  function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+  function $(id) { return document.getElementById(id); }
+  function ctxOf(id) { var c = $(id); return [c, c.getContext('2d')]; }
+  function halton(i, b) { var f = 1, r = 0; while (i > 0) { f /= b; r += f * (i % b); i = Math.floor(i / b); } return r; }
+  function reg(el, draw) {
+    var a = { el: el, draw: draw, vis: false };
+    anims.push(a);
+    if ('IntersectionObserver' in window) { new IntersectionObserver(function (e) { a.vis = e[0].isIntersecting; }).observe(el); } else { a.vis = true; }
+    return a;
+  }
+  function loop(now) {
+    if (!reduce) { T = now / 1000; for (var i = 0; i < anims.length; i++) if (anims[i].vis) anims[i].draw(T); }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  /* ---------- TAA ---------- */
+  (function () {
+    var A = ctxOf('taaA'), B = ctxOf('taaB'), W = 36, H = 22;
+    function inside(u, v) {
+      var dx = u - 13, dy = v - 11;
+      if (dx * dx + dy * dy < 8.3 * 8.3) return true;
+      // ligne fine de (22,20) à (34,2)
+      var x0 = 22, y0 = 20, x1 = 34, y1 = 2, vx = x1 - x0, vy = y1 - y0, l2 = vx * vx + vy * vy;
+      var t = clamp(((u - x0) * vx + (v - y0) * vy) / l2, 0, 1), px = x0 + t * vx - u, py = y0 + t * vy - v;
+      return px * px + py * py < 0.75 * 0.75;
+    }
+    var fg = [255, 95, 162], bg = [16, 20, 38];
+    function draw() {
+      var N = +$('taaN').value; $('taaNVal').textContent = N;
+      var ia = A[1].createImageData(W, H), ib = B[1].createImageData(W, H);
+      for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+        var i = (y * W + x) * 4, one = inside(x + 0.5, y + 0.5) ? 1 : 0, acc = 0;
+        for (var k = 1; k <= N; k++) acc += inside(x + 0.5 + halton(k, 2) - 0.5, y + 0.5 + halton(k, 3) - 0.5) ? 1 : 0;
+        acc /= N;
+        for (var c = 0; c < 3; c++) {
+          ia.data[i + c] = bg[c] + (fg[c] - bg[c]) * one;
+          ib.data[i + c] = bg[c] + (fg[c] - bg[c]) * acc;
+        }
+        ia.data[i + 3] = ib.data[i + 3] = 255;
+      }
+      A[1].putImageData(ia, 0, 0); B[1].putImageData(ib, 0, 0);
+    }
+    $('taaN').addEventListener('input', draw);
+    draw();
+  })();
+
+  /* ---------- brouillard volumétrique ---------- */
+  (function () {
+    var D = ctxOf('fogCanvas'), W = 160, H = 100;
+    var cam = [0, 1.6, 0], lamp = [0, 4.2, 9], cosCone = Math.cos(26 * Math.PI / 180);
+    function hg(c, g) { return (1 - g * g) / (4 * Math.PI * Math.pow(1 + g * g - 2 * g * c, 1.5)); }
+    function draw() {
+      var sigma = +$('fogD').value, g = +$('fogG').value;
+      $('fogDVal').textContent = sigma.toFixed(3); $('fogGVal').textContent = g.toFixed(2);
+      var img = D[1].createImageData(W, H);
+      for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+        var dx = (x / W - 0.5) * 1.6, dy = -(y / H - 0.5), dz = 1, dl = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        dx /= dl; dy /= dl; dz /= dl;
+        var sum = 0;
+        for (var t = 0.5; t < 20; t += 0.5) {
+          var px = cam[0] + dx * t, py = cam[1] + dy * t, pz = cam[2] + dz * t;
+          if (py < 0) break;
+          var tx = px - lamp[0], ty = py - lamp[1], tz = pz - lamp[2], d = Math.sqrt(tx * tx + ty * ty + tz * tz);
+          var cc = -ty / d;
+          var cone = clamp((cc - cosCone) / 0.04, 0, 1);
+          if (cone <= 0) continue;
+          var cosT = (tx * -dx + ty * -dy + tz * -dz) / d;
+          sum += sigma * hg(cosT, g) * cone / (1 + 0.04 * d * d) * 0.5;
+        }
+        var v = 1 - Math.exp(-sum * 90), i = (y * W + x) * 4;
+        img.data[i] = 10 + 240 * v; img.data[i + 1] = 13 + 215 * v; img.data[i + 2] = 26 + 170 * v; img.data[i + 3] = 255;
+      }
+      D[1].putImageData(img, 0, 0);
+      D[1].fillStyle = '#fff'; D[1].beginPath(); D[1].arc(W / 2, H * (0.5 - (lamp[1] - cam[1]) / 9), 2.5, 0, 6.2832); D[1].fill();
+      // lobe de Henyey-Greenstein
+      var pts = '', max = 0, i2, ang;
+      for (i2 = 0; i2 <= 72; i2++) { ang = i2 / 72 * 2 * Math.PI; max = Math.max(max, hg(Math.cos(ang), g)); }
+      for (i2 = 0; i2 <= 72; i2++) {
+        ang = i2 / 72 * 2 * Math.PI;
+        var r = 62 * hg(Math.cos(ang), g) / max;
+        pts += (i2 ? 'L' : 'M') + (80 + r * Math.cos(ang)).toFixed(1) + ' ' + (80 - r * Math.sin(ang)).toFixed(1);
+      }
+      $('hgPath').setAttribute('d', pts + 'Z');
+    }
+    ['fogD', 'fogG'].forEach(function (id) { $(id).addEventListener('input', draw); });
+    draw();
+  })();
+
+  /* ---------- sphere tracing dans un champ de distances ---------- */
+  (function () {
+    var D = ctxOf('sdfCanvas'), cv = D[0], g = D[1];
+    var C = [[130, 130, 34], [215, 72, 26], [245, 150, 20], [80, 62, 16]];
+    function sdf(x, y) {
+      var d = 188 - y;
+      for (var i = 0; i < C.length; i++) d = Math.min(d, Math.hypot(x - C[i][0], y - C[i][1]) - C[i][2]);
+      return d;
+    }
+    function draw() {
+      var a = +$('sdfA').value; $('sdfAVal').textContent = a;
+      g.fillStyle = '#0b0e1a'; g.fillRect(0, 0, cv.width, cv.height);
+      g.fillStyle = '#26304e'; g.strokeStyle = '#ff5fa2'; g.lineWidth = 1.5;
+      for (var i = 0; i < C.length; i++) { g.beginPath(); g.arc(C[i][0], C[i][1], C[i][2], 0, 6.2832); g.fill(); g.stroke(); }
+      g.fillRect(0, 188, cv.width, 12); g.beginPath(); g.moveTo(0, 188); g.lineTo(cv.width, 188); g.stroke();
+      var ox = 10, oy = 120, ang = a * Math.PI / 180, dx = Math.cos(ang), dy = -Math.sin(ang);
+      var x = ox, y = oy, steps = 0, hit = false;
+      g.strokeStyle = 'rgba(79,211,236,0.5)'; g.lineWidth = 1;
+      for (var s = 0; s < 40; s++) {
+        var d = sdf(x, y);
+        if (d < 0.6) { hit = true; break; }
+        g.beginPath(); g.arc(x, y, d, 0, 6.2832); g.stroke();
+        g.fillStyle = '#4fd3ec'; g.fillRect(x - 1.5, y - 1.5, 3, 3);
+        x += dx * d; y += dy * d; steps++;
+        if (x > cv.width + 20 || x < -20 || y < -20 || y > cv.height + 20) break;
+      }
+      g.fillStyle = hit ? '#4dff7a' : '#8890aa'; g.beginPath(); g.arc(x, y, 4, 0, 6.2832); g.fill();
+      g.fillStyle = '#e7e9f1'; g.beginPath(); g.arc(ox, oy, 4, 0, 6.2832); g.fill();
+      var len = Math.hypot(x - ox, y - oy);
+      $('sdfStat').textContent = steps + ' pas pour parcourir ' + Math.round(len) + ' px' + (hit ? ' jusqu\'à l\'obstacle' : ' sans rien toucher') + ' (au lieu de ' + Math.round(len) + ' pas d\'un pixel).';
+    }
+    $('sdfA').addEventListener('input', draw);
+    draw();
+  })();
+
+  /* ---------- FSR : reconstruction temporelle ---------- */
+  (function () {
+    var A = ctxOf('fsrA'), B = ctxOf('fsrB'), C = ctxOf('fsrC');
+    var HW = 96, HH = 60, R = 1.5, LW = Math.round(HW / R), LH = Math.round(HH / R);
+    function scene(u, v) {
+      var dx = u - 48, dy = v - 30, r = Math.sqrt(dx * dx + dy * dy);
+      if (r > 14 && r < 22) return [255, 95, 162];
+      if (r <= 14) return Math.sin(u * 1.9) > 0 ? [79, 211, 236] : [16, 20, 38];
+      if (Math.abs((u - v * 1.4) % 17 - 8) < 0.8) return [140, 150, 180];
+      return [16, 20, 38];
+    }
+    var low = document.createElement('canvas'); low.width = LW; low.height = LH;
+    function draw() {
+      var N = +$('fsrN').value; $('fsrNVal').textContent = N;
+      var lg = low.getContext('2d'), li = lg.createImageData(LW, LH);
+      for (var j = 0; j < LH; j++) for (var i = 0; i < LW; i++) {
+        var c = scene((i + 0.5) * R, (j + 0.5) * R), k = (j * LW + i) * 4;
+        li.data[k] = c[0]; li.data[k + 1] = c[1]; li.data[k + 2] = c[2]; li.data[k + 3] = 255;
+      }
+      lg.putImageData(li, 0, 0);
+      A[1].imageSmoothingEnabled = false; A[1].clearRect(0, 0, HW, HH); A[1].drawImage(low, 0, 0, LW, LH, 0, 0, HW, HH);
+      B[1].imageSmoothingEnabled = true; B[1].clearRect(0, 0, HW, HH); B[1].drawImage(low, 0, 0, LW, LH, 0, 0, HW, HH);
+      var base = B[1].getImageData(0, 0, HW, HH), sum = new Float32Array(HW * HH * 3), cnt = new Uint16Array(HW * HH);
+      for (var f = 1; f <= N; f++) {
+        var jx = halton(f, 2) - 0.5, jy = halton(f, 3) - 0.5;
+        for (var j2 = 0; j2 < LH; j2++) for (var i2 = 0; i2 < LW; i2++) {
+          var u = (i2 + 0.5 + jx) * R, v = (j2 + 0.5 + jy) * R, px = Math.floor(u), py = Math.floor(v);
+          if (px < 0 || py < 0 || px >= HW || py >= HH) continue;
+          var col = scene(u, v), idx = py * HW + px;
+          sum[idx * 3] += col[0]; sum[idx * 3 + 1] += col[1]; sum[idx * 3 + 2] += col[2]; cnt[idx]++;
+        }
+      }
+      var out = C[1].createImageData(HW, HH), filled = 0;
+      for (var p = 0; p < HW * HH; p++) {
+        if (cnt[p]) { filled++; for (var ch = 0; ch < 3; ch++) out.data[p * 4 + ch] = sum[p * 3 + ch] / cnt[p]; }
+        else { for (var ch2 = 0; ch2 < 3; ch2++) out.data[p * 4 + ch2] = base.data[p * 4 + ch2]; }
+        out.data[p * 4 + 3] = 255;
+      }
+      C[1].putImageData(out, 0, 0);
+      $('fsrStat').textContent = 'Calculé : ' + LW + '×' + LH + ' = ' + (LW * LH).toLocaleString('fr-FR') + ' pixels (' + Math.round(LW * LH / (HW * HH) * 100) + ' % de ' + (HW * HH).toLocaleString('fr-FR') + ') · cases reconstruites avec de vrais échantillons : ' + Math.round(filled / (HW * HH) * 100) + ' %';
+    }
+    $('fsrN').addEventListener('input', draw);
+    draw();
+  })();
+
+  /* ---------- path tracer ---------- */
+  (function () {
+    var D = ctxOf('ptCanvas'), cv = D[0], g = D[1], W = cv.width, H = cv.height;
+    var SPH = [[-1.3, 0.6, 0.0, 0.6], [0.0, 0.6, -0.3, 0.6], [1.3, 0.6, 0.0, 0.6], [-0.9, 2.4, -0.6, 0.5], [1.1, 2.2, 0.5, 0.45]];
+    var COL = [[0.85, 0.3, 0.25], [0.8, 0.8, 0.8], [0.25, 0.45, 0.85], [0, 0, 0], [0, 0, 0]];
+    var EMI = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [6, 0.5, 3], [0.4, 5, 6]];
+    var SKY = [0.2, 0.25, 0.38], BOUNCES = 3;
+    var hit = { px: 0, py: 0, pz: 0, nx: 0, ny: 1, nz: 0, c: [0, 0, 0], e: [0, 0, 0] };
+    function touch(ox, oy, oz, dx, dy, dz) {
+      var best = 1e9; hit.nx = 0; hit.ny = 1; hit.nz = 0; hit.c = COL[3]; hit.e = EMI[0];
+      if (dy < 0) { best = -oy / dy; hit.c = [0.55, 0.55, 0.55]; }
+      for (var i = 0; i < 5; i++) {
+        var s = SPH[i], cx = ox - s[0], cy = oy - s[1], cz = oz - s[2];
+        var b = cx * dx + cy * dy + cz * dz, h = b * b - (cx * cx + cy * cy + cz * cz) + s[3] * s[3];
+        if (h > 0) {
+          var t = -b - Math.sqrt(h);
+          if (t > 0.001 && t < best) {
+            best = t;
+            var qx = ox + dx * t - s[0], qy = oy + dy * t - s[1], qz = oz + dz * t - s[2], ql = Math.sqrt(qx * qx + qy * qy + qz * qz);
+            hit.nx = qx / ql; hit.ny = qy / ql; hit.nz = qz / ql; hit.c = COL[i]; hit.e = EMI[i];
+          }
+        }
+      }
+      hit.px = ox + dx * best; hit.py = oy + dy * best; hit.pz = oz + dz * best;
+      return best < 1e8;
+    }
+    function trace(ox, oy, oz, dx, dy, dz, out) {
+      var fr = 1, fg = 1, fb = 1;
+      for (var i = 0; i <= BOUNCES; i++) {
+        if (!touch(ox, oy, oz, dx, dy, dz)) { out[0] += fr * SKY[0]; out[1] += fg * SKY[1]; out[2] += fb * SKY[2]; return; }
+        out[0] += fr * hit.e[0]; out[1] += fg * hit.e[1]; out[2] += fb * hit.e[2];
+        fr *= hit.c[0]; fg *= hit.c[1]; fb *= hit.c[2];
+        if (fr + fg + fb < 1e-4) return;
+        ox = hit.px + hit.nx * 0.001; oy = hit.py + hit.ny * 0.001; oz = hit.pz + hit.nz * 0.001;
+        var z = Math.random() * 2 - 1, a = Math.random() * 6.2832, r = Math.sqrt(1 - z * z);
+        dx = hit.nx + r * Math.cos(a); dy = hit.ny + r * Math.sin(a); dz = hit.nz + z;
+        var l = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1; dx /= l; dy /= l; dz /= l;
+      }
+    }
+    var acc = new Float32Array(W * H * 3), frames = 0, lastN = 0;
+    function renderFrame(spp) {
+      var tmp = [0, 0, 0];
+      for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+        var ex = ((x + 0.5) / W * 2 - 1) * (W / H), ey = -((y + 0.5) / H * 2 - 1), dx0 = ex, dy0 = ey - 0.12, dz0 = -1.9, l = Math.sqrt(dx0 * dx0 + dy0 * dy0 + dz0 * dz0);
+        tmp[0] = tmp[1] = tmp[2] = 0;
+        for (var s = 0; s < spp; s++) trace(0, 1.3, 4.6, dx0 / l, dy0 / l, dz0 / l, tmp);
+        var i = (y * W + x) * 3;
+        acc[i] += tmp[0] / spp; acc[i + 1] += tmp[1] / spp; acc[i + 2] += tmp[2] / spp;
+      }
+      frames++;
+    }
+    function present() {
+      var den = $('ptDen').checked, n = Math.max(frames, 1), ldr = new Float32Array(W * H * 3);
+      for (var i = 0; i < W * H * 3; i++) { var v = acc[i] / n; v = v / (1 + v); ldr[i] = Math.pow(clamp(v, 0, 1), 1 / 2.2); }
+      var src = ldr;
+      if (den) {
+        src = new Float32Array(ldr.length);
+        for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+          var ci = (y * W + x) * 3, lc = (ldr[ci] + ldr[ci + 1] + ldr[ci + 2]) / 3, sr = 0, sg = 0, sb = 0, sw = 0;
+          for (var dy = -2; dy <= 2; dy++) for (var dx = -2; dx <= 2; dx++) {
+            var xx = x + dx, yy = y + dy; if (xx < 0 || yy < 0 || xx >= W || yy >= H) continue;
+            var ni = (yy * W + xx) * 3, ln = (ldr[ni] + ldr[ni + 1] + ldr[ni + 2]) / 3, dl = ln - lc;
+            var w = Math.exp(-(dx * dx + dy * dy) / 4.5) * Math.exp(-dl * dl / 0.03);
+            sr += ldr[ni] * w; sg += ldr[ni + 1] * w; sb += ldr[ni + 2] * w; sw += w;
+          }
+          src[ci] = sr / sw; src[ci + 1] = sg / sw; src[ci + 2] = sb / sw;
+        }
+      }
+      var img = g.createImageData(W, H);
+      for (var p = 0; p < W * H; p++) { img.data[p * 4] = src[p * 3] * 255; img.data[p * 4 + 1] = src[p * 3 + 1] * 255; img.data[p * 4 + 2] = src[p * 3 + 2] * 255; img.data[p * 4 + 3] = 255; }
+      g.putImageData(img, 0, 0);
+      $('ptFrames').textContent = frames + (frames > 1 ? ' images' : ' image');
+    }
+    function reset() {
+      acc.fill(0); frames = 0;
+      var n = +$('ptN').value; $('ptNVal').textContent = n;
+      renderFrame(n); present();
+    }
+    var a = reg(cv, function () {
+      if (!$('ptAcc').checked || reduce || frames >= 200) return;
+      renderFrame(+$('ptN').value); present();
+    });
+    $('ptN').addEventListener('input', reset);
+    $('ptAcc').addEventListener('change', function () { if (!$('ptAcc').checked) reset(); });
+    $('ptDen').addEventListener('change', present);
+    reset();
+  })();
+})();
+</script>
