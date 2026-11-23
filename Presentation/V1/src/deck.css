@@ -237,7 +237,7 @@ figure { margin: 0; }
 .avis { display: flex; gap: 30px; align-items: center; background: var(--papier); border: 3px solid var(--encre); border-radius: 14px; padding: 22px 28px; box-shadow: 0 6px 0 var(--encre); transform: rotate(-0.8deg); }
 .avis .role { font: 700 24px var(--titre); letter-spacing: 1.5px; text-transform: uppercase; color: var(--rouge); }
 .avis p { font: 600 32px/1.25 var(--texte); margin-top: 8px; }
-.qr { width: 400px; height: 400px; flex: none; display: block; background: #fff; padding: 20px; box-sizing: border-box; border-radius: 8px; image-rendering: pixelated; }
+.qr { width: 400px; height: 400px; flex: none; display: block; background: #fff; padding: 10px; box-sizing: border-box; border-radius: 8px; image-rendering: pixelated; }
 .qr.vide { display: grid; place-items: center; text-align: center; border: 4px dashed var(--encre-douce); background: var(--carton); font: 700 40px/1.15 var(--main); color: var(--encre-douce); }
 
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

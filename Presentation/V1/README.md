@@ -32,11 +32,9 @@ Le script oral (qui dit quoi, quelle maquette manipuler, quelles touches presser
 
 ### Le QR code de feedback
 
-La dernière slide lui garde une place (un carré pointillé « QR code à venir »). Quand il arrive :
+Il est sur la dernière slide : `src/img/qr_feedback.png`, affiché en 400 × 400 sur fond blanc pour être scanné sur un grand écran. Pour le changer, remplacer ce fichier puis réassembler.
 
-1. déposer l'image dans `src/img/qr_feedback.png` (ou `.jpg`) ;
-2. dans `src/slides.html`, remplacer la ligne `<div class="qr vide">QR code<br>à venir</div>` par :
-   `<img class="qr" src="{{img:qr_feedback}}" alt="QR code du questionnaire">`
+L'image est redessinée module par module (12 px par module, 2 modules de marge) : une petite image agrandie telle quelle donne des modules inégaux. Si la nouvelle image est petite, la redessiner de la même façon.
 
 Puis réassembler :
 

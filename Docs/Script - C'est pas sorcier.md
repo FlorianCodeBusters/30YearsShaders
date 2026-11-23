@@ -218,7 +218,7 @@ On n'a pas le temps d'en faire une notion : on l'évoque, d'une phrase chacun.
 
 ### Slide 23 · Merci — 20 s (→ 28:30)
 - **Florian** : « Et un dernier aveu : tout ce que vous avez vu ce soir est un shader. Y compris la version 1996. On l'a simulée. »
-- **Le rideau de la slide 2**, une dernière fois, sans titre ni légende : il bouge seul. En dessous, un grand **QR code de feedback** (à fournir).
+- **Le rideau de la slide 2**, une dernière fois, sans titre ni légende : il bouge seul. En dessous, un grand **QR code de feedback**.
 - **Sébastien** : « Merci ! Une minute pour nous dire ce que vous en avez pensé : le QR code est là. Des questions ? »
 
 ---
