@@ -956,9 +956,9 @@ window.DECK_IMAGES = {"qr_feedback":"data:image/png;base64,iVBORw0KGgoAAAANSUhEU
 
   // ------------------------------------------------------------------ La course : CPU contre GPU
   register("course", (root) => {
-    const COLS = 26, ROWS = 14, CELL = 18, N = COLS * ROWS;
+    const COLS = 40, ROWS = 25, CELL = 12, N = COLS * ROWS;   // 1 000 pixels : « 1 fois 1 000 pixels » contre « 1 000 fois 1 pixel »
     const rang = M.rang(root); rang.style.gap = "26px"; rang.style.flexWrap = "nowrap";
-    const pistes = ["CPU : 1 chirurgien, très rapide", "GPU : 364 ouvriers, plus lents"].map((titre) => {
+    const pistes = ["CPU : 1 chirurgien, très rapide", "GPU : 1 000 ouvriers, plus lents"].map((titre) => {
       const col = M.el("div", "", rang); col.style.cssText = "display:flex;flex-direction:column;gap:10px;align-items:center";
       M.el("div", "lecture", col, titre);
       const cv = M.canvas(col, COLS * CELL, ROWS * CELL, false); cv.style.width = "468px";
@@ -968,7 +968,8 @@ window.DECK_IMAGES = {"qr_feedback":"data:image/png;base64,iVBORw0KGgoAAAANSUhEU
     const couleur = (x, y) => {
       const u = x / COLS, v = y / ROWS;
       if (Math.hypot(u - 0.68, (v - 0.42) * 0.56) < 0.13) return "#ffd24a";
-      if (v > 0.72 - 0.16 * Math.abs(Math.sin(x * 1.7)) * (x % 3 === 0 ? 1.6 : 0.6)) return "#201a3a";
+      const b = Math.floor(x / 2);   // immeubles de 2 pixels de large
+      if (v > 0.72 - 0.16 * Math.abs(Math.sin(b * 1.7)) * (b % 3 === 0 ? 1.6 : 0.6)) return "#201a3a";
       return `rgb(${Math.round(250 - v * 120)},${Math.round(90 + v * 60)},${Math.round(110 + v * 90)})`;
     };
     const T_CPU = 5.2, T_GPU = 1.5;   // secondes pour finir
@@ -990,7 +991,9 @@ window.DECK_IMAGES = {"qr_feedback":"data:image/png;base64,iVBORw0KGgoAAAANSUhEU
           }
         }
         const fini = k === 0 ? T_CPU : T_GPU;
-        p.chrono.innerHTML = t >= fini ? `Fini en <b>${fini.toFixed(1).replace(".", ",")} s</b>` : `${Math.min(t, fini).toFixed(1).replace(".", ",")} s…`;
+        // À l'arrivée, la chute de la blague : même multiplication, pas du tout le même travail.
+        const bilan = `<span style="white-space:nowrap">${k === 0 ? "1 fois 1 000 pixels" : "1 000 fois 1 pixel"}</span>`;
+        p.chrono.innerHTML = t >= fini ? `Fini en <b>${fini.toFixed(1).replace(".", ",")} s</b> · ${bilan}` : `${Math.min(t, fini).toFixed(1).replace(".", ",")} s…`;
       });
     }
     const anim = M.loop((_, dt) => { t += dt; dessiner(); if (t > T_CPU + 0.3) anim.stop(); });

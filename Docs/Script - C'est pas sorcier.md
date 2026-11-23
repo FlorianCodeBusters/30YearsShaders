@@ -93,7 +93,8 @@ Depuis le 21/11, la partie 2 suit l'ordre des notions plutôt que celui des ann�
 
 ### Slide 6 · Un chirurgien, ou une armée ? — 45 s (→ 03:55)
 - **Maquette n° 3, la course.** Elle attend : Sébastien clique « Départ ! » au moment de « Regardez qui gagne ». Un nouveau clic la relance.
-- **Sébastien** : « Pourquoi une carte à part ? Parce qu'une image, c'est deux millions de pixels, soixante fois par seconde. Le processeur, c'est un chirurgien : très malin, mais il fait une chose à la fois. La carte graphique, c'est une armée de peintres pas très malins… mais ils sont des milliers. Regardez qui gagne. » *(il clique « Départ ! »)*
+- **Sébastien** : « Pourquoi une carte à part ? Parce qu'une image, c'est deux millions de pixels, soixante fois par seconde. Le processeur, c'est un chirurgien : très malin, mais il fait une chose à la fois. La carte graphique, c'est une armée de peintres pas très malins… mais ils sont des milliers. Regardez qui gagne. » *(il clique « Départ ! » ; la course dure 5 secondes)*
+- **La blague, à l'arrivée** (clin d'œil à *La Cité de la peur*) : quand les deux pistes affichent leur bilan, « 1 fois 1 000 pixels » côté processeur et « 1 000 fois 1 pixel » côté carte, Sébastien montre la piste de droite. « Vous voyez, c'est simple : la carte graphique, elle rend une fois mille pixels… *(un temps)* ah non : **mille fois un pixel**. » Bien marquer le temps avant « ah non ». Pour le public qui n'a pas la référence, la phrase tient seule : c'est la même multiplication, mais pas du tout le même travail. La maquette peint exactement 1 000 pixels, le chiffre de la blague est donc vrai à l'écran.
 - **Florian** : rien à montrer, il enchaîne d'une phrase. « Et tout l'enjeu des trente ans qui suivent, c'est : qu'est-ce qu'on fait faire à cette armée ? »
 
 ### Slide 7 · Du triangle au pixel — 1 min (→ 04:55)
